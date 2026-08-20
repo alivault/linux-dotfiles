@@ -1,0 +1,49 @@
+# This repository is intentionally allowlisted. These rules are a second
+# line of defense against accidentally adding credentials or runtime state.
+
+# Pi credentials, conversations, caches, and installed packages
+dot_pi/agent/auth.json
+dot_pi/agent/sessions/
+dot_pi/agent/npm/
+dot_pi/agent/git/
+dot_pi/agent/fff/
+dot_pi/agent/models-store.json
+dot_pi/agent/trust.json
+dot_pi/agent/*changelog*.json
+
+# Credential and secret stores
+dot_config/gh/
+dot_config/gopass/
+dot_config/opencode/
+dot_config/pulse/cookie
+dot_config/git/credentials
+
+# Browsers and OAuth-bearing launch flags
+dot_config/chromium/
+dot_config/google-chrome/
+dot_config/BraveSoftware/
+dot_config/chromium-flags.conf
+
+# Generated Omarchy state and historical backups
+dot_config/omarchy/current/
+**/*.bak.*
+**/.ali.keybindings.bak.*/
+**/hypr-v3-backup/
+**/hypr-quattro-broken/
+
+# Herdr runtime state
+dot_config/herdr/logs/
+dot_config/herdr/sessions/
+dot_local/state/herdr/
+
+# Tmux is deliberately not managed here
+dot_config/tmux/
+dot_tmux.conf
+
+# Common private-key and environment-file formats
+*.pem
+*.p12
+*.pfx
+*.key
+.env
+.env.*
