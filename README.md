@@ -31,6 +31,11 @@ chezmoi update
 The source repository is available locally with `chezmoi cd` or at
 `~/.local/share/chezmoi`.
 
+Chezmoi uses a private temporary directory beneath its cache. An initialization
+hook creates it with mode `0700`. This keeps temporary files on the same
+filesystem as the source state, enabling `chezmoi edit` hardlinks and watch
+mode on systems where `/tmp` is a tmpfs.
+
 ## Managed configuration
 
 - Omarchy shell settings, branding, menu extension, and `ali.menu` plugin
