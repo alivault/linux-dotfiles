@@ -57,6 +57,9 @@ hl.config({
 -- o.window("(Alacritty|kitty|foot)", { scroll_touchpad = 1.5 })
 -- o.window("com.mitchellh.ghostty", { scroll_touchpad = 0.2 })
 
+-- Agent terminals use a dedicated app-id, so match Kitty's terminal speed.
+o.window("org\\.omarchy\\.agent", { scroll_touchpad = 1.5 })
+
 -- Enable touchpad gestures for changing workspaces.
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
 -- hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
