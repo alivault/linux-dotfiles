@@ -40,7 +40,7 @@ mode on systems where `/tmp` is a tmpfs.
 
 - Omarchy shell settings, branding, menu extension, and `ali.menu` plugin
 - Hyprland bindings, input, appearance, and monitor overrides
-- Alacritty, Foot, Ghostty, and Kitty settings
+- Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
 - Git, Herdr, imv, and the Hyprland preview share picker
 - Pi settings, keybindings, extensions, theme, and shared Herdr skill
 
