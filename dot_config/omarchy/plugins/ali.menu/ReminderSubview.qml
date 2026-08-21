@@ -38,7 +38,7 @@ Item {
     ? (step === "message" ? "Reminder message (optional)…" : "Remind in minutes…")
     : "Search reminders…"
   readonly property int preferredHeight: setting
-    ? Style.space(72)
+    ? 0
     : Math.max(Style.space(104), Math.min(Style.space(400), count * rowHeight))
 
   signal closeRequested()
@@ -239,38 +239,6 @@ Item {
   PointerMoveGate {
     id: pointerGate
     referenceItem: root
-  }
-
-  Item {
-    anchors.fill: parent
-    visible: root.setting
-
-    Column {
-      anchors.left: parent.left
-      anchors.right: parent.right
-      anchors.verticalCenter: parent.verticalCenter
-      spacing: Style.space(6)
-
-      Text {
-        width: parent.width
-        text: root.step === "message" ? "Step 2 of 2" : "Step 1 of 2"
-        color: root.selectedText
-        font.family: root.fontFamily
-        font.pixelSize: Style.font.caption
-      }
-
-      Text {
-        width: parent.width
-        text: root.step === "message"
-          ? "Press Enter to set it; the message may be empty."
-          : "Enter a positive number of minutes, then press Enter."
-        color: root.foreground
-        opacity: 0.68
-        font.family: root.fontFamily
-        font.pixelSize: Style.font.body
-        elide: Text.ElideRight
-      }
-    }
   }
 
   ListView {
