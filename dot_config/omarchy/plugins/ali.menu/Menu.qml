@@ -56,19 +56,22 @@ Item {
       clipboardActive: root.clipboardActive,
       clipboardHistory: clipboardView.historyCount,
       clipboardClearConfirm: clipboardView.clearConfirmOpen,
+      emojiActive: root.emojiActive,
+      emojiCount: emojiView.count,
       keybindings: root.keybindingRows.length,
       keybindingsKind: root.item("learn.keybindings") ? root.item("learn.keybindings").kind : "missing",
       items: root.itemOrder.length,
       visibleRows: root.resultCount(),
-      selectedIndex: root.clipboardActive ? clipboardView.selectedIndex : root.selectedIndex,
+      selectedIndex: root.clipboardActive ? clipboardView.selectedIndex : (root.emojiActive ? emojiView.selectedIndex : root.selectedIndex),
       contentY: root.clipboardActive ? clipboardView.contentY : resultList.contentY,
-      scrollOffset: root.clipboardActive ? clipboardView.scrollOffset : (resultList.contentY - resultList.originY),
+      scrollOffset: root.clipboardActive ? clipboardView.scrollOffset : (root.emojiActive ? emojiView.scrollOffset : (resultList.contentY - resultList.originY)),
       navDepth: root.navStack.length
     })
   }
 
   function debugVisibleRows() {
     if (root.clipboardActive) return JSON.stringify(clipboardView.debugRows())
+    if (root.emojiActive) return JSON.stringify(emojiView.debugRows())
     var rows = []
     for (var i = 0; i < Math.min(displayModel.count, 12); i++) {
       var row = displayModel.get(i)
@@ -89,6 +92,8 @@ Item {
   property string mode: "menu"
   readonly property bool dmenuActive: mode === "select" || mode === "input"
   readonly property bool clipboardActive: !dmenuActive && activeMenu === "clipboard"
+  readonly property bool emojiActive: !dmenuActive && activeMenu === "trigger.emoji"
+  readonly property bool nativeSubviewActive: clipboardActive || emojiActive
   property string dmenuPrompt: ""
   property var dmenuOptions: []
   property string selectionFile: ""
@@ -154,7 +159,7 @@ Item {
     : Style.space(720), panel.width - Style.gapsOut * 2)
   property int clipboardRowsHeight: Math.max(Style.space(260), Math.min(Style.space(500),
     panel.height - Style.gapsOut * 2 - contentMargin * 2 - headerHeight - contentSpacing))
-  property int visibleRowsHeight: root.clipboardActive
+  property int visibleRowsHeight: root.nativeSubviewActive
     ? root.clipboardRowsHeight
     : (root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider))
   property int cardHeight: root.dmenuActive
@@ -185,8 +190,8 @@ Item {
     var command = String(action || "")
     if (!command) return
 
-    // `bash -l` may replace OMARCHY_PATH from the login profile. Keep actions
-    // that call back into this shell (such as Emoji) on the active IPC path.
+    // `bash -l` may replace OMARCHY_PATH from the login profile. Keep custom
+    // actions that call back into this shell on the active IPC path.
     Util.execDetached("OMARCHY_PATH=" + Util.shellQuote(root.omarchyPath) + " " + command)
   }
 
@@ -427,9 +432,8 @@ Item {
   function startProviderForMenu(id) {
     var entry = root.item(id)
     if (!entry || !entry.provider || root.providersLoaded[id]) return
-    // Clipboard rows are native and private to their subview; they never enter
-    // the global item model or root search index.
-    if (entry.provider === "clipboard") {
+    // Native subview rows never enter the global item model or search index.
+    if (entry.provider === "clipboard" || entry.provider === "emoji") {
       root.providersLoaded[id] = true
       return
     }
@@ -521,7 +525,7 @@ Item {
     if (!entry || !entry.provider || root.providersLoaded[id]) return
 
     // Native providers don't touch providerProc, so they never need to queue.
-    if (entry.provider === "apps" || entry.provider === "clipboard") {
+    if (entry.provider === "apps" || entry.provider === "clipboard" || entry.provider === "emoji") {
       root.startProviderForMenu(id)
       return
     }
@@ -670,9 +674,9 @@ Item {
 
     displayModel.clear()
 
-    // ClipboardSubview owns its runtime-only model. Keeping those rows out of
-    // displayModel prevents clipboard contents leaking into global search.
-    if (root.clipboardActive) {
+    // Native subviews own their searchable models. Clipboard data stays
+    // private, and emoji rows do not bloat the unified global search index.
+    if (root.nativeSubviewActive) {
       root.searchDivider = false
       root.layoutSerial += 1
       return
@@ -761,6 +765,10 @@ Item {
       clipboardView.revealCursor()
       return
     }
+    if (root.emojiActive) {
+      emojiView.revealCursor()
+      return
+    }
     if (displayModel.count === 0) return
     resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
 
@@ -784,6 +792,10 @@ Item {
       clipboardView.select(delta)
       return
     }
+    if (root.emojiActive) {
+      emojiView.selectRow(delta)
+      return
+    }
     if (displayModel.count === 0) return
 
     root.disarmPointer()
@@ -801,6 +813,10 @@ Item {
       clipboardView.selectAbsolute(index)
       return
     }
+    if (root.emojiActive) {
+      emojiView.selectAbsolute(index)
+      return
+    }
     if (displayModel.count === 0) return
     root.disarmPointer()
     root.cursorActive = true
@@ -809,7 +825,7 @@ Item {
   }
 
   function resultCount() {
-    return root.clipboardActive ? clipboardView.count : displayModel.count
+    return root.clipboardActive ? clipboardView.count : (root.emojiActive ? emojiView.count : displayModel.count)
   }
 
   function setFilter(nextFilter) {
@@ -885,6 +901,10 @@ Item {
     if (root.deleteConfirmOpen) return
     if (root.clipboardActive) {
       clipboardView.activate(modifiers || Qt.NoModifier)
+      return
+    }
+    if (root.emojiActive) {
+      emojiView.activate()
       return
     }
     if (root.dmenuActive) {
@@ -979,6 +999,7 @@ Item {
     opened = true
     rebuildDisplay()
     if (root.clipboardActive) clipboardView.resetForOpen()
+    if (root.emojiActive) emojiView.resetForOpen()
     invalidateVolatileProvider(activeMenu)
     loadProviderForMenu(activeMenu)
     // The shell may start before first-install packages have finished placing
@@ -1279,7 +1300,7 @@ Item {
             if (root.clipboardActive) {
               if (event.modifiers & Qt.ShiftModifier) clipboardView.requestClearHistory()
               else clipboardView.removeSelected()
-            } else {
+            } else if (!root.emojiActive) {
               root.requestDeleteSelected()
             }
             event.accepted = true
@@ -1289,6 +1310,12 @@ Item {
             event.accepted = true
           } else if (Util.editsFilter(event, root.filterText)) {
             root.setFilter(Util.editedFilter(event, root.filterText))
+            event.accepted = true
+          } else if (root.emojiActive && event.key === Qt.Key_Left) {
+            emojiView.select(-1)
+            event.accepted = true
+          } else if (root.emojiActive && event.key === Qt.Key_Right) {
+            emojiView.select(1)
             event.accepted = true
           } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_Left) && !root.filterText) {
             root.goBack()
@@ -1306,10 +1333,12 @@ Item {
             root.select(1)
             event.accepted = true
           } else if (event.key === Qt.Key_PageUp) {
-            root.select(-6)
+            if (root.emojiActive) emojiView.selectPage(-1)
+            else root.select(-6)
             event.accepted = true
           } else if (event.key === Qt.Key_PageDown) {
-            root.select(6)
+            if (root.emojiActive) emojiView.selectPage(1)
+            else root.select(6)
             event.accepted = true
           } else if (event.key === Qt.Key_Home) {
             root.selectAbsolute(0)
@@ -1318,12 +1347,14 @@ Item {
             root.selectAbsolute(root.resultCount() - 1)
             event.accepted = true
           } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter
-                     || (!root.clipboardActive && event.key === Qt.Key_Right)) {
+                     || (!root.nativeSubviewActive && event.key === Qt.Key_Right)) {
             if (root.dmenuActive) {
               if (root.mode === "input") root.applyDmenuSelection(root.filterText)
               else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
             } else if (root.clipboardActive) {
               clipboardView.activate(event.modifiers)
+            } else if (root.emojiActive) {
+              emojiView.activate()
             } else if (root.cursorActive) root.activateIndex(root.selectedIndex, false, event.modifiers)
             else if (displayModel.count > 0) root.cursorActive = true
             event.accepted = true
@@ -1373,11 +1404,13 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             text: root.filterText || (root.clipboardActive
               ? "Search clipboard…"
+              : (root.emojiActive
+              ? "Search emojis…"
               : (root.dmenuActive
               ? (root.dmenuPrompt + "…")
               : (root.activeMenu === "root"
-                ? "Type to search..."
-                : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…"))))
+              ? "Type to search..."
+              : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…")))))
             color: root.foreground
             opacity: root.filterText ? 1 : 0.58
             font.family: root.fontFamily
@@ -1410,10 +1443,25 @@ Item {
             onCloseRequested: root.cancel()
           }
 
+          EmojiSubview {
+            id: emojiView
+            anchors.fill: parent
+            visible: root.emojiActive
+            active: root.emojiActive && root.opened
+            filterText: root.filterText
+            omarchyPath: root.omarchyPath
+            fontFamily: root.fontFamily
+            foreground: root.foreground
+            selectedBackground: root.selectedBackground
+            selectedText: root.selectedText
+            cornerRadius: root.cornerRadius
+            onCloseRequested: root.cancel()
+          }
+
           ListView {
             id: resultList
             anchors.fill: parent
-            visible: !root.clipboardActive
+            visible: !root.nativeSubviewActive
             model: displayModel
             clip: true
             spacing: root.rowSpacing
@@ -1636,7 +1684,7 @@ Item {
           Column {
             anchors.centerIn: parent
             spacing: Style.space(8)
-            visible: !root.clipboardActive && displayModel.count === 0 && root.mode !== "input"
+            visible: !root.nativeSubviewActive && displayModel.count === 0 && root.mode !== "input"
 
             Text {
               text: "󰈉"

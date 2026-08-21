@@ -36,6 +36,9 @@
   // Clipboard contents stay in ~/.local/state and never enter the dotfiles repo.
   "clipboard": {"icon":"󰅌","label":"Clipboard History","provider":"clipboard","position":1,"aliases":["clipboard","clipboard-manager"]},
 
+  // Preloaded grid backed by Omarchy's packaged emoji catalog and insert helper.
+  "trigger.emoji": {"icon":"","label":"Emoji","provider":"emoji","aliases":["emoji","emojis"]},
+
   // Preserve clipboard MIME types and surface LocalSend launch errors.
   "trigger.share.clipboard": {"icon":"","label":"Send Clipboard","aliases":["share-clipboard"],"action":"$HOME/.config/omarchy/plugins/ali.menu/share.sh clipboard"},
 }

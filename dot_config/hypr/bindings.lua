@@ -35,3 +35,7 @@ hl.unbind("SUPER + K")
 -- Previously opened the standalone omarchy.clipboard overlay.
 hl.unbind("SUPER + CTRL + V")
 o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")
+
+-- Use the preloaded emoji grid in ali.menu instead of opening a second shell overlay.
+hl.unbind("SUPER + CTRL + E")
+o.bind("SUPER + CTRL + E", "Emojis", "omarchy menu toggle emoji")

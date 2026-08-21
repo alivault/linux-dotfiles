@@ -39,7 +39,7 @@ mode on systems where `/tmp` is a tmpfs.
 ## Managed configuration
 
 - Omarchy shell settings, branding, menu extension, and `ali.menu` plugin,
-  including its integrated two-column clipboard history view
+  including integrated clipboard history and emoji picker views
 - Hyprland bindings, input, appearance, and monitor overrides
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
 - Git, Herdr, imv, and the Hyprland preview share picker
