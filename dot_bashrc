@@ -1,0 +1,20 @@
+# If not running interactively, don't do anything (leave this at the top of this file)
+[[ $- != *i* ]] && return
+
+# All the default Omarchy aliases and functions
+# (don't mess with these directly, just overwrite them here!)
+source ~/.local/share/omarchy/default/bash/rc
+
+# Add your own exports, aliases, and functions here.
+#
+# Make an alias for invoking commands you use constantly
+# alias p='python'
+
+# Keep pi-fff from indexing the entire home directory by default.
+# An explicit environment value or Pi CLI flag can still override this.
+pi() {
+  FFF_ENABLE_HOME_SCAN="${FFF_ENABLE_HOME_SCAN:-0}" command pi "$@"
+}
+
+# Vite+ bin (https://viteplus.dev)
+. "$HOME/.vite-plus/env"
