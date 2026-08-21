@@ -1,2 +1,7 @@
 README.md
 .gitignore
+
+{{ if ne .chezmoi.arch "arm64" }}
+.local/bin/gpu-screen-recorder
+.local/libexec/omarchy-asahi-screenrecord.py
+{{ end }}
