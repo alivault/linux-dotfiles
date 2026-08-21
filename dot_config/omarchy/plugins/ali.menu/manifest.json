@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "ali.menu",
-  "name": "My Omarchy menu",
+  "name": "Super Menu",
   "version": "1.0.0",
   "author": "Omarchy",
-  "description": "Quickshell-powered Omarchy command menu",
+  "description": "Fast unified command, clipboard, and emoji menu",
   "kinds": [
     "menu",
     "bar-widget"
@@ -15,8 +15,8 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "My Omarchy menu",
-    "description": "Launches the Omarchy menu",
+    "displayName": "Super Menu",
+    "description": "Launches the Super Menu",
     "category": "Compositor",
     "allowMultiple": false
   },

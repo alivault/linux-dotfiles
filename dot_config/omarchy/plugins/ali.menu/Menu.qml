@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import QtQuick
 import qs.Commons
 import qs.Ui
@@ -20,6 +21,17 @@ Item {
   // Plugin lifecycle hooks. The host calls open(payloadJson) after
   // `omarchy-shell shell summon omarchy.menu ...` and close() when hidden.
   property string pendingInitialMenu: "root"
+
+  // Hyprland can signal the already-running shell directly. This avoids the
+  // Bash → jq → timeout → qs process chain on the hottest launcher path.
+  GlobalShortcut {
+    appid: "ali.super-menu"
+    name: "toggle"
+    description: "Toggle Super Menu"
+    onPressed: if (root.shell) root.shell.toggle(
+      (root.manifest && root.manifest.id) || "ali.menu",
+      JSON.stringify({ menu: "root" }))
+  }
 
   function open(payloadJson) {
     root.refreshKeybindings()

@@ -16,9 +16,9 @@
 -- o.bind("SUPER + SHIFT + R", "SSH", "alacritty -e ssh your-server")
 
 -- Change an existing binding by unbinding it first, then binding the key again.
--- This example changes SUPER+SPACE from the launcher to the Omarchy root menu.
+-- This example changes SUPER+SPACE from the launcher to the Super Menu root.
 -- hl.unbind("SUPER + SPACE")
--- o.bind("SUPER + SPACE", "Omarchy menu", "omarchy-menu toggle root")
+-- o.bind("SUPER + SPACE", "Super Menu", "omarchy-menu toggle root")
 
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
@@ -30,6 +30,11 @@
 
 -- Keybindings are searchable from the unified SUPER + SPACE menu.
 hl.unbind("SUPER + K")
+
+-- Signal the already-running Super Menu without launching an IPC client.
+-- Previously ran the stock `omarchy-menu toggle` process chain.
+hl.unbind("SUPER + SPACE")
+o.bind("SUPER + SPACE", "Super Menu", hl.dsp.global("ali.super-menu:toggle"))
 
 -- Keep clipboard history inside the unified Omarchy menu.
 -- Previously opened the standalone omarchy.clipboard overlay.
