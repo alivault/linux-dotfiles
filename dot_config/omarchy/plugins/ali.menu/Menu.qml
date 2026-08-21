@@ -722,6 +722,8 @@ Item {
         rows.push(root.displayRow(child, child.description, child.order))
       }
 
+      if (active === "root") rows = MenuModel.sortRowsByPosition(root.items, rows)
+
       // DesktopEntries can reorder its values when an application starts.
       // Keep the Apps menu alphabetical independently of provider refreshes.
       if (active === "apps") {

@@ -33,10 +33,27 @@ function normalizeItem(id, raw) {
     shortcut: value.shortcut || "",
     action: value.action || "",
     provider: value.provider || "",
+    position: typeof value.position === "number" ? value.position : null,
     aliases: aliases,
     when: value.when || "",
     checked: value.checked || ""
   }
+}
+
+// Most rows keep the order supplied by Omarchy. A user extension can assign a
+// numeric position to a sibling without copying and maintaining the full
+// upstream menu definition.
+function sortRowsByPosition(items, rows) {
+  var values = Array.isArray(rows) ? rows.slice() : []
+  values.sort(function(a, b) {
+    var aEntry = item(items, a.itemId) || {}
+    var bEntry = item(items, b.itemId) || {}
+    var aPosition = typeof aEntry.position === "number" ? aEntry.position : Number(aEntry.order || 0)
+    var bPosition = typeof bEntry.position === "number" ? bEntry.position : Number(bEntry.order || 0)
+    if (aPosition !== bPosition) return aPosition - bPosition
+    return Number(aEntry.order || 0) - Number(bEntry.order || 0)
+  })
+  return values
 }
 
 function parseMenuJsonc(raw) {
@@ -537,6 +554,7 @@ if (typeof module !== "undefined") {
     descriptionTextMatches: descriptionTextMatches,
     matchesQuery: matchesQuery,
     searchScore: searchScore,
-    displayRow: displayRow
+    displayRow: displayRow,
+    sortRowsByPosition: sortRowsByPosition
   }
 }
