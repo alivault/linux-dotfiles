@@ -60,16 +60,16 @@
     "position": "top",
     "transparent": false
   },
+  "cloneSourceRestores": [
+    "ali.menu"
+  ],
+  "disabledPlugins": [
+    "omarchy.menu"
+  ],
   "idle": {
     "lock": 300,
     "screensaver": 150
   },
   "plugins": [],
-  "version": 1,
-  "disabledPlugins": [
-    "omarchy.menu"
-  ],
-  "cloneSourceRestores": [
-    "ali.menu"
-  ]
+  "version": 1
 }

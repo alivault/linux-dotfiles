@@ -4,7 +4,7 @@
   "name": "Super Menu",
   "version": "1.0.0",
   "author": "Omarchy",
-  "description": "Fast unified command, clipboard, and emoji menu",
+  "description": "Fast unified command, clipboard, emoji, and reminder menu",
   "kinds": [
     "menu",
     "bar-widget"

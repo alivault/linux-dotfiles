@@ -70,11 +70,14 @@ Item {
       clipboardClearConfirm: clipboardView.clearConfirmOpen,
       emojiActive: root.emojiActive,
       emojiCount: emojiView.count,
+      reminderActive: root.reminderActive,
+      reminderMode: reminderView.mode,
+      reminderCount: reminderView.reminders.length,
       keybindings: root.keybindingRows.length,
       keybindingsKind: root.item("learn.keybindings") ? root.item("learn.keybindings").kind : "missing",
       items: root.itemOrder.length,
       visibleRows: root.resultCount(),
-      selectedIndex: root.clipboardActive ? clipboardView.selectedIndex : (root.emojiActive ? emojiView.selectedIndex : root.selectedIndex),
+      selectedIndex: root.clipboardActive ? clipboardView.selectedIndex : (root.emojiActive ? emojiView.selectedIndex : (root.reminderActive ? reminderView.selectedIndex : root.selectedIndex)),
       contentY: root.clipboardActive ? clipboardView.contentY : resultList.contentY,
       scrollOffset: root.clipboardActive ? clipboardView.scrollOffset : (root.emojiActive ? emojiView.scrollOffset : (resultList.contentY - resultList.originY)),
       navDepth: root.navStack.length
@@ -84,6 +87,7 @@ Item {
   function debugVisibleRows() {
     if (root.clipboardActive) return JSON.stringify(clipboardView.debugRows())
     if (root.emojiActive) return JSON.stringify(emojiView.debugRows())
+    if (root.reminderActive) return JSON.stringify(reminderView.debugRows())
     var rows = []
     for (var i = 0; i < Math.min(displayModel.count, 12); i++) {
       var row = displayModel.get(i)
@@ -105,7 +109,10 @@ Item {
   readonly property bool dmenuActive: mode === "select" || mode === "input"
   readonly property bool clipboardActive: !dmenuActive && activeMenu === "clipboard"
   readonly property bool emojiActive: !dmenuActive && activeMenu === "trigger.emoji"
-  readonly property bool nativeSubviewActive: clipboardActive || emojiActive
+  readonly property bool reminderSetActive: !dmenuActive && activeMenu === "trigger.reminder.set"
+  readonly property bool reminderManageActive: !dmenuActive && activeMenu === "trigger.reminder.show"
+  readonly property bool reminderActive: reminderSetActive || reminderManageActive
+  readonly property bool nativeSubviewActive: clipboardActive || emojiActive || reminderActive
   property string dmenuPrompt: ""
   property var dmenuOptions: []
   property string selectionFile: ""
@@ -172,7 +179,7 @@ Item {
   property int clipboardRowsHeight: Math.max(Style.space(260), Math.min(Style.space(500),
     panel.height - Style.gapsOut * 2 - contentMargin * 2 - headerHeight - contentSpacing))
   property int visibleRowsHeight: root.nativeSubviewActive
-    ? root.clipboardRowsHeight
+    ? (root.reminderActive ? reminderView.preferredHeight : root.clipboardRowsHeight)
     : (root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider))
   property int cardHeight: root.dmenuActive
     ? Math.min(contentMargin * 2 + headerHeight + (mode === "input" ? 0 : contentSpacing + visibleRowsHeight), panel.height - Style.gapsOut * 2)
@@ -445,7 +452,8 @@ Item {
     var entry = root.item(id)
     if (!entry || !entry.provider || root.providersLoaded[id]) return
     // Native subview rows never enter the global item model or search index.
-    if (entry.provider === "clipboard" || entry.provider === "emoji") {
+    if (entry.provider === "clipboard" || entry.provider === "emoji"
+        || entry.provider === "reminder-set" || entry.provider === "reminders") {
       root.providersLoaded[id] = true
       return
     }
@@ -537,7 +545,8 @@ Item {
     if (!entry || !entry.provider || root.providersLoaded[id]) return
 
     // Native providers don't touch providerProc, so they never need to queue.
-    if (entry.provider === "apps" || entry.provider === "clipboard" || entry.provider === "emoji") {
+    if (entry.provider === "apps" || entry.provider === "clipboard" || entry.provider === "emoji"
+        || entry.provider === "reminder-set" || entry.provider === "reminders") {
       root.startProviderForMenu(id)
       return
     }
@@ -781,6 +790,10 @@ Item {
       emojiView.revealCursor()
       return
     }
+    if (root.reminderActive) {
+      reminderView.revealCursor()
+      return
+    }
     if (displayModel.count === 0) return
     resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
 
@@ -808,6 +821,10 @@ Item {
       emojiView.selectRow(delta)
       return
     }
+    if (root.reminderActive) {
+      reminderView.select(delta)
+      return
+    }
     if (displayModel.count === 0) return
 
     root.disarmPointer()
@@ -829,6 +846,10 @@ Item {
       emojiView.selectAbsolute(index)
       return
     }
+    if (root.reminderActive) {
+      reminderView.selectAbsolute(index)
+      return
+    }
     if (displayModel.count === 0) return
     root.disarmPointer()
     root.cursorActive = true
@@ -837,7 +858,7 @@ Item {
   }
 
   function resultCount() {
-    return root.clipboardActive ? clipboardView.count : (root.emojiActive ? emojiView.count : displayModel.count)
+    return root.clipboardActive ? clipboardView.count : (root.emojiActive ? emojiView.count : (root.reminderActive ? reminderView.count : displayModel.count))
   }
 
   function setFilter(nextFilter) {
@@ -846,7 +867,8 @@ Item {
     root.selectedIndex = 0
     root.cursorActive = root.mode !== "input"
     root.disarmPointer()
-    if (!root.dmenuActive && root.filterText.trim()) root.loadProvidersForSearch()
+    if (!root.dmenuActive && !root.nativeSubviewActive && root.filterText.trim())
+      root.loadProvidersForSearch()
     root.rebuildDisplay()
   }
 
@@ -917,6 +939,10 @@ Item {
     }
     if (root.emojiActive) {
       emojiView.activate()
+      return
+    }
+    if (root.reminderActive) {
+      reminderView.submit()
       return
     }
     if (root.dmenuActive) {
@@ -1012,6 +1038,7 @@ Item {
     rebuildDisplay()
     if (root.clipboardActive) clipboardView.resetForOpen()
     if (root.emojiActive) emojiView.resetForOpen()
+    if (root.reminderActive) reminderView.resetForOpen()
     invalidateVolatileProvider(activeMenu)
     loadProviderForMenu(activeMenu)
     // The shell may start before first-install packages have finished placing
@@ -1294,13 +1321,17 @@ Item {
       Item {
         id: keyCatcher
         anchors.fill: parent
-        z: root.deleteConfirmOpen ? 20 : 0
+        z: (root.deleteConfirmOpen || reminderView.confirmOpen) ? 20 : 0
         focus: true
 
         Keys.priority: Keys.BeforeItem
         Keys.onPressed: function(event) {
           if (root.clipboardActive && clipboardView.clearConfirmOpen) {
             if (clipboardView.handleConfirmKey(event)) event.accepted = true
+            return
+          }
+          if (root.reminderActive && reminderView.confirmOpen) {
+            if (reminderView.handleConfirmKey(event)) event.accepted = true
             return
           }
           if (root.deleteConfirmOpen) {
@@ -1312,12 +1343,16 @@ Item {
             if (root.clipboardActive) {
               if (event.modifiers & Qt.ShiftModifier) clipboardView.requestClearHistory()
               else clipboardView.removeSelected()
+            } else if (root.reminderManageActive) {
+              if (event.modifiers & Qt.ShiftModifier) reminderView.requestClear()
+              else reminderView.requestDelete()
             } else if (!root.emojiActive) {
               root.requestDeleteSelected()
             }
             event.accepted = true
           } else if (event.key === Qt.Key_Escape) {
             if (root.filterText) root.setFilter("")
+            else if (root.reminderSetActive && reminderView.backStep()) {}
             else root.cancel()
             event.accepted = true
           } else if (Util.editsFilter(event, root.filterText)) {
@@ -1330,7 +1365,7 @@ Item {
             emojiView.select(1)
             event.accepted = true
           } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_Left) && !root.filterText) {
-            root.goBack()
+            if (!root.reminderSetActive || !reminderView.backStep()) root.goBack()
             event.accepted = true
           } else if (event.key === Qt.Key_J && event.modifiers === Qt.ControlModifier) {
             root.select(1)
@@ -1367,6 +1402,8 @@ Item {
               clipboardView.activate(event.modifiers)
             } else if (root.emojiActive) {
               emojiView.activate()
+            } else if (root.reminderActive) {
+              reminderView.submit()
             } else if (root.cursorActive) root.activateIndex(root.selectedIndex, false, event.modifiers)
             else if (displayModel.count > 0) root.cursorActive = true
             event.accepted = true
@@ -1418,11 +1455,13 @@ Item {
               ? "Search clipboard…"
               : (root.emojiActive
               ? "Search emojis…"
+              : (root.reminderActive
+              ? reminderView.promptText
               : (root.dmenuActive
               ? (root.dmenuPrompt + "…")
               : (root.activeMenu === "root"
               ? "Type to search..."
-              : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…")))))
+              : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…"))))))
             color: root.foreground
             opacity: root.filterText ? 1 : 0.58
             font.family: root.fontFamily
@@ -1467,6 +1506,26 @@ Item {
             selectedBackground: root.selectedBackground
             selectedText: root.selectedText
             cornerRadius: root.cornerRadius
+            onCloseRequested: root.cancel()
+          }
+
+          ReminderSubview {
+            id: reminderView
+            anchors.fill: parent
+            visible: root.reminderActive
+            active: root.reminderActive && root.opened
+            mode: root.reminderSetActive ? "set" : "manage"
+            filterText: root.filterText
+            omarchyPath: root.omarchyPath
+            pluginDir: root.pluginDir
+            fontFamily: root.fontFamily
+            background: root.background
+            foreground: root.foreground
+            selectedBackground: root.selectedBackground
+            selectedText: root.selectedText
+            cornerRadius: root.cornerRadius
+            rowHeight: root.detailRowHeight
+            onFilterRequested: function(value) { root.setFilter(value) }
             onCloseRequested: root.cancel()
           }
 
