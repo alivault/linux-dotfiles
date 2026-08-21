@@ -30,3 +30,8 @@
 
 -- Keybindings are searchable from the unified SUPER + SPACE menu.
 hl.unbind("SUPER + K")
+
+-- Keep clipboard history inside the unified Omarchy menu.
+-- Previously opened the standalone omarchy.clipboard overlay.
+hl.unbind("SUPER + CTRL + V")
+o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")

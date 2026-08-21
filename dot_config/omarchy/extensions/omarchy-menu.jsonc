@@ -31,6 +31,10 @@
   // The cloned unified menu fills this submenu from Hyprland's live bindings.
   "learn.keybindings": {"icon":"","label":"Keybindings"},
 
+  // Runtime-only clipboard history rendered by the cloned unified menu.
+  // Clipboard contents stay in ~/.local/state and never enter the dotfiles repo.
+  "clipboard": {"icon":"󰅌","label":"Clipboard History","provider":"clipboard","aliases":["clipboard","clipboard-manager"]},
+
   // Preserve clipboard MIME types and surface LocalSend launch errors.
-  "trigger.share.clipboard": {"icon":"","label":"Clipboard","aliases":["clipboard"],"action":"$HOME/.config/omarchy/plugins/ali.menu/share.sh clipboard"},
+  "trigger.share.clipboard": {"icon":"","label":"Send Clipboard","aliases":["share-clipboard"],"action":"$HOME/.config/omarchy/plugins/ali.menu/share.sh clipboard"},
 }

@@ -53,17 +53,21 @@ Item {
       opened: root.opened,
       activeMenu: root.activeMenu,
       filterText: root.filterText,
+      clipboardActive: root.clipboardActive,
+      clipboardHistory: clipboardView.historyCount,
+      clipboardClearConfirm: clipboardView.clearConfirmOpen,
       keybindings: root.keybindingRows.length,
       keybindingsKind: root.item("learn.keybindings") ? root.item("learn.keybindings").kind : "missing",
       items: root.itemOrder.length,
-      visibleRows: displayModel.count,
-      selectedIndex: root.selectedIndex,
-      contentY: resultList.contentY,
+      visibleRows: root.resultCount(),
+      selectedIndex: root.clipboardActive ? clipboardView.selectedIndex : root.selectedIndex,
+      contentY: root.clipboardActive ? clipboardView.contentY : resultList.contentY,
       navDepth: root.navStack.length
     })
   }
 
   function debugVisibleRows() {
+    if (root.clipboardActive) return JSON.stringify(clipboardView.debugRows())
     var rows = []
     for (var i = 0; i < Math.min(displayModel.count, 12); i++) {
       var row = displayModel.get(i)
@@ -83,6 +87,7 @@ Item {
   property bool opened: false
   property string mode: "menu"
   readonly property bool dmenuActive: mode === "select" || mode === "input"
+  readonly property bool clipboardActive: !dmenuActive && activeMenu === "clipboard"
   property string dmenuPrompt: ""
   property var dmenuOptions: []
   property string selectionFile: ""
@@ -111,7 +116,11 @@ Item {
   readonly property var appLibrary: root.shell ? root.shell.appLibrary : null
   property bool deleteConfirmOpen: false
   property var deleteTarget: null
-  onOpenedChanged: if (!opened) { deleteConfirmOpen = false; deleteTarget = null }
+  onOpenedChanged: if (!opened) {
+    deleteConfirmOpen = false
+    deleteTarget = null
+    clipboardView.resetTransient()
+  }
   // Bound to the central [menu] section in shell.toml via Color.qml.
   // Each color already includes its alpha companion (composed in the
   // singleton), so consumers can drop them straight into a Rectangle.
@@ -142,7 +151,11 @@ Item {
   property int cardWidth: Math.min(root.dmenuActive
     ? Style.space(root.dmenuWidth)
     : Style.space(720), panel.width - Style.gapsOut * 2)
-  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider)
+  property int clipboardRowsHeight: Math.max(Style.space(260), Math.min(Style.space(500),
+    panel.height - Style.gapsOut * 2 - contentMargin * 2 - headerHeight - contentSpacing))
+  property int visibleRowsHeight: root.clipboardActive
+    ? root.clipboardRowsHeight
+    : (root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider))
   property int cardHeight: root.dmenuActive
     ? Math.min(contentMargin * 2 + headerHeight + (mode === "input" ? 0 : contentSpacing + visibleRowsHeight), panel.height - Style.gapsOut * 2)
     : Math.min(contentMargin * 2 + headerHeight + contentSpacing + visibleRowsHeight, panel.height - Style.gapsOut * 2)
@@ -413,6 +426,12 @@ Item {
   function startProviderForMenu(id) {
     var entry = root.item(id)
     if (!entry || !entry.provider || root.providersLoaded[id]) return
+    // Clipboard rows are native and private to their subview; they never enter
+    // the global item model or root search index.
+    if (entry.provider === "clipboard") {
+      root.providersLoaded[id] = true
+      return
+    }
     if (entry.provider === "apps") {
       root.providersLoaded[id] = true
       root.mergeAppRows()
@@ -501,7 +520,7 @@ Item {
     if (!entry || !entry.provider || root.providersLoaded[id]) return
 
     // Native providers don't touch providerProc, so they never need to queue.
-    if (entry.provider === "apps") {
+    if (entry.provider === "apps" || entry.provider === "clipboard") {
       root.startProviderForMenu(id)
       return
     }
@@ -650,6 +669,14 @@ Item {
 
     displayModel.clear()
 
+    // ClipboardSubview owns its runtime-only model. Keeping those rows out of
+    // displayModel prevents clipboard contents leaking into global search.
+    if (root.clipboardActive) {
+      root.searchDivider = false
+      root.layoutSerial += 1
+      return
+    }
+
     if (!root.rowsLoaded) return
 
     var active = root.item(root.activeMenu) ? root.activeMenu : "root"
@@ -727,6 +754,10 @@ Item {
   // the neighbor entirely and losing the fold affordance. Keep the next
   // hidden row peeking past the cursor in the direction of travel.
   function revealCursor() {
+    if (root.clipboardActive) {
+      clipboardView.revealCursor()
+      return
+    }
     if (displayModel.count === 0) return
     resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
 
@@ -746,6 +777,10 @@ Item {
   }
 
   function select(delta) {
+    if (root.clipboardActive) {
+      clipboardView.select(delta)
+      return
+    }
     if (displayModel.count === 0) return
 
     root.disarmPointer()
@@ -756,6 +791,22 @@ Item {
       selectedIndex = (selectedIndex + delta + displayModel.count) % displayModel.count
     }
     revealCursor()
+  }
+
+  function selectAbsolute(index) {
+    if (root.clipboardActive) {
+      clipboardView.selectAbsolute(index)
+      return
+    }
+    if (displayModel.count === 0) return
+    root.disarmPointer()
+    root.cursorActive = true
+    root.selectedIndex = Math.max(0, Math.min(index, displayModel.count - 1))
+    root.revealCursor()
+  }
+
+  function resultCount() {
+    return root.clipboardActive ? clipboardView.count : displayModel.count
   }
 
   function setFilter(nextFilter) {
@@ -827,8 +878,12 @@ Item {
     return true
   }
 
-  function activateIndex(index, fromPointer) {
+  function activateIndex(index, fromPointer, modifiers) {
     if (root.deleteConfirmOpen) return
+    if (root.clipboardActive) {
+      clipboardView.activate(modifiers || Qt.NoModifier)
+      return
+    }
     if (root.dmenuActive) {
       if (root.mode === "input") {
         root.applyDmenuSelection(root.filterText)
@@ -920,6 +975,7 @@ Item {
     root.evaluateGuards()
     opened = true
     rebuildDisplay()
+    if (root.clipboardActive) clipboardView.resetForOpen()
     invalidateVolatileProvider(activeMenu)
     loadProviderForMenu(activeMenu)
     // The shell may start before first-install packages have finished placing
@@ -1207,13 +1263,22 @@ Item {
 
         Keys.priority: Keys.BeforeItem
         Keys.onPressed: function(event) {
+          if (root.clipboardActive && clipboardView.clearConfirmOpen) {
+            if (clipboardView.handleConfirmKey(event)) event.accepted = true
+            return
+          }
           if (root.deleteConfirmOpen) {
             if (deleteConfirm.handleKey(event)) event.accepted = true
             return
           }
 
           if (event.key === Qt.Key_Delete) {
-            root.requestDeleteSelected()
+            if (root.clipboardActive) {
+              if (event.modifiers & Qt.ShiftModifier) clipboardView.requestClearHistory()
+              else clipboardView.removeSelected()
+            } else {
+              root.requestDeleteSelected()
+            }
             event.accepted = true
           } else if (event.key === Qt.Key_Escape) {
             if (root.filterText) root.setFilter("")
@@ -1243,11 +1308,20 @@ Item {
           } else if (event.key === Qt.Key_PageDown) {
             root.select(6)
             event.accepted = true
-          } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Right) {
+          } else if (event.key === Qt.Key_Home) {
+            root.selectAbsolute(0)
+            event.accepted = true
+          } else if (event.key === Qt.Key_End) {
+            root.selectAbsolute(root.resultCount() - 1)
+            event.accepted = true
+          } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter
+                     || (!root.clipboardActive && event.key === Qt.Key_Right)) {
             if (root.dmenuActive) {
               if (root.mode === "input") root.applyDmenuSelection(root.filterText)
               else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
-            } else if (root.cursorActive) root.activateIndex(root.selectedIndex)
+            } else if (root.clipboardActive) {
+              clipboardView.activate(event.modifiers)
+            } else if (root.cursorActive) root.activateIndex(root.selectedIndex, false, event.modifiers)
             else if (displayModel.count > 0) root.cursorActive = true
             event.accepted = true
           } else if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32 && event.text.charCodeAt(0) !== 127 && (event.modifiers === Qt.NoModifier || event.modifiers === Qt.ShiftModifier)) {
@@ -1294,11 +1368,13 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            text: root.filterText || (root.dmenuActive
+            text: root.filterText || (root.clipboardActive
+              ? "Search clipboard…"
+              : (root.dmenuActive
               ? (root.dmenuPrompt + "…")
               : (root.activeMenu === "root"
                 ? "Type to search..."
-                : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…")))
+                : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…"))))
             color: root.foreground
             opacity: root.filterText ? 1 : 0.58
             font.family: root.fontFamily
@@ -1312,9 +1388,29 @@ Item {
           width: parent.width
           height: root.visibleRowsHeight
 
+          ClipboardSubview {
+            id: clipboardView
+            anchors.fill: parent
+            visible: root.clipboardActive
+            active: root.clipboardActive && root.opened
+            filterText: root.filterText
+            omarchyPath: root.omarchyPath
+            fontFamily: root.fontFamily
+            background: root.background
+            foreground: root.foreground
+            selectedBackground: root.selectedBackground
+            selectedText: root.selectedText
+            borderColor: root.border
+            cornerRadius: root.cornerRadius
+            rowHeight: root.detailRowHeight
+            contentMargin: root.contentMargin
+            onCloseRequested: root.cancel()
+          }
+
           ListView {
             id: resultList
             anchors.fill: parent
+            visible: !root.clipboardActive
             model: displayModel
             clip: true
             spacing: root.rowSpacing
@@ -1537,7 +1633,7 @@ Item {
           Column {
             anchors.centerIn: parent
             spacing: Style.space(8)
-            visible: displayModel.count === 0 && root.mode !== "input"
+            visible: !root.clipboardActive && displayModel.count === 0 && root.mode !== "input"
 
             Text {
               text: "󰈉"
