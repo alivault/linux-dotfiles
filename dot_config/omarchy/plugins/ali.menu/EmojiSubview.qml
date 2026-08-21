@@ -22,6 +22,7 @@ Item {
 
   property var emojis: []
   property var filteredEmojis: []
+  property string appliedFilter: "__unloaded__"
   property int selectedIndex: 0
   property bool cursorActive: true
   property int resultLimit: 1000
@@ -36,6 +37,7 @@ Item {
 
   function loadEmojis(raw) {
     root.emojis = EmojiSearch.parseEmojis(raw)
+    root.appliedFilter = "__unloaded__"
     if (root.active) root.rebuildDisplay()
   }
 
@@ -48,7 +50,11 @@ Item {
   }
 
   function rebuildDisplay() {
-    root.filteredEmojis = EmojiSearch.filterEmojis(root.emojis, root.filterText, root.resultLimit)
+    var normalizedFilter = String(root.filterText || "").trim().toLowerCase()
+    if (normalizedFilter !== root.appliedFilter) {
+      root.filteredEmojis = EmojiSearch.filterEmojis(root.emojis, normalizedFilter, root.resultLimit)
+      root.appliedFilter = normalizedFilter
+    }
     if (root.count === 0) root.selectedIndex = 0
     else root.selectedIndex = Math.max(0, Math.min(root.selectedIndex, root.count - 1))
     root.cursorActive = root.count > 0
