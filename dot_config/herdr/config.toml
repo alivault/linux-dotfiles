@@ -109,3 +109,7 @@ pi = [
     { token = "agent", fg = "#C6C8C6" },
   ],
 ]
+
+[experimental]
+# Render Kitty graphics emitted by pane applications in attached local clients.
+kitty_graphics = true
