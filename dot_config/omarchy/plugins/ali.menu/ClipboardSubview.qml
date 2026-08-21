@@ -3,7 +3,7 @@ import Quickshell.Io
 import QtQuick
 import qs.Commons
 import qs.Ui
-import "/usr/share/omarchy/shell/plugins/clipboard/ClipboardHistory.js" as ClipboardHistory
+import "vendor/ClipboardHistory.js" as ClipboardHistory
 
 // Clipboard history rendered inside the menu card. Omarchy's keep-loaded
 // clipboard plugin remains the sole capture service; this view only watches

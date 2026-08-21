@@ -3,7 +3,7 @@ import Quickshell.Io
 import QtQuick
 import qs.Commons
 import qs.Ui
-import "/usr/share/omarchy/shell/plugins/emojis/EmojiSearch.js" as EmojiSearch
+import "vendor/EmojiSearch.js" as EmojiSearch
 
 // Native menu subview backed by Omarchy's packaged emoji catalog and insert
 // helper. The catalog is parsed once; GridView creates only visible delegates,

@@ -28,21 +28,6 @@
   // fields are kept unless overridden.
   // "about": {"icon":"","label":"About","action":"omarchy-launch-or-focus-tui \"zsh -c 'fastfetch; read -k 1'\""},
 
-  // The cloned unified menu fills this submenu from Hyprland's live bindings.
-  "learn": {"icon":"󰧑","label":"Learn","position":1000},
-  "learn.keybindings": {"icon":"","label":"Keybindings"},
-
-  // Runtime-only clipboard history rendered by the cloned unified menu.
-  // Clipboard contents stay in ~/.local/state and never enter the dotfiles repo.
-  "clipboard": {"icon":"󰅌","label":"Clipboard History","provider":"clipboard","position":1,"aliases":["clipboard","clipboard-manager"]},
-
-  // Preloaded grid backed by Omarchy's packaged emoji catalog and insert helper.
-  "trigger.emoji": {"icon":"","label":"Emoji","provider":"emoji","aliases":["emoji","emojis"]},
-
-  // Native reminder setup and runtime-only active timer management.
-"trigger.reminder.set": {"icon":"󰢌","label":"Set one","provider":"reminder-set","aliases":["reminder-set"]},
-  "trigger.reminder.show": {"icon":"󰍉","label":"Manage","provider":"reminders","aliases":["reminders"]},
-
   // Preserve clipboard MIME types and surface LocalSend launch errors.
   "trigger.share.clipboard": {"icon":"","label":"Send Clipboard","aliases":["share-clipboard"],"action":"$HOME/.config/omarchy/plugins/ali.menu/share.sh clipboard"},
 }

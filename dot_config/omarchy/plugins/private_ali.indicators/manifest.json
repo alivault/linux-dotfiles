@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "ali.indicators",
-  "name": "Super Menu Indicators",
+  "name": "Unified Launcher Indicators",
   "version": "1.0.0",
   "author": "Omarchy",
-  "description": "Status indicators integrated with the Super Menu",
+  "description": "Status indicators integrated with Unified Launcher",
   "kinds": [
     "bar-widget"
   ],
@@ -12,8 +12,8 @@
     "barWidget": "Indicators.qml"
   },
   "barWidget": {
-    "displayName": "Super Menu Indicators",
-    "description": "Status indicators integrated with the Super Menu",
+    "displayName": "Unified Launcher Indicators",
+    "description": "Status indicators integrated with Unified Launcher",
     "category": "Status",
     "allowMultiple": true,
     "schema": [

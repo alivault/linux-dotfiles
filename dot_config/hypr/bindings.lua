@@ -16,9 +16,9 @@
 -- o.bind("SUPER + SHIFT + R", "SSH", "alacritty -e ssh your-server")
 
 -- Change an existing binding by unbinding it first, then binding the key again.
--- This example changes SUPER+SPACE from the launcher to the Super Menu root.
+-- This example changes SUPER+SPACE from the launcher to the Unified Launcher root.
 -- hl.unbind("SUPER + SPACE")
--- o.bind("SUPER + SPACE", "Super Menu", "omarchy-menu toggle root")
+-- o.bind("SUPER + SPACE", "Unified Launcher", "omarchy-menu toggle root")
 
 -- Disable a default binding without replacing it.
 -- hl.unbind("SUPER + SHIFT + B")
@@ -31,16 +31,16 @@
 -- Keybindings are searchable from the unified SUPER + SPACE menu.
 hl.unbind("SUPER + K")
 
--- Signal the already-running Super Menu without launching an IPC client.
+-- Signal the already-running Unified Launcher without launching an IPC client.
 -- Previously ran the stock `omarchy-menu toggle` process chain.
 hl.unbind("SUPER + SPACE")
-o.bind("SUPER + SPACE", "Super Menu", hl.dsp.global("ali.super-menu:toggle"))
+o.bind("SUPER + SPACE", "Unified Launcher", hl.dsp.global("ali.unified-launcher:toggle"))
 
 -- Keep clipboard history inside the unified Omarchy menu.
 -- Previously opened the standalone omarchy.clipboard overlay.
 hl.unbind("SUPER + CTRL + V")
 o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")
 
--- Use the preloaded emoji grid in ali.menu instead of opening a second shell overlay.
+-- Use the preloaded emoji grid in Unified Launcher instead of opening a second shell overlay.
 hl.unbind("SUPER + CTRL + E")
 o.bind("SUPER + CTRL + E", "Emojis", "omarchy menu toggle emoji")

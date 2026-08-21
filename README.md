@@ -39,7 +39,7 @@ mode on systems where `/tmp` is a tmpfs.
 ## Managed configuration
 
 - Omarchy shell settings, branding, menu extension, and `ali.menu` plugin,
-  presented as the process-free Super Menu with integrated clipboard history
+  presented as the process-free Unified Launcher with integrated clipboard history
   plus emoji picker and reminder views; the companion `ali.indicators` clone
   routes the bar reminder button into those views
 - Hyprland bindings, input, appearance, and monitor overrides

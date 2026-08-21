@@ -4,7 +4,7 @@ import QtQuick
 import qs.Commons
 import qs.Ui
 
-// Reminder setup and active-timer management inside the Super Menu. Omarchy's
+// Reminder setup and active-timer management inside Unified Launcher. Omarchy's
 // reminder command and transient systemd timers remain the single backend.
 Item {
   id: root

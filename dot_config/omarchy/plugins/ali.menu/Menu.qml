@@ -25,9 +25,9 @@ Item {
   // Hyprland can signal the already-running shell directly. This avoids the
   // Bash → jq → timeout → qs process chain on the hottest launcher path.
   GlobalShortcut {
-    appid: "ali.super-menu"
+    appid: "ali.unified-launcher"
     name: "toggle"
-    description: "Toggle Super Menu"
+    description: "Toggle Unified Launcher"
     onPressed: if (root.shell) root.shell.toggle(
       (root.manifest && root.manifest.id) || "ali.menu",
       JSON.stringify({ menu: "root" }))
@@ -101,8 +101,10 @@ Item {
   // the user file on top of the defaults, so the keybind → IPC → visible
   // path doesn't have to shell out to bash + jq on every open.
   property string defaultMenuPath: omarchyPath + "/default/omarchy/omarchy-menu.jsonc"
+  property string pluginMenuPath: root.pluginDir + "/menu.jsonc"
   property string userMenuPath: Quickshell.env("HOME") + "/.config/omarchy/extensions/omarchy-menu.jsonc"
   property var defaultMenuItems: []
+  property var pluginMenuItems: []
   property var userMenuItems: []
   property bool opened: false
   property string mode: "menu"
@@ -313,11 +315,13 @@ Item {
     return MenuModel.parseMenuJsonc(raw)
   }
 
-  // Merge defaults + user extension. Later entries override earlier ones
+  // Merge Omarchy defaults + plugin additions + user extension. Later entries
+  // override earlier ones
   // on a per-key basis (so the user can tweak label/icon/action without
   // re-declaring the whole row).
   function rebuildItemsFromSources() {
-    var mergedMenu = MenuModel.mergeMenuSources(root.defaultMenuItems, root.userMenuItems)
+    var mergedMenu = MenuModel.mergeMenuSources(
+      root.defaultMenuItems, root.pluginMenuItems, root.userMenuItems)
     mergedMenu = MenuModel.mergeKeybindingRows(mergedMenu.items, mergedMenu.itemOrder, root.keybindingRows)
     root.providerRevision += 1
     root.providersLoaded = ({})
@@ -1173,12 +1177,22 @@ Item {
   // user extension at ~/.config/omarchy/extensions/omarchy-menu.jsonc) take
   // effect without restarting the shell.
   FileView {
-    id: defaultMenuFile
+  id: defaultMenuFile
     path: root.defaultMenuPath
     watchChanges: true
     printErrors: false
     onLoaded: { root.defaultMenuItems = root.parseMenuJsonc(text()); root.rebuildItemsFromSources() }
     onFileChanged: reload()
+  }
+
+  FileView {
+  id: pluginMenuFile
+  path: root.pluginMenuPath
+  watchChanges: true
+  printErrors: false
+  onLoaded: { root.pluginMenuItems = root.parseMenuJsonc(text()); root.rebuildItemsFromSources() }
+  onLoadFailed: { root.pluginMenuItems = []; root.rebuildItemsFromSources() }
+  onFileChanged: reload()
   }
 
   FileView {

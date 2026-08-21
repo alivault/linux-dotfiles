@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "ali.menu",
-  "name": "Super Menu",
+  "name": "Unified Launcher",
   "version": "1.0.0",
   "author": "Omarchy",
-  "description": "Fast unified command, clipboard, emoji, and reminder menu",
+  "description": "Fast unified launcher for commands, apps, keybindings, clipboard, emoji, and reminders",
   "kinds": [
     "menu",
     "bar-widget"
@@ -15,8 +15,8 @@
     "barWidget": "BarWidget.qml"
   },
   "barWidget": {
-    "displayName": "Super Menu",
-    "description": "Launches the Super Menu",
+    "displayName": "Unified Launcher",
+    "description": "Launches the Unified Launcher",
     "category": "Compositor",
     "allowMultiple": false
   },
