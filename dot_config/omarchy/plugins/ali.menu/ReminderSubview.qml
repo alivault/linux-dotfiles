@@ -367,8 +367,8 @@ Item {
     anchors.fill: parent
     opened: root.confirmOpen
     z: 20
-    message: root.confirmClear ? "Cancel all active reminders?" : "Cancel “" + root.confirmLabel + "”?"
-    confirmText: root.confirmClear ? "Cancel all" : "Cancel reminder"
+    message: root.confirmClear ? "Delete all active reminders?" : "Delete “" + root.confirmLabel + "”?"
+    confirmText: "Delete"
     background: root.background
     foreground: root.foreground
     scrim: Color.menu.scrim

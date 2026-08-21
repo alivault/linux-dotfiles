@@ -40,7 +40,8 @@ mode on systems where `/tmp` is a tmpfs.
 
 - Omarchy shell settings, branding, menu extension, and `ali.menu` plugin,
   presented as the process-free Super Menu with integrated clipboard history
-  plus emoji picker and reminder views
+  plus emoji picker and reminder views; the companion `ali.indicators` clone
+  routes the bar reminder button into those views
 - Hyprland bindings, input, appearance, and monitor overrides
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
 - Git, Herdr, imv, and the Hyprland preview share picker
