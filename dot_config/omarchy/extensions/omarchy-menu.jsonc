@@ -40,7 +40,7 @@
   "trigger.emoji": {"icon":"","label":"Emoji","provider":"emoji","aliases":["emoji","emojis"]},
 
   // Native reminder setup and runtime-only active timer management.
-  "trigger.reminder.set": {"icon":"󰢌","label":"Set one","provider":"reminder-set"},
+"trigger.reminder.set": {"icon":"󰢌","label":"Set one","provider":"reminder-set","aliases":["reminder-set"]},
   "trigger.reminder.show": {"icon":"󰍉","label":"Manage","provider":"reminders","aliases":["reminders"]},
 
   // Preserve clipboard MIME types and surface LocalSend launch errors.
