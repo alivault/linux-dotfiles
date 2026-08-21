@@ -62,6 +62,7 @@ Item {
       visibleRows: root.resultCount(),
       selectedIndex: root.clipboardActive ? clipboardView.selectedIndex : root.selectedIndex,
       contentY: root.clipboardActive ? clipboardView.contentY : resultList.contentY,
+      scrollOffset: root.clipboardActive ? clipboardView.scrollOffset : (resultList.contentY - resultList.originY),
       navDepth: root.navStack.length
     })
   }

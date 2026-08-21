@@ -33,6 +33,8 @@ Item {
 
   readonly property int count: displayModel.count
   readonly property real contentY: resultList.contentY
+  readonly property real originY: resultList.originY
+  readonly property real scrollOffset: resultList.contentY - resultList.originY
   readonly property int historyCount: root.history.length
 
   signal closeRequested()
@@ -43,6 +45,7 @@ Item {
     root.cursorActive = true
     root.disarmPointer()
     root.rebuildDisplay()
+    reopenScrollTimer.restart()
   }
 
   function resetTransient() {
@@ -83,8 +86,13 @@ Item {
   }
 
   function revealCursor() {
-    if (displayModel.count > 0)
-      resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
+    if (displayModel.count === 0) return
+    if (root.selectedIndex === 0) {
+      resultList.cancelFlick()
+      resultList.contentY = resultList.originY
+      resultList.positionViewAtIndex(0, ListView.Beginning)
+    }
+    else resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
   }
 
   function disarmPointer() {
@@ -246,6 +254,16 @@ Item {
   PointerMoveGate {
     id: pointerGate
     referenceItem: root
+  }
+
+  // A reopened menu becomes visible after its model has already rebuilt.
+  // Re-assert the saved selection once the ListView has real geometry so a
+  // previous End/PageDown position cannot survive into the next summon.
+  Timer {
+    id: reopenScrollTimer
+    interval: 50
+    repeat: false
+    onTriggered: root.revealCursor()
   }
 
   Row {
