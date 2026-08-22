@@ -42,6 +42,7 @@ mode on systems where `/tmp` is a tmpfs.
   presented as the process-free Unified Launcher with integrated clipboard history
   plus emoji picker and reminder views; the companion `ali.indicators` clone
   routes the bar reminder button into those views
+- Pinned AirPods bar controls with a native `librepods` bootstrap
 - Hyprland bindings, input, appearance, and monitor overrides
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
 - Git, Herdr, imv, and the Hyprland preview share picker

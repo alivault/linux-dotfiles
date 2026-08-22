@@ -7,9 +7,9 @@
           "id": "ali.indicators"
         },
         {
+          "id": "omarchy.clock",
           "format": "dddd, MMMM d h:mm AP",
           "formatAlt": "d MMMM 'W'ww yyyy",
-          "id": "omarchy.clock",
           "verticalFormat": "h\n—\nmm\nAP"
         },
         {
@@ -45,6 +45,9 @@
         },
         {
           "id": "omarchy.network"
+        },
+        {
+          "id": "io.github.thisisgm.omapods"
         },
         {
           "id": "omarchy.audio"
