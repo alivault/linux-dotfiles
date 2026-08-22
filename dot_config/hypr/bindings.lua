@@ -44,3 +44,7 @@ o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")
 -- Use the preloaded emoji grid in Unified Launcher instead of opening a second shell overlay.
 hl.unbind("SUPER + CTRL + E")
 o.bind("SUPER + CTRL + E", "Emojis", "omarchy menu toggle emoji")
+
+-- Hold SUPER while using the display-brightness keys to adjust the keyboard backlight.
+o.bind("SUPER + XF86MonBrightnessUp", "Keyboard brightness up", "omarchy-brightness-keyboard up", { locked = true, repeating = true })
+o.bind("SUPER + XF86MonBrightnessDown", "Keyboard brightness down", "omarchy-brightness-keyboard down", { locked = true, repeating = true })
