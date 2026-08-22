@@ -16,61 +16,14 @@ panel_bg = "reset"
 new_cwd = "follow"
 
 [keys]
-prefix = "ctrl+space"
-
-# Config and help
-reload_config = "prefix+q"
-help = "prefix+?"
-detach = "prefix+d"
-
-# Agents
+# Keep these Omarchy-style aliases in addition to Herdr's defaults.
 previous_agent = "alt+k"
 next_agent = "alt+j"
-
-# Copy mode
-copy_mode = "prefix+["
-
-# Panes
-split_horizontal = "prefix+h"
-split_vertical = "prefix+v"
-close_pane = ["prefix+x", "alt+esc"]
-zoom = "prefix+z"
-last_pane = "prefix+;"
-
-focus_pane_left = "ctrl+alt+left"
-focus_pane_down = "ctrl+alt+down"
-focus_pane_up = "ctrl+alt+up"
-focus_pane_right = "ctrl+alt+right"
-
-resize_mode = ["prefix+ctrl+left", "prefix+ctrl+down", "prefix+ctrl+up", "prefix+ctrl+right"]
-
-# Like resize-pane on C-M-S-arrows
-resize_pane_left = "ctrl+alt+shift+left"
-resize_pane_down = "ctrl+alt+shift+down"
-resize_pane_up = "ctrl+alt+shift+up"
-resize_pane_right = "ctrl+alt+shift+right"
-
-# No tmux equivalent; herdr's default prefix+shift+p is taken by previous session
-rename_pane = "prefix+shift+o"
-
-# Windows -> tabs
-new_tab = "prefix+c"
-rename_tab = "prefix+r"
-close_tab = "prefix+k"
-switch_tab = ["prefix+1..9", "alt+1..9"]
-previous_tab = "alt+["
-next_tab = "alt+]"
-
-# Like swap-window -t -1/+1 on M-S-Left/Right
-move_tab_previous = "alt+shift+left"
-move_tab_next = "alt+shift+right"
-
-# Sessions -> workspaces
-new_workspace = "prefix+shift+c"
-rename_workspace = "prefix+shift+r"
-close_workspace = "prefix+shift+k"
-previous_workspace = ["prefix+shift+p", "alt+h"]
-next_workspace = ["prefix+shift+n", "alt+l"]
+focus_agent = "alt+1..9"
+previous_tab = ["prefix+p", "alt+["]
+next_tab = ["prefix+n", "alt+]"]
+previous_workspace = "alt+h"
+next_workspace = "alt+l"
 
 [ui]
 accent = "blue"
