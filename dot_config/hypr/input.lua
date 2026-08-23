@@ -67,3 +67,28 @@ o.window("org\\.omarchy\\.agent", { scroll_touchpad = 1.5 })
 -- Enable touchpad gestures for moving focus (helpful on scrolling layout).
 -- hl.gesture({ fingers = 3, direction = "left", action = function() hl.dispatch(hl.dsp.focus({ direction = "l" })) end })
 -- hl.gesture({ fingers = 3, direction = "right", action = function() hl.dispatch(hl.dsp.focus({ direction = "r" })) end })
+
+-- Use three-finger vertical swipes to manage tabs in Chromium. Sending
+-- explicit key-down/key-up events avoids changing the trackpad or libinput
+-- configuration and prevents a synthetic modifier from getting stuck.
+local function send_shortcut_once(mods, key)
+  hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "down" }))
+
+  hl.timer(function()
+    hl.dispatch(hl.dsp.send_key_state({ mods = mods, key = key, state = "up" }))
+  end, { timeout = 50, type = "oneshot" })
+end
+
+local function chromium_shortcut(mods, key)
+  return function()
+    local window = hl.get_active_window()
+    if window and (window.class or ""):lower() == "chromium" then
+      send_shortcut_once(mods, key)
+    end
+  end
+end
+
+hl.gesture({ fingers = 3, direction = "down", action = chromium_shortcut("CTRL", "W") })
+hl.gesture({ fingers = 3, direction = "up", action = chromium_shortcut("CTRL", "T") })
+hl.gesture({ fingers = 3, direction = "left", action = chromium_shortcut("CTRL SHIFT", "TAB") })
+hl.gesture({ fingers = 3, direction = "right", action = chromium_shortcut("CTRL", "TAB") })
