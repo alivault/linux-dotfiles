@@ -41,6 +41,9 @@ o.bind("SUPER + SPACE", "Unified Launcher", hl.dsp.global("ali.unified-launcher:
 hl.unbind("SUPER + CTRL + V")
 o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")
 
+-- Open clipboard history globally instead of passing CTRL+SPACE to apps.
+o.bind("CTRL + SPACE", "Clipboard manager", "omarchy menu toggle clipboard")
+
 -- Toggle back to the most recently used workspace.
 -- Previously switched to the next workspace.
 hl.unbind("SUPER + TAB")
