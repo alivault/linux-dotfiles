@@ -46,6 +46,12 @@ o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")
 hl.unbind("SUPER + TAB")
 o.bind("SUPER + TAB", "Former workspace", hl.dsp.focus({ workspace = "previous" }))
 
+-- Use bracket keys for sequential workspace navigation.
+-- SUPER + SHIFT + TAB previously switched to the previous workspace.
+hl.unbind("SUPER + SHIFT + TAB")
+o.bind("SUPER + SHIFT + bracketleft", "Previous workspace", hl.dsp.focus({ workspace = "e-1" }))
+o.bind("SUPER + SHIFT + bracketright", "Next workspace", hl.dsp.focus({ workspace = "e+1" }))
+
 -- Use the preloaded emoji grid in Unified Launcher instead of opening a second shell overlay.
 hl.unbind("SUPER + CTRL + E")
 o.bind("SUPER + CTRL + E", "Emojis", "omarchy menu toggle emoji")
