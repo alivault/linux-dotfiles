@@ -92,3 +92,6 @@ hl.gesture({ fingers = 3, direction = "down", action = chromium_shortcut("CTRL",
 hl.gesture({ fingers = 3, direction = "up", action = chromium_shortcut("CTRL", "T") })
 hl.gesture({ fingers = 3, direction = "left", action = chromium_shortcut("CTRL SHIFT", "TAB") })
 hl.gesture({ fingers = 3, direction = "right", action = chromium_shortcut("CTRL", "TAB") })
+
+-- Swipe between workspaces with four fingers.
+hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
