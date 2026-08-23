@@ -41,6 +41,11 @@ o.bind("SUPER + SPACE", "Unified Launcher", hl.dsp.global("ali.unified-launcher:
 hl.unbind("SUPER + CTRL + V")
 o.bind("SUPER + CTRL + V", "Clipboard manager", "omarchy menu summon clipboard")
 
+-- Toggle back to the most recently used workspace.
+-- Previously switched to the next workspace.
+hl.unbind("SUPER + TAB")
+o.bind("SUPER + TAB", "Former workspace", hl.dsp.focus({ workspace = "previous" }))
+
 -- Use the preloaded emoji grid in Unified Launcher instead of opening a second shell overlay.
 hl.unbind("SUPER + CTRL + E")
 o.bind("SUPER + CTRL + E", "Emojis", "omarchy menu toggle emoji")
