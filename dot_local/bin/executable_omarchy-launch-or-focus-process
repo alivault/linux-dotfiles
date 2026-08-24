@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Focus the terminal window containing a process, or run the launch command.
+# This distinguishes terminal-hosted apps that otherwise share one window class.
+
+if (( $# < 2 )); then
+  echo "Usage: omarchy-launch-or-focus-process <process-name> <launch-command> [args...]" >&2
+  exit 1
+fi
+
+process_name=$1
+shift
+
+tree_contains_process() {
+  local root=$1 pid child comm
+  local -a queue=("$root")
+
+  while (( ${#queue[@]} )); do
+    pid=${queue[0]}
+    queue=("${queue[@]:1}")
+
+    if [[ -r /proc/$pid/comm ]]; then
+      read -r comm <"/proc/$pid/comm"
+      [[ $comm == "$process_name" ]] && return 0
+    fi
+
+    if [[ -r /proc/$pid/task/$pid/children ]]; then
+      read -ra children <"/proc/$pid/task/$pid/children"
+      for child in "${children[@]}"; do
+        queue+=("$child")
+      done
+    fi
+  done
+
+  return 1
+}
+
+while IFS=$'\t' read -r address pid; do
+  if tree_contains_process "$pid"; then
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$address\" })" >/dev/null 2>&1 ||
+      hyprctl dispatch focuswindow "address:$address" >/dev/null
+    exit 0
+  fi
+done < <(hyprctl clients -j | jq -r '.[] | [.address, .pid] | @tsv')
+
+exec "$@"

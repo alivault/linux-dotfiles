@@ -62,3 +62,54 @@ o.bind("SUPER + CTRL + E", "Emojis", "omarchy menu toggle emoji")
 -- Hold SUPER while using the display-brightness keys to adjust the keyboard backlight.
 o.bind("SUPER + XF86MonBrightnessUp", "Keyboard brightness up", "omarchy-brightness-keyboard up", { locked = true, repeating = true })
 o.bind("SUPER + XF86MonBrightnessDown", "Keyboard brightness down", "omarchy-brightness-keyboard down", { locked = true, repeating = true })
+
+-- App identity shortcuts focus an existing window instead of opening another.
+-- Action shortcuts (private browser, file manager at cwd, new email/post) and
+-- terminal/TUI shortcuts intentionally retain their open-new-instance behavior.
+-- Multiplexer terminals are the exception: focus the terminal already hosting
+-- their client process, or launch one when no such window exists.
+hl.unbind("SUPER + ALT + RETURN")
+o.bind("SUPER + ALT + RETURN", "Tmux", "omarchy-launch-or-focus-process tmux omarchy-launch-terminal-tmux")
+
+hl.unbind("SUPER + CTRL + RETURN")
+o.bind("SUPER + CTRL + RETURN", "Herdr", "omarchy-launch-or-focus-process herdr omarchy-launch-terminal-herdr")
+
+hl.unbind("SUPER + SHIFT + RETURN")
+o.bind("SUPER + SHIFT + RETURN", "Browser", "omarchy-launch-or-focus 'chromium' 'omarchy-launch-browser'")
+
+hl.unbind("SUPER + SHIFT + B")
+o.bind("SUPER + SHIFT + B", "Browser", "omarchy-launch-or-focus 'chromium' 'omarchy-launch-browser'")
+
+hl.unbind("SUPER + SHIFT + F")
+o.bind("SUPER + SHIFT + F", "File manager", "omarchy-launch-or-focus 'org\\.gnome\\.Nautilus|nautilus' 'omarchy-launch-nautilus'")
+
+-- The AppImage reports md.obsidian.Obsidian, not the stock ^obsidian$ class.
+hl.unbind("SUPER + SHIFT + O")
+o.bind("SUPER + SHIFT + O", "Obsidian", { launch = "obsidian", focus = "md\\.obsidian\\.Obsidian" })
+
+hl.unbind("SUPER + SHIFT + SLASH")
+o.bind("SUPER + SHIFT + SLASH", "Passwords", "omarchy-launch-or-focus '1Password' 'omarchy-launch-1password'")
+
+-- Ordinary web-app shortcuts represent app identities, so focus them too.
+-- Compose/action shortcuts remain untouched and continue opening new windows.
+hl.unbind("SUPER + SHIFT + A")
+o.bind("SUPER + SHIFT + A", "ChatGPT", { webapp = "https://chatgpt.com", focus = true })
+
+hl.unbind("SUPER + SHIFT + ALT + A")
+o.bind("SUPER + SHIFT + ALT + A", "Grok", { webapp = "https://grok.com", focus = true })
+
+hl.unbind("SUPER + SHIFT + C")
+o.bind("SUPER + SHIFT + C", "Calendar", { webapp = "https://app.hey.com/calendar/weeks/", focus = true })
+
+hl.unbind("SUPER + SHIFT + E")
+o.bind("SUPER + SHIFT + E", "Email", "omarchy-launch-or-focus-webapp 'HEY|Email' 'https://app.hey.com'")
+
+hl.unbind("SUPER + SHIFT + Y")
+o.bind("SUPER + SHIFT + Y", "YouTube", { webapp = "https://youtube.com/", focus = true })
+
+hl.unbind("SUPER + SHIFT + X")
+o.bind("SUPER + SHIFT + X", "X", "omarchy-launch-or-focus-webapp 'X$|/ X' 'https://x.com/'")
+
+-- cliamp is a terminal app, so each invocation gets a new terminal window.
+hl.unbind("SUPER + SHIFT + ALT + M")
+o.bind("SUPER + SHIFT + ALT + M", "Music TUI", { tui = "cliamp" })
