@@ -1,0 +1,37 @@
+mode = "dark"
+
+# Sanctuary keeps Solitude's quiet monochrome palette, but reserves its
+# brightest cool white for active/focused UI. Herdr uses ANSI blue for its
+# active pane border, while Lazygit uses ANSI green.
+accent = "#f0f2f3"
+selection = "#343d41"
+muted = "#4b4e55"
+
+background = "#101315"
+dark_background = "#0c0e10"
+darker_background = "#080a0b"
+lighter_background = "#101315"
+
+foreground = "#cacccc"
+dark_foreground = "#4b4e55"
+light_foreground = "#d9dcde"
+bright_foreground = "#f7f9fa"
+
+hyprland_active_border = "rgba(f0f2f3ee) rgba(caccccee)"
+hyprland_inactive_border = "rgb(1e1e1e)"
+active_border_color = "#f0f2f3"
+active_tab_background = "#f0f2f3"
+
+red = "#565d60"
+yellow = "#d9dbdc"
+green = "#f0f2f3"
+cyan = "#707070"
+blue = "#f0f2f3"
+magenta = "#aeaeae"
+
+bright_red = "#de6145"
+bright_yellow = "#c9c2b4"
+bright_green = "#ffffff"
+bright_cyan = "#707070"
+bright_blue = "#ffffff"
+bright_magenta = "#9a9a9a"
