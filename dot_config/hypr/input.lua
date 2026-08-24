@@ -96,6 +96,13 @@ hl.gesture({ fingers = 3, direction = "right", action = chromium_shortcut("CTRL"
 -- Swipe between workspaces with four fingers.
 hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
 
+-- Let short, fast flicks commit the workspace switch.
+hl.config({
+  gestures = {
+    workspace_swipe_min_speed_to_force = 8,
+  },
+})
+
 -- Hyprland does not expose this Apple trackpad's smooth two-finger scrolling
 -- as bindable wheel events. Use its native live pinch gesture for cursor zoom.
 hl.gesture({

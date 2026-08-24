@@ -40,6 +40,15 @@ hl.config({
 --   },
 -- })
 
+-- Smoothly finish or cancel touchpad workspace swipes.
+hl.animation({
+  leaf = "workspaces",
+  enabled = true,
+  speed = 2.5,
+  bezier = "easeOutQuint",
+  style = "slide",
+})
+
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#layout
 -- hl.config({
 --   layout = {
