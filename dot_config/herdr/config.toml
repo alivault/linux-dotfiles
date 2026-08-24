@@ -22,6 +22,8 @@ next_agent = "alt+j"
 focus_agent = "alt+1..9"
 previous_tab = ["prefix+p", "alt+["]
 next_tab = ["prefix+n", "alt+]"]
+move_tab_previous = "alt+shift+["
+move_tab_next = "alt+shift+]"
 previous_workspace = "alt+h"
 next_workspace = "alt+l"
 
