@@ -2,3 +2,4 @@ gui:
   showFileTree: false
   showBottomLine: false
   showPanelJumps: false
+  showListFooter: false
