@@ -101,7 +101,7 @@ hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
 hl.gesture({
   fingers = 2,
   direction = "pinch",
-  mods = "CTRL",
+  mods = "SUPER",
   action = "cursor_zoom",
   zoom_level = 1,
   mode = "live",
