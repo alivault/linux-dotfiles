@@ -31,6 +31,18 @@ chezmoi update
 The source repository is available locally with `chezmoi cd` or at
 `~/.local/share/chezmoi`.
 
+## Omarchy compatibility
+
+This repository targets Omarchy 4. Its paths follow the Omarchy 4 split:
+
+- `/usr/share/omarchy` contains packaged Omarchy files.
+- `~/.config/omarchy` contains user configuration managed by chezmoi.
+- `~/.local/state/omarchy/current` contains generated current-theme state and
+  must not be added to chezmoi.
+
+The chezmoi source checkout living under `~/.local/share/chezmoi` is normal
+chezmoi behavior and is unrelated to the Omarchy version.
+
 Chezmoi uses a private temporary directory beneath its cache. An initialization
 hook creates it with mode `0700`. This keeps temporary files on the same
 filesystem as the source state, enabling `chezmoi edit` hardlinks and watch
