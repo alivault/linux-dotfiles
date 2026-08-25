@@ -1,6 +1,7 @@
 {
   "bar": {
     "centerAnchor": "omarchy.clock",
+    "id": "omarchy.bar",
     "layout": {
       "center": [
         {
@@ -61,7 +62,7 @@
       ]
     },
     "position": "top",
-    "transparent": false
+    "transparent": true
   },
   "cloneSourceRestores": [
     "ali.menu"
