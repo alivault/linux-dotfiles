@@ -56,6 +56,7 @@ mode on systems where `/tmp` is a tmpfs.
   routes the bar reminder button into those views
 - Pinned AirPods bar controls with a native `librepods` bootstrap
 - Hyprland bindings, input, appearance, and monitor overrides
+- System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
 - Git, Herdr, imv, and the Hyprland preview share picker
 - Pi settings, keybindings, extensions, theme, and shared Herdr skill
