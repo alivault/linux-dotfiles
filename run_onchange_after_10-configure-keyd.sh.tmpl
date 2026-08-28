@@ -3,8 +3,13 @@
 set -euo pipefail
 
 if ! command -v keyd >/dev/null 2>&1; then
-  echo "keyd is required to install /etc/keyd/default.conf" >&2
-  exit 1
+  if ! command -v omarchy >/dev/null 2>&1; then
+    echo "keyd is required to install /etc/keyd/default.conf" >&2
+    exit 1
+  fi
+
+  echo "Installing required package: keyd"
+  omarchy pkg add keyd
 fi
 
 config=$(mktemp)
