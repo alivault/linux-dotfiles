@@ -16,10 +16,8 @@ hl.config({
     },
     groupbar = {
       blur = true,
-      rounding = 8,
-      rounding_power = 3,
-      gradient_rounding = 8,
-      gradient_rounding_power = 3,
+      rounding = 0,
+      gradient_rounding = 0,
       col = {
         active = "rgba(101315ff)",
         inactive = "rgba(101315cc)",
@@ -29,8 +27,7 @@ hl.config({
     },
   },
   decoration = {
-    rounding = 6,
-    rounding_power = 3,
+    rounding = 0,
     blur = {
       enabled = true,
       size = 8,

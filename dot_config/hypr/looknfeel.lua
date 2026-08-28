@@ -13,10 +13,10 @@
 --   },
 -- })
 
--- Use rounded window corners.
+-- Use square window and Omarchy Shell corners.
 hl.config({
   decoration = {
-    rounding = 8,
+    rounding = 0,
   },
 })
 
