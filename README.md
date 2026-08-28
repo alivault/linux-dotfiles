@@ -68,6 +68,7 @@ mode on systems where `/tmp` is a tmpfs.
 - Hyprland bindings, input, appearance, and monitor overrides
 - System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
+- Vite+ (`vp`) installed in `~/.vite-plus` without replacing the existing Node.js manager
 - Git, Herdr, imv, and the Hyprland preview share picker
 - Pi settings, keybindings, extensions, theme, and shared Herdr skill
 
