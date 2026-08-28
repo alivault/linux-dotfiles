@@ -1,6 +1,0 @@
-[".config/omarchy/plugins/io.github.thisisgm.omapods"]
-type = "archive"
-url = "https://github.com/thisisgm/omarchy-pods/archive/b5170517089e8788480bd35f705761d7b3c7d330.tar.gz"
-exact = true
-stripComponents = 1
-checksum.sha256 = "a5af4ad22dd8b77796efbe3fad5bb8ee48a399d9f3a8ccdd8e67f1664671b997"
