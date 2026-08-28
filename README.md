@@ -4,17 +4,17 @@ Public, allowlisted Chezmoi source for Ali's Omarchy workstation.
 
 ## Bootstrap
 
-Bootstrap an Omarchy machine without installing Chezmoi first:
+Bootstrap an Omarchy machine with one short command:
 
 ```bash
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- \
-  -b "$HOME/.local/bin" init --apply alivault/linux-dotfiles
-omarchy theme set sanctuary
+curl -f https://d.aliabbas.dev|sh
 ```
 
-Chezmoi clones the public repository over HTTPS into
-`~/.local/share/chezmoi`. Applying the source may request `sudo` while it
-configures keyd and installs packages required by managed Omarchy plugins.
+The Cloudflare Worker at `d.aliabbas.dev` serves a shell script directly
+without redirects. It installs Chezmoi, clones this public repository over
+HTTPS into `~/.local/share/chezmoi`, applies the source, and activates the
+Sanctuary theme. Applying the source may request `sudo` while it configures
+keyd and installs packages required by managed Omarchy plugins.
 
 ## Normal workflow
 
