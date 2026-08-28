@@ -23,7 +23,9 @@ cmake \
   -G Ninja \
   -DBUILD_TESTING=OFF \
   -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
-cmake --build "$daemon/build"
+
+echo "Building librepods with two parallel jobs; this can take several minutes..."
+cmake --build "$daemon/build" --parallel 2
 cmake --install "$daemon/build" --prefix "$HOME/.local"
 
 systemctl --user daemon-reload
