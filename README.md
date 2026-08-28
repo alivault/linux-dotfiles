@@ -13,7 +13,7 @@ curl -f https://d.aliabbas.dev|sh
 The Cloudflare Worker at `d.aliabbas.dev` serves a shell script directly
 without redirects. It installs Chezmoi, clones this public repository over
 HTTPS into `~/.local/share/chezmoi`, applies the source, and activates the
-Sanctuary theme. Applying the source may request `sudo` while it configures
+Ashen theme. Applying the source may request `sudo` while it configures
 keyd and installs packages required by managed Omarchy plugins.
 
 ## Normal workflow

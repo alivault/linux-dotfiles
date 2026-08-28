@@ -1,10 +1,10 @@
 mode = "dark"
 
-# Sanctuary keeps Solitude's quiet monochrome palette, but reserves its
-# brightest cool white for active/focused UI. Herdr uses ANSI blue for its
-# active pane border, while Lazygit uses ANSI green.
+# Ashen keeps Solitude's quiet monochrome palette, but reserves its
+# brightest cool white for active/focused UI.
 accent = "#f0f2f3"
-selection = "#343d41"
+# Match Ashen's Neovim Visual highlight (g_8).
+selection = "#323232"
 muted = "#4b4e55"
 
 background = "#101315"
@@ -22,10 +22,13 @@ hyprland_inactive_border = "rgb(1e1e1e)"
 active_border_color = "#f0f2f3"
 active_tab_background = "#f0f2f3"
 
-red = "#565d60"
+# Keep Lazygit's unselected file-status glyphs colored. Selected rows use the
+# bright ANSI slot, so normal and bright red must both be chromatic.
+red = "#de6145"
 yellow = "#d9dbdc"
 green = "#f0f2f3"
 cyan = "#707070"
+# Lazygit's default selected-line background is the normal ANSI blue slot.
 blue = "#f0f2f3"
 magenta = "#aeaeae"
 

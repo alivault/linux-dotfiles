@@ -10,7 +10,7 @@ name = "terminal"
 # The active tab is drawn as panel_bg text on an accent background, so panel_bg
 # has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
 panel_bg = "reset"
-# Preserve Sanctuary's terminal-based active accent while using Tokyo Night's
+# Preserve Ashen's terminal-based active accent while using Tokyo Night's
 # semantic agent colors for working, done/unseen, and idle/seen.
 yellow = "#e0af68"
 teal = "#7dcfff"
