@@ -14,4 +14,9 @@ if [[ ! -x "$plugin/setup" ]]; then
   exit 1
 fi
 
+if ! command -v c++ >/dev/null 2>&1; then
+  echo "Installing required package: gcc"
+  omarchy pkg add gcc
+fi
+
 "$plugin/setup"
