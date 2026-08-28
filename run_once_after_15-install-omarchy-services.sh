@@ -44,6 +44,11 @@ install_obsidian() {
   fi
 }
 
+install_syncthing() {
+  omarchy pkg add syncthing
+  systemctl --user enable --now syncthing.service
+}
+
 install_tailscale() {
   omarchy pkg add tailscale
   sudo systemctl enable --now tailscaled.service
@@ -62,6 +67,9 @@ install_bitwarden
 
 echo "Installing Obsidian..."
 install_obsidian
+
+echo "Installing Syncthing..."
+install_syncthing
 
 echo "Enabling Google account sign-in for Chromium..."
 omarchy install chromium google account
