@@ -63,5 +63,8 @@ install_bitwarden
 echo "Installing Obsidian..."
 install_obsidian
 
+echo "Enabling Google account sign-in for Chromium..."
+omarchy install chromium google account
+
 echo "Installing Tailscale..."
 install_tailscale

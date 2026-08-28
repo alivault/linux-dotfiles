@@ -62,7 +62,8 @@ mode on systems where `/tmp` is a tmpfs.
 - Timezones bar widget with system-local Home and Bergen clocks, a static bar
   icon, and right-click 12/24-hour switching
 - Bootstrap installation of Tailscale, Bitwarden, and Obsidian, using native
-  Omarchy packages where available and Flatpak fallbacks on ARM
+  Omarchy packages where available and Flatpak fallbacks on ARM, plus Chromium
+  Google account support through Omarchy's stock installer
 - Hyprland bindings, input, appearance, and monitor overrides
 - System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
