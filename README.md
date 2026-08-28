@@ -59,6 +59,8 @@ mode on systems where `/tmp` is a tmpfs.
   presented as the process-free Unified Launcher with integrated clipboard history
   plus emoji picker and reminder views; the companion `ali.indicators` clone
   routes the bar reminder button into those views
+- Timezones bar widget with system-local Home and Bergen clocks, a static bar
+  icon, and right-click 12/24-hour switching
 - Pinned AirPods bar controls with a native `librepods` bootstrap
 - Hyprland bindings, input, appearance, and monitor overrides
 - System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout

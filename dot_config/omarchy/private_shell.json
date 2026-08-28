@@ -33,13 +33,32 @@
       ],
       "right": [
         {
-          "id": "omarchy.tray"
+          "id": "io.github.sspaeti.timezones",
+          "zones": [
+            {
+              "label": "Home",
+              "shortLabel": "HOME",
+              "zone": "",
+              "home": true
+            },
+            {
+              "label": "Bergen",
+              "shortLabel": "BGO",
+              "zone": "Europe/Oslo"
+            }
+          ],
+          "rightClick": "toggleHourFormat",
+          "hourFormat": "24h",
+          "hoverExpand": false
         },
         {
           "id": "omarchy.tailscale"
         },
         {
           "id": "omarchy.agents"
+        },
+        {
+          "id": "omarchy.tray"
         },
         {
           "id": "omarchy.bluetooth"
