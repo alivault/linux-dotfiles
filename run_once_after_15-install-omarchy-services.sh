@@ -45,19 +45,16 @@ install_obsidian() {
 }
 
 install_tailscale() {
-  if ! command -v tailscale >/dev/null 2>&1; then
-    omarchy install service tailscale
-    return
-  fi
-
+  omarchy pkg add tailscale
   sudo systemctl enable --now tailscaled.service
-
-  if ! tailscale status >/dev/null 2>&1; then
-    sudo tailscale up --accept-routes
-  fi
-
-  sudo tailscale set --operator="$USER"
   systemctl --user enable --now omarchy-tailscale-receive.service
+
+  if tailscale status >/dev/null 2>&1; then
+    sudo tailscale set --operator="$USER"
+  else
+    echo "Tailscale is installed but not authenticated."
+    echo "After bootstrap, run: sudo tailscale up --accept-routes"
+  fi
 }
 
 echo "Installing Bitwarden..."
