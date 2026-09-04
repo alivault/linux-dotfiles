@@ -1,8 +1,9 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 -- List current monitors and supported resolutions with: hyprctl monitors all
 
-local omarchy_gdk_scale = 2
-local omarchy_monitor_scale = 2
+{{- $isAsahi := eq (output "sh" "-c" "if grep -aq apple,arm-platform /sys/firmware/devicetree/base/compatible 2>/dev/null; then printf true; else printf false; fi" | trim) "true" }}
+local omarchy_gdk_scale = {{ if $isAsahi }}2{{ else }}1{{ end }}
+local omarchy_monitor_scale = {{ if $isAsahi }}2{{ else }}1{{ end }}
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })

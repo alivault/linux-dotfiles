@@ -2,8 +2,11 @@ README.md
 .gitignore
 LICENSE
 THIRD_PARTY_NOTICES.md
+bootstrap/**
+.github/**
 
-{{ if ne .chezmoi.arch "arm64" }}
+{{ $isAsahi := eq (output "sh" "-c" "if grep -aq apple,arm-platform /sys/firmware/devicetree/base/compatible 2>/dev/null; then printf true; else printf false; fi" | trim) "true" }}
+{{ if not $isAsahi }}
 .local/bin/gpu-screen-recorder
 .local/libexec/omarchy-asahi-screenrecord.py
 {{ end }}

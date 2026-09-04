@@ -7,14 +7,18 @@ Public, allowlisted Chezmoi source for Ali's Omarchy workstation.
 Bootstrap an Omarchy machine with one short command:
 
 ```bash
-curl -f https://d.aliabbas.dev|sh
+curl -fsSL https://d.aliabbas.dev | sh
 ```
 
 The Cloudflare Worker at `d.aliabbas.dev` serves a shell script directly
-without redirects. It installs Chezmoi, clones this public repository over
-HTTPS into `~/.local/share/chezmoi`, applies the source, and activates the
-Ashen theme. Applying the source may request `sudo` while it configures
-keyd and installs packages required by managed Omarchy plugins.
+without redirects. It installs a pinned Chezmoi release, clones this public
+repository over HTTPS into `~/.local/share/chezmoi`, applies configuration,
+runs the explicit provisioning steps, activates the Ashen theme, and finishes
+with a bootstrap health check. Provisioning may request `sudo` in the terminal.
+
+Normal Chezmoi applies are configuration-only. Package installation, service
+activation, and system-wide configuration live under `bootstrap/` in the
+source repository and never run implicitly during `chezmoi apply`.
 
 ## Normal workflow
 
@@ -31,6 +35,15 @@ chezmoi apply
 
 # Pull from GitHub and apply
 chezmoi update
+
+# Install packages and configure services explicitly
+~/.local/share/chezmoi/bootstrap/provision.sh
+
+# Re-run one provisioning step
+~/.local/share/chezmoi/bootstrap/provision.sh tailscale
+
+# Validate a configured workstation
+~/.local/share/chezmoi/bootstrap/doctor.sh
 ```
 
 The source repository is available locally with `chezmoi cd` or at
@@ -59,6 +72,8 @@ mode on systems where `/tmp` is a tmpfs.
   presented as the process-free Unified Launcher with integrated clipboard history
   plus emoji picker and reminder views; the companion `ali.indicators` clone
   routes the bar reminder button into those views
+- Public iWeather plugin installed as a weekly fast-forward-only Chezmoi Git
+  external
 - Timezones bar widget with system-local Home and Bergen clocks, a static bar
   icon, and right-click 12/24-hour switching
 - Bootstrap installation of Tailscale, Syncthing, Bitwarden, and Obsidian,
@@ -71,6 +86,14 @@ mode on systems where `/tmp` is a tmpfs.
 - Vite+ (`vp`) installed in `~/.vite-plus` without replacing the existing Node.js manager
 - Git, Herdr, imv, and the Hyprland preview share picker
 - Pi settings, keybindings, extensions, theme, and shared Herdr skill
+
+The Vite+ bootstrap is pinned to version `0.3.0`. Its versioned installer is
+downloaded from the upstream release tag and verified with SHA-256 before use.
+The public bootstrap similarly pins Chezmoi and verifies its installer.
+
+Asahi-specific screen-recording compatibility files and 2x display scaling are
+enabled only when the device tree identifies an Apple ARM platform. Other
+Omarchy systems use normal 1x automatic monitor scaling.
 
 Tmux is deliberately not included.
 

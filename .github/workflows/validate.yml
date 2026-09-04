@@ -1,0 +1,32 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install validation dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq lua5.4 shellcheck
+
+      - name: Install pinned Chezmoi
+        shell: bash
+        run: |
+          set -euo pipefail
+          url=https://raw.githubusercontent.com/twpayne/chezmoi/v2.72.1/assets/scripts/install.sh
+          expected=75de125a45a82b53c16546db7057052e98c11866ded27c4b6f95a51f59432e7b
+          curl -fL --retry 3 "$url" -o /tmp/install-chezmoi.sh
+          printf '%s  %s\n' "$expected" /tmp/install-chezmoi.sh | sha256sum --check --status
+          sh /tmp/install-chezmoi.sh -b "$HOME/.local/bin" -t v2.72.1
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Validate source and isolated apply
+        run: bootstrap/check-source.sh
