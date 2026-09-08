@@ -1,0 +1,6 @@
+cups
+cups-filters
+cups-pk-helper
+system-config-printer
+avahi
+nss-mdns

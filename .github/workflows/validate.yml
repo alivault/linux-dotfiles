@@ -29,4 +29,4 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Validate source and isolated apply
-        run: bootstrap/check-source.sh
+        run: bash bootstrap/check-source.sh

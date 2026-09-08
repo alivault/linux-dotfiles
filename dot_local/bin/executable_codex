@@ -1,0 +1,2 @@
+#!/bin/bash
+exec "$HOME/.local/bin/mise" exec codex@0.153.4 -- codex "$@"

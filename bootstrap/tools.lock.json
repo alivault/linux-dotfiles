@@ -1,0 +1,37 @@
+{
+  "yay": {
+    "repo": "Jguer/yay", "tag": "v13.0.1", "kind": "tar-binary",
+    "aarch64": ["yay_13.0.1_aarch64.tar.gz", "75bc500c8677d6760f51117ae0a61689e9cf165bea3c4800825a5c879d030726"],
+    "x86_64": ["yay_13.0.1_x86_64.tar.gz", "1fdfcb5f7f387bc858d3a5754bdf4e4575bfbddac9560535a716d0ed7189c057"]
+  },
+  "herdr": {
+    "repo": "herdrdev/herdr", "tag": "v0.8.2", "kind": "binary",
+    "aarch64": ["herdr-linux-aarch64", "f55610658e1c2e0d2aaef730b4b2ab885f7f8ba00285ab372bfb14f2e3d5b40d"],
+    "x86_64": ["herdr-linux-x86_64", "976150a14d490c94b243ea2e1a7eb2dfb67f12e36b182db90936f6728e6aecf4"]
+  },
+  "mise": {
+    "repo": "jdx/mise", "tag": "v2026.9.1", "kind": "binary",
+    "aarch64": ["mise-v2026.9.1-linux-arm64", "0ef0a778eaa8599f3e90a8a0979c9fc3f79922cafb5fa6d39f366d974da33bba"],
+    "x86_64": ["mise-v2026.9.1-linux-x64", "c98423c8470d6dc416d9f7036d0646d8ef5ae92ad9186907f8fcc84cbe7db4ea"]
+  },
+  "voxtype": {
+    "repo": "peteonrails/voxtype", "tag": "v0.7.2", "kind": "binary",
+    "aarch64": ["voxtype-0.7.2-linux-aarch64-cpu", "8cd203672a44a296844ab424121cf1d5b89c14e821d67f1c4e8278f9196fd96f"],
+    "x86_64": ["voxtype-0.7.2-linux-x86_64-avx2", "4a24760905a05bc9da014b96e74d2596c68e7c33baf6b312f868bc5d4ec929e9"]
+  },
+  "obsidian": {
+    "repo": "obsidianmd/obsidian-releases", "tag": "v1.13.7", "kind": "appimage",
+    "aarch64": ["Obsidian-1.13.7-arm64.AppImage", "e286fd2bb2a5d346a35a577bd764c73fd5537dddec2b99a1a3e5e35974085203"],
+    "x86_64": ["Obsidian-1.13.7.AppImage", "e0d8e0a611624de8c9c7dcd8a9e648279fb0a0d552faa1312b7e4f3a5fa72663"]
+  },
+  "strata": {
+    "repo": "lgse/strata", "tag": "v0.13.0", "kind": "tar-binary",
+    "aarch64": ["strata-0.13.0-aarch64-unknown-linux-gnu.tar.gz", "b3393597df8cee7af85ec419156a009fa56d3ec265db64cf71b63a5f6714f555"],
+    "x86_64": ["strata-0.13.0-x86_64-unknown-linux-gnu.tar.gz", "7655950ba062e743d02964c1b9412556393752b7a9499b3ea641c53a538fc775"]
+  },
+  "vicinae": {
+    "repo": "vicinaehq/vicinae", "tag": "v0.28.1", "kind": "vicinae-appimage",
+    "aarch64": ["Vicinae-aarch64.AppImage", "61e863295acecd59377cd6350e6706f4f5dd075b8898e57200bbf621329b0f75"],
+    "x86_64": ["Vicinae-x86_64.AppImage", "e078f22087aaf98ba628ba4e42c90d4192343909cbc647fd0e107f691f5de5b5"]
+  }
+}

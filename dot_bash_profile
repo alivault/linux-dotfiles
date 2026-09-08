@@ -1,0 +1,2 @@
+# Login shells and niri-session receive the same independent user-tool PATH.
+[[ -f ~/.bashrc ]] && . ~/.bashrc

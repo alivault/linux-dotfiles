@@ -1,112 +1,94 @@
-# linux-dotfiles
+# Ali's Linux dotfiles
 
-Public, allowlisted Chezmoi source for Ali's Omarchy workstation.
+Standalone **Arch Linux / Arch Linux ARM + Niri + Noctalia + Vicinae**, managed by
+chezmoi. Tested on an Asahi MacBook Air M1; x86_64 is supported by the manifests
+and release pins but still needs a fresh-machine smoke test.
 
-## Bootstrap
+No Omarchy installation, repository, service or runtime integration is required.
+This configures an **already installed, bootable Arch system**; it never partitions
+disks or installs/replaces Asahi kernels, firmware, bootloaders or speaker safety.
 
-Bootstrap an Omarchy machine with one short command:
+The bar includes a native [iWeather widget](dot_local/share/noctalia-local-plugins/iweather/README.md)
+with hourly/five-day forecasts, city search and unit switching. No API key is
+needed; chosen locations and cached forecasts stay outside the public source.
 
-```bash
-curl -fsSL https://d.aliabbas.dev | sh
+## Install
+
+The canonical entry point is below. The old `d.aliabbas.dev` hostname is retired;
+do not use old installer copies. Fresh-machine and x86_64 boot smoke tests are
+still outstanding; review the [release notes](bootstrap/RELEASE.md).
+
+```sh
+curl -fsSL https://dots.aliabbas.dev -o /tmp/dotfiles-bootstrap.sh
+less /tmp/dotfiles-bootstrap.sh
+sh /tmp/dotfiles-bootstrap.sh
 ```
 
-The Cloudflare Worker at `d.aliabbas.dev` serves a shell script directly
-without redirects. It installs a pinned Chezmoi release, clones this public
-repository over HTTPS into `~/.local/share/chezmoi`, applies configuration,
-runs the explicit provisioning steps, activates the Ashen theme, and finishes
-with a bootstrap health check. Provisioning may request `sudo` in the terminal.
+The Worker verifies the bootstrap checksum and injects an immutable repository
+commit. Setup asks before provisioning and applying configuration. Local
+authentication stays in pkexec; never paste a password into a chat or script.
 
-Normal Chezmoi applies are configuration-only. Package installation, service
-activation, and system-wide configuration live under `bootstrap/` in the
-source repository and never run implicitly during `chezmoi apply`.
+For the current local checkout:
 
-## Normal workflow
+```sh
+cd "$(chezmoi source-path)"
+bash bootstrap/check-source.sh
+bash bootstrap/setup.sh --plan
+# Review bootstrap/README.md, then explicitly run bootstrap/setup.sh when needed.
+```
 
-```bash
-# See local files that differ from the saved source state
-chezmoi status
+Normal updates remain configuration-only:
 
-# Refresh a managed file in the source state
-chezmoi add ~/.config/hypr/bindings.lua
-
-# Review and apply repository changes to this machine
+```sh
 chezmoi diff
-chezmoi apply
-
-# Pull from GitHub and apply
-chezmoi update
-
-# Install packages and configure services explicitly
-~/.local/share/chezmoi/bootstrap/provision.sh
-
-# Re-run one provisioning step
-~/.local/share/chezmoi/bootstrap/provision.sh tailscale
-
-# Validate a configured workstation
-~/.local/share/chezmoi/bootstrap/doctor.sh
+chezmoi apply --exclude scripts
 ```
 
-The source repository is available locally with `chezmoi cd` or at
-`~/.local/share/chezmoi`.
+## Included
 
-## Omarchy compatibility
+- Niri-native columns, 12 px rounded/clipped windows with non-xray background
+  blur (visible through transparent backgrounds), 250 ms / 50 Hz keyboard repeat;
+  2x internal-panel scaling only on detected Asahi machines.
+- Noctalia shell, notifications, authentication, idle/lock, Tokyo Night and
+  Adwaita icons; Vicinae launcher, clipboard and emoji.
+- Kitty, Chromium, Obsidian, LibreOffice, LazyVim/Neovim, tmux, Herdr,
+  mise-managed Node/Pi/Codex CLI, F9 toggle dictation.
+- Explicit setup for Tailscale, Syncthing, SSH, printing, Bitwarden, keyd,
+  Noctalia Greeter and the tested Asahi keyboard-backlight suspend helper.
+- SHA256-pinned native tools/model/build sources; separate optional Vite+,
+  and static QEMU installation. Docker is not included.
 
-This repository targets Omarchy 4. Its paths follow the Omarchy 4 split:
+## Key bindings
 
-- `/usr/share/omarchy` contains packaged Omarchy files.
-- `~/.config/omarchy` contains user configuration managed by chezmoi.
-- `~/.local/state/omarchy/current` contains generated current-theme state and
-  must not be added to chezmoi.
+| Keys | Action |
+| --- | --- |
+| Super+Space / Ctrl+Space | Launcher / clipboard |
+| Super+Ctrl+E | Emoji |
+| Super+E | Strata file manager |
+| Super+S / Super+Comma | Control center / settings |
+| Super+D | Dark/light mode |
+| Super+F / Super+Shift+F | Maximize column / fullscreen |
+| Super+Shift+PageUp / PageDown | Reorder workspaces |
+| Super+Shift+E | Logout |
+| Super+brightness keys | Keyboard brightness, 10% increments |
+| F9 | Toggle dictation recording |
 
-The chezmoi source checkout living under `~/.local/share/chezmoi` is normal
-chezmoi behavior and is unrelated to the Omarchy version.
+Tmux retains Ctrl+B as its secondary prefix (Ctrl+Space is intercepted by the
+desktop clipboard binding); prefix+`?` opens tmux's native binding list.
 
-Chezmoi uses a private temporary directory beneath its cache. An initialization
-hook creates it with mode `0700`. This keeps temporary files on the same
-filesystem as the source state, enabling `chezmoi edit` hardlinks and watch
-mode on systems where `/tmp` is a tmpfs.
+## Privacy and appearance
 
-## Managed configuration
+Only selected source files are managed. Credentials, browser profiles, SSH keys,
+Pi history/auth/trust, Bitwarden vaults, Syncthing identities and runtime state
+are not captured. Noctalia GUI overrides remain local. Pi settings are merged,
+preserving unrelated local values and package filters; required package versions
+are pinned and telemetry is disabled.
 
-- Omarchy shell settings, branding, menu extension, and `ali.menu` plugin,
-  presented as the process-free Unified Launcher with integrated clipboard history
-  plus emoji picker and reminder views; the companion `ali.indicators` clone
-  routes the bar reminder button into those views
-- Public iWeather plugin installed as a weekly fast-forward-only Chezmoi Git
-  external
-- Timezones bar widget with system-local Home and Bergen clocks, a static bar
-  icon, and right-click 12/24-hour switching
-- Bootstrap installation of Tailscale, Syncthing, Bitwarden, and Obsidian,
-  enabling Syncthing's user service automatically and using native Omarchy
-  packages where available with Flatpak fallbacks on ARM, plus Chromium Google
-  account support through Omarchy's stock installer
-- Hyprland bindings, input, appearance, and monitor overrides
-- System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout
-- Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
-- Vite+ (`vp`) installed in `~/.vite-plus` without replacing the existing Node.js manager
-- Git, Herdr, imv, and the Hyprland preview share picker
-- Pi settings, keybindings, extensions, theme, and shared Herdr skill
+The existing personal `~/.local/share/desktop-assets/wallpaper.jpg` is preserved
+if present, but is not redistributed. Fresh installs use the original generated
+`wallpaper.png`; its generator is in `bootstrap/`. Third-party attributions and
+license exceptions are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-The Vite+ bootstrap is pinned to version `0.3.0`. Its versioned installer is
-downloaded from the upstream release tag and verified with SHA-256 before use.
-The public bootstrap similarly pins Chezmoi and verifies its installer.
-
-Asahi-specific screen-recording compatibility files and 2x display scaling are
-enabled only when the device tree identifies an Apple ARM platform. Other
-Omarchy systems use normal 1x automatic monitor scaling.
-
-Tmux is deliberately not included.
-
-## Security boundary
-
-This is an allowlisted repository. It intentionally excludes browser
-profiles and preferences, OAuth-bearing Chromium flags, GitHub CLI auth,
-password stores, Pi auth and sessions, Syncthing identities and configuration,
-cookies, caches, generated package trees, logs, session state, themes generated
-by Omarchy, and historical backups. Do not bulk-add `$HOME` or `~/.config`.
-
-## License
-
-Original work in this repository is available under the [MIT License](LICENSE).
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for code copied from or
-derived from Omarchy.
+See [setup and recovery](bootstrap/README.md), [release review](bootstrap/RELEASE.md)
+and [validation](.github/workflows/validate.yml). Arch and Flatpak remain rolling
+repositories: these pins are **not a hermetic OS snapshot**.

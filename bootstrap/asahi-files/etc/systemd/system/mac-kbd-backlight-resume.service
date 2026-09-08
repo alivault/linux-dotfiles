@@ -1,0 +1,11 @@
+[Unit]
+Description=Restore Mac keyboard brightness after suspend
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sleep 1
+ExecStart=/usr/local/libexec/mac-kbd-backlight-sleep post
+
+[Install]
+WantedBy=suspend.target

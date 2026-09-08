@@ -1,0 +1,7 @@
+{
+  "$schema": "https://vicinae.com/schemas/config.json",
+  "theme": {"dark": {"name": "tokyo-night"}, "light": {"name": "tokyo-night"}},
+  "font": {"normal": {"family": "JetBrainsMono Nerd Font"}},
+  "input_server": {"enabled": false},
+  "telemetry": {"system_info": false}
+}

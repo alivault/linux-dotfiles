@@ -7,29 +7,37 @@ if [ -z "$settings" ]; then
 fi
 
 printf '%s\n' "$settings" | jq '
+  def identity:
+    (if type == "object" then .source else . end)
+    | sub("@[^/@]+$"; "")
+    | sub("^git:git@github.com:"; "git:https://github.com/");
   [
-    "git:https://github.com/alivault/pi-queue-steer",
-    "npm:@ogulcancelik/pi-herdr",
-    "npm:@ff-labs/pi-fff",
-    "npm:pi-mcp-adapter",
-    "npm:@howaboua/pi-codex-conversion"
+    "git:https://github.com/alivault/pi-queue-steer@d3a276d213f74013445744fabfcc914a141d5d4f",
+    "npm:@ogulcancelik/pi-herdr@0.4.0",
+    "npm:@ff-labs/pi-fff@0.10.6",
+    "npm:pi-mcp-adapter@2.32.1",
+    "npm:@howaboua/pi-codex-conversion@3.0.29"
   ] as $required_packages
   | (if (.packages | type) == "array" then .packages else [] end) as $existing_packages
   | .quietStartup = true
+  | .enableInstallTelemetry = false
+  | .enableAnalytics = false
+  | .npmCommand = ["mise", "exec", "node@26.8.1", "--", "npm"]
   | .treeFilterMode = "no-tools"
   | .defaultProvider = "openai-codex"
   | .defaultModel = "gpt-5.6-sol"
   | .defaultThinkingLevel = "high"
   | .hideThinkingBlock = true
   | .packages = (
-      $required_packages
+      [
+        $required_packages[] as $pin
+        | ([$existing_packages[] | select(identity == ($pin | identity))][0] // $pin)
+        | if type == "object" then .source = $pin else $pin end
+      ]
       + [
           $existing_packages[]
-          | . as $package
-          | select(
-              $package != "git:git@github.com:alivault/pi-queue-steer"
-              and ($required_packages | index($package)) == null
-            )
+          | identity as $id
+          | select(($required_packages | map(identity) | index($id)) == null)
         ]
     )
 '

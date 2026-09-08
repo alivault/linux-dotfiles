@@ -1,0 +1,5 @@
+base-devel
+rust
+tmux
+neovim
+github-cli

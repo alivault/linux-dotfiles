@@ -1,0 +1,89 @@
+#!/bin/bash
+
+# Preserve and reapply the Apple Silicon keyboard PWM level across suspend.
+device=/sys/class/leds/kbd_backlight
+state=/run/mac-kbd-backlight-before-sleep
+last_cycle=/run/mac-kbd-backlight-last-cycle
+
+get_user_restore_state() {
+  local saved_file candidate
+
+  for saved_file in /run/user/[0-9]*/brightnessctl/leds/kbd_backlight; do
+    [[ -f "$saved_file" && ! -L "$saved_file" ]] || continue
+    read -r candidate < "$saved_file"
+    if [[ $candidate =~ ^[0-9]+$ ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+sync_user_restore_state() {
+  local runtime uid gid saved_file
+
+  # Omarchy blanks the keyboard while locked and uses brightnessctl's
+  # per-user saved value on unlock. Keep that value aligned with this cycle.
+  for runtime in /run/user/[0-9]*; do
+    [[ -d "$runtime" ]] || continue
+    uid=${runtime##*/}
+    gid=$(stat -c %g "$runtime")
+    saved_file="$runtime/brightnessctl/leds/kbd_backlight"
+    [[ -f "$saved_file" && ! -L "$saved_file" ]] || continue
+
+    printf '%s' "$brightness" |
+      setpriv --reuid="$uid" --regid="$gid" --clear-groups \
+        tee "$saved_file" >/dev/null 2>&1 || true
+  done
+}
+
+case "${1:-}" in
+  pre)
+    if [[ -r "$device/brightness" ]]; then
+      read -r brightness < "$device/brightness"
+      sync_restore=1
+      source=live
+
+      # If Omarchy already blanked a locked keyboard, the live zero is
+      # temporary. Its brightnessctl state still holds the pre-lock value.
+      if [[ $brightness == 0 ]]; then
+        saved_brightness=$(get_user_restore_state || true)
+        if [[ $saved_brightness =~ ^[1-9][0-9]*$ ]]; then
+          brightness=$saved_brightness
+          sync_restore=0
+          source=pre-lock
+        fi
+      fi
+
+      if [[ $brightness =~ ^[0-9]+$ ]]; then
+        printf '%s %s\n' "$brightness" "$sync_restore" > "$state"
+        logger -t mac-kbd-backlight "saved brightness=$brightness source=$source"
+      fi
+    fi
+    ;;
+
+  post)
+    [[ -r "$state" && -w "$device/brightness" ]] || exit 0
+    read -r brightness sync_restore < "$state"
+    [[ $brightness =~ ^[0-9]+$ && $sync_restore =~ ^[01]$ ]] || exit 0
+    read -r before < "$device/brightness"
+
+    # Force a transition because the sysfs value can remain unchanged even
+    # when the PWM hardware loses its state during suspend.
+    for _ in {1..5}; do
+      if printf '0\n' > "$device/brightness" 2>/dev/null &&
+         printf '%s\n' "$brightness" > "$device/brightness" 2>/dev/null; then
+        read -r after < "$device/brightness"
+        (( sync_restore )) && sync_user_restore_state
+        printf 'saved=%s before=%s after=%s\n' "$brightness" "$before" "$after" > "$last_cycle"
+        logger -t mac-kbd-backlight "restored brightness=$brightness (before=$before after=$after)"
+        rm -f "$state"
+        exit 0
+      fi
+      sleep 0.2
+    done
+
+    logger -t mac-kbd-backlight "Could not restore keyboard brightness after sleep"
+    ;;
+esac

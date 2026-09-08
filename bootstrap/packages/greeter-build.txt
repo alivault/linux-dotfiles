@@ -1,0 +1,23 @@
+# Official build/runtime dependencies for the pinned local greeter build.
+meson
+ninja
+nlohmann-json
+pkgconf
+stb
+wayland-protocols
+wlroots0.20
+tomlplusplus
+cairo
+dbus
+fontconfig
+freetype2
+glib2
+glibc
+greetd
+libglvnd
+librsvg
+libwebp
+libxkbcommon
+libxml2
+pango
+wayland

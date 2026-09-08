@@ -1,0 +1,7 @@
+# Match the reviewed upstream/AUR setup behavior. Never start the display manager.
+post_install() {
+  NOCTALIA_GREETER_SESSION_BIN=/usr/bin/noctalia-greeter-session \
+    /usr/share/noctalia-greeter/setup_greeter_system.sh ||
+    echo 'Greeter system setup needs attention; rerun before enabling greetd.'
+}
+post_upgrade() { post_install; }

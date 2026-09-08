@@ -1,0 +1,96 @@
+# Standalone Niri shell. Do not start alongside another desktop shell.
+[shell]
+font_family = "JetBrainsMono Nerd Font"
+corner_radius_scale = 1.0
+time_format = "{:%I:%M %p}"
+polkit_agent = true
+clipboard_enabled = false # Vicinae owns clipboard history.
+telemetry_enabled = false
+niri_overview_type_to_launch_enabled = false
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Tokyo-Night"
+
+# Terminals and applications are managed explicitly by chezmoi.
+[theme.templates]
+enable_builtin_templates = false
+enable_community_templates = false
+builtin_ids = []
+community_ids = []
+
+[wallpaper]
+directory = "{{ .chezmoi.homeDir }}/Pictures/Wallpapers"
+
+[wallpaper.default]
+{{ if stat (joinPath .chezmoi.homeDir ".local/share/desktop-assets/wallpaper.jpg") }}
+# Preserve the existing personal wallpaper; it is not redistributed.
+path = "{{ .chezmoi.homeDir }}/.local/share/desktop-assets/wallpaper.jpg"
+{{ else }}
+path = "{{ .chezmoi.homeDir }}/.local/share/desktop-assets/wallpaper.png"
+{{ end }}
+
+[wallpaper.automation]
+enabled = false
+
+[lockscreen]
+enabled = true
+lock_before_suspend = true
+
+[idle]
+pre_action_fade_seconds = 0
+behavior_order = ["screensaver", "lock", "screen-off"]
+
+[idle.behavior.screensaver]
+timeout = 150
+action = "command"
+enabled = true
+command = "systemctl --user start --no-block niri-screensaver.service"
+resume_command = "systemctl --user stop --no-block niri-screensaver.service"
+
+[hooks]
+session_locked = ["systemctl --user stop --no-block niri-screensaver.service"]
+
+[idle.behavior.lock]
+timeout = 300
+action = "lock"
+enabled = true
+
+[idle.behavior.screen-off]
+action = "screen_off"
+timeout = 0
+locked_timeout = 5
+enabled = true
+
+[dock]
+enabled = false
+
+[bar.main]
+position = "top"
+thickness = 30
+margin_ends = 8
+margin_edge = 6
+padding = 8
+widget_spacing = 4
+radius = 12
+start = ["vicinae", "workspaces"]
+center = ["clock", "iweather", "world-clock"]
+end = ["bergen", "tray", "notifications", "network", "bluetooth", "volume", "brightness", "battery", "control-center", "session"]
+
+[widget.vicinae]
+type = "custom_button"
+glyph = "search"
+tooltip = "Vicinae · Super+Space"
+
+[widget.vicinae.actions]
+left = "exec {{ .chezmoi.homeDir }}/.local/bin/vicinae toggle"
+
+[widget.clock]
+format = "{:%a %e %b %I:%M %p}"
+
+[widget.bergen]
+type = "clock"
+timezone = "Europe/Oslo"
+format = "BGO {:%H:%M}"
+tooltip_format = "Bergen · {:%A %e %B}"

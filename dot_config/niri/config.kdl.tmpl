@@ -1,0 +1,142 @@
+// Standalone Niri. Only Asahi laptops get the inherited 2x panel scaling.
+input {
+    keyboard {
+        xkb { }
+        repeat-delay 250
+        repeat-rate 50
+    }
+    touchpad {
+        tap
+        natural-scroll
+        dwt
+    }
+}
+{{ if eq (output "sh" "-c" "grep -aq apple,arm-platform /sys/firmware/devicetree/base/compatible 2>/dev/null && printf yes || true" | trim) "yes" }}
+output "eDP-1" { scale 2; }
+{{ end }}
+layout {
+    gaps 10
+    center-focused-column "on-overflow"
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+    focus-ring {
+        width 2
+        active-color "#7aa2f7"
+        inactive-color "#414868"
+    }
+}
+prefer-no-csd
+hotkey-overlay {
+    skip-at-startup
+}
+// Rounded, clipped windows; blur the scene underneath rather than just wallpaper.
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+    draw-border-with-background false
+    background-effect {
+        blur true
+        xray false
+    }
+}
+screenshot-path "~/Pictures/Screenshots/Niri-%Y-%m-%d-%H-%M-%S.png"
+spawn-at-startup "noctalia"
+spawn-at-startup "{{ .chezmoi.homeDir }}/.local/bin/vicinae" "server"
+// Noctalia owns authentication prompts, notifications, idle and sleep locking.
+window-rule {
+    match app-id=r#"^org\.ali\.niri-screensaver$"#
+    open-fullscreen true
+}
+window-rule {
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+}
+binds {
+    F9 repeat=false hotkey-overlay-title="Dictation: start/stop" { spawn "{{ .chezmoi.homeDir }}/.local/bin/voxtype" "record" "toggle"; }
+    Mod+Return hotkey-overlay-title="Terminal" { spawn "kitty"; }
+    Mod+T { spawn "kitty"; }
+    Mod+Space repeat=false hotkey-overlay-title="Vicinae launcher" { spawn "{{ .chezmoi.homeDir }}/.local/bin/vicinae" "toggle"; }
+    Mod+D repeat=false hotkey-overlay-title="Toggle dark/light shell theme" { spawn "noctalia" "msg" "theme-mode-toggle"; }
+    Mod+E hotkey-overlay-title="Strata file manager" { spawn "{{ .chezmoi.homeDir }}/.local/bin/strata"; }
+    Mod+B hotkey-overlay-title="Browser" { spawn "chromium"; }
+    Mod+Shift+B hotkey-overlay-title="Private browser" { spawn "chromium" "--incognito"; }
+    Mod+Shift+O hotkey-overlay-title="Obsidian" { spawn "obsidian"; }
+    Mod+Alt+Return hotkey-overlay-title="Tmux terminal" { spawn "kitty" "bash" "-c" "tmux attach || tmux new -s Work"; }
+    Mod+Ctrl+Return hotkey-overlay-title="Herdr terminal" { spawn "kitty" "{{ .chezmoi.homeDir }}/.local/bin/herdr"; }
+    Ctrl+Space repeat=false hotkey-overlay-title="Vicinae clipboard history" { spawn "{{ .chezmoi.homeDir }}/.local/bin/vicinae" "vicinae://launch/clipboard/history"; }
+    Mod+Ctrl+E hotkey-overlay-title="Vicinae emoji picker" { spawn "{{ .chezmoi.homeDir }}/.local/bin/vicinae" "vicinae://launch/core/search-emojis"; }
+    Mod+Q { close-window; }
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Up { focus-window-up; }
+    Mod+Down { focus-window-down; }
+    Mod+Ctrl+Left { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Up { move-window-up; }
+    Mod+Ctrl+Down { move-window-down; }
+    Mod+Page_Up { focus-workspace-up; }
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Ctrl+Page_Up { move-column-to-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Shift+Page_Up { move-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+    Mod+Tab { focus-workspace-previous; }
+    Mod+O hotkey-overlay-title="Workspace overview" { toggle-overview; }
+    Mod+R { switch-preset-column-width; }
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+C { center-column; }
+    Mod+V { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+W { toggle-column-tabbed-display; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+BracketLeft { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+    Mod+Shift+S hotkey-overlay-title="Screenshot" { screenshot; }
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+    Mod+Comma hotkey-overlay-title="Noctalia settings" { spawn "noctalia" "msg" "settings-toggle"; }
+    Mod+S hotkey-overlay-title="Control center" { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+    Mod+Shift+Comma hotkey-overlay-title="Notifications" { spawn "noctalia" "msg" "panel-toggle" "notifications"; }
+    Mod+Ctrl+Comma hotkey-overlay-title="Do not disturb" { spawn "noctalia" "msg" "notification-dnd-toggle"; }
+    Mod+Alt+L hotkey-overlay-title="Lock screen" { spawn "noctalia" "msg" "session" "lock"; }
+    Mod+Ctrl+Alt+L hotkey-overlay-title="Fallback lock (if shell unavailable)" { spawn "swaylock" "-f" "-c" "1e1e2e"; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+Shift+E hotkey-overlay-title="Log out (confirmation)" { quit; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-down"; }
+    XF86AudioMute allow-when-locked=true { spawn "noctalia" "msg" "volume-mute"; }
+    XF86AudioPlay { spawn "playerctl" "play-pause"; }
+    XF86AudioNext { spawn "playerctl" "next"; }
+    XF86AudioPrev { spawn "playerctl" "previous"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia" "msg" "brightness-up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness-down"; }
+    Mod+XF86MonBrightnessUp allow-when-locked=true { spawn "{{ .chezmoi.homeDir }}/.local/bin/keyboard-backlight" "up"; }
+    Mod+XF86MonBrightnessDown allow-when-locked=true { spawn "{{ .chezmoi.homeDir }}/.local/bin/keyboard-backlight" "down"; }
+}
