@@ -1,0 +1,8 @@
+.local/bin/omp
+.local/bin/claude
+.local/bin/copilot
+.local/bin/opencode
+.local/bin/grok
+.claude/hooks/herdr-agent-state.sh
+.config/opencode/plugins/herdr-agent-state.js
+.config/opencode/herdr-tui-session.js
