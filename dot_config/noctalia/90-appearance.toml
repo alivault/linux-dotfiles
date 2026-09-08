@@ -1,6 +1,6 @@
 # Portable visual preferences captured from the GUI. No location/monitor state.
 [bar.main]
-background_opacity = 0.5
+background_opacity = 0.85
 capsule = true
 capsule_opacity = 0.0
 capsule_padding = 8.0
