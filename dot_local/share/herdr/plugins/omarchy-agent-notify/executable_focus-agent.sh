@@ -14,9 +14,15 @@ window_id=$("$plugin_root/find-herdr-window.sh")
 # Select the workspace, tab, and exact pane before raising the terminal so the
 # requested agent is already visible when the Kitty window receives focus.
 if [[ -n $socket_path ]]; then
-  HERDR_SOCKET_PATH=$socket_path "$herdr_bin" agent focus "$pane_id" >/dev/null
+  focused_agent=$(HERDR_SOCKET_PATH=$socket_path "$herdr_bin" agent focus "$pane_id")
 else
-  "$herdr_bin" agent focus "$pane_id" >/dev/null
+  focused_agent=$("$herdr_bin" agent focus "$pane_id")
 fi
+
+# Herdr can report the agent focused without updating the attached client's
+# visible tab. Explicit tab focus refreshes that view; use the live response
+# rather than the notification's potentially stale tab ID.
+tab_id=$(jq -er '.result.agent.tab_id' <<<"$focused_agent")
+"$herdr_bin" tab focus "$tab_id" >/dev/null
 
 niri msg action focus-window --id "$window_id" >/dev/null
