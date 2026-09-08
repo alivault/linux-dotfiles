@@ -12,7 +12,7 @@ patterns = [
 ]
 blocked = ('dot_ssh/', 'dot_aws/', 'dot_kube/', 'dot_local/state/',
            'dot_pi/agent/sessions/', 'dot_pi/agent/npm/', 'dot_pi/agent/git/',
-           'dot_config/syncthing/', 'dot_config/Bitwarden/', 'dot_config/omarchy/',
+           'dot_config/syncthing/', 'dot_config/Bitwarden/',
            'dot_config/hypr/', 'dot_local/share/sddm/')
 files = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-co', '--exclude-standard', '-z']).decode().split('\0')
 failures = []

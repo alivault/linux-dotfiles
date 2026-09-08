@@ -1,7 +1,7 @@
 # Independent ARM64 static QEMU packages
 
 These are locally maintained Arch packages, repackaging Debian's static ARM64
-QEMU binaries and upstream QEMU's binfmt generator. No Omarchy repository,
+QEMU binaries and upstream QEMU's binfmt generator. No third-party desktop repository,
 package archive, helper or signing key is needed to build them.
 
 ```sh

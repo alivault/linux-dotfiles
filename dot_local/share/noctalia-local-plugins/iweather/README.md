@@ -3,7 +3,7 @@
 Native Luau panel/bar/service with a Python-standard-library data helper. Visual
 design adapted from https://github.com/alivault/iweather at commit
 `959c6d463cd48d73b4ca2648759b836d2bf8ec6e` (MIT; notices retained in LICENSE).
-That original design derives from Omarchy's weather widget. No Omarchy or QML
+See THIRD_PARTY_NOTICES.md for design attribution. No external desktop or QML
 runtime code, configuration, commands or packages are required here.
 
 - Left click opens the forecast; middle click refreshes; right click switches °C/°F.

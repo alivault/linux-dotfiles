@@ -1,12 +1,12 @@
 # Standalone desktop release
 
-The working laptop completed the live Omarchy retirement and reboot tests.
+The working laptop completed the standalone desktop migration and reboot tests.
 The source tree is now a standalone profile; this document supersedes the old
 incremental migration notes, which remain in the local migration archive.
 
 ## Candidate changes
 
-- Retired Omarchy/Hyprland/SDDM source and unreachable setup code removed from
+- Retired desktop/login source and unreachable setup code removed from
   the candidate tree. The pre-existing dirty shell configuration was archived,
   not discarded. No personal application data or credentials were deleted.
 - Explicit clean-machine pipeline, greeter build/login configuration,

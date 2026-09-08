@@ -1,5 +1,5 @@
 #!/bin/bash
-# Niri adaptation of Omarchy's ttfx screensaver. Only manages its own child.
+# Niri ttfx screensaver. Only manages its own child; see THIRD_PARTY_NOTICES.md.
 set -u
 effect_pid=""
 cleanup() {

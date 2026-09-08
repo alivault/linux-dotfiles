@@ -25,8 +25,8 @@ printf '%s\n' "$settings" | jq '
   | .npmCommand = ["mise", "exec", "node@26.8.1", "--", "npm"]
   | .treeFilterMode = "no-tools"
   | .defaultProvider = "openai-codex"
-  | .defaultModel = "gpt-5.6-sol"
-  | .defaultThinkingLevel = "high"
+  | .defaultModel = "gpt-6-astra"
+  | .defaultThinkingLevel = "low"
   | .hideThinkingBlock = true
   | .packages = (
       [

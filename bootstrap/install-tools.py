@@ -96,7 +96,7 @@ def install(name, spec, arch, backup):
                 shutil.copytree(source, HOME / '.local/share' / folder, dirs_exist_ok=True)
         if shutil.which('update-desktop-database'):
             subprocess.run(['update-desktop-database', str(HOME / '.local/share/applications')], check=True)
-    print(f'Installed {name} {spec["tag"]} independently of pacman/Omarchy', flush=True)
+    print(f'Installed {name} {spec["tag"]} independently of system packages', flush=True)
 
 
 def main():

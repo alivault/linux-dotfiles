@@ -43,7 +43,7 @@ case ${1:---help} in
       [[ -z $package || $package == \#* ]] && continue
       [[ -z ${seen[$package]:-} ]] || continue
       seen[$package]=1
-      # Force official repos: never silently draw replacements from [omarchy].
+      # Force official repos: never silently draw replacements from third-party repos.
       selected=""
       for repo in core extra alarm; do
         if pacman -Si "$repo/$package" >/dev/null 2>&1; then

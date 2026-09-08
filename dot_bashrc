@@ -1,4 +1,4 @@
-# Standalone user tools; no Omarchy runtime dependency.
+# Standalone user tools.
 export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
 export EDITOR=nvim
 export VISUAL=nvim

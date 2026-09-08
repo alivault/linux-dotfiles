@@ -1,5 +1,5 @@
 # Independent ARM64 repack of Debian's static QEMU, with upstream binfmt rules.
-# No Omarchy download URLs, repository or build helpers.
+# No third-party desktop download URLs, repository or build helpers.
 pkgbase=qemu-user-static
 pkgname=('qemu-user-static' 'qemu-user-static-binfmt')
 pkgver=10.0.11

@@ -1,27 +1,45 @@
 onboarding = false
-# Mirrors the Omarchy tmux config in config/tmux/tmux.conf
+# Mirrors the tmux config in config/tmux/tmux.conf
 # tmux session -> herdr workspace, tmux window -> herdr tab, tmux pane -> herdr pane
 
 [theme]
-# tmux ran on the terminal's own palette (bg=default, fg=default, ANSI blue accents)
-name = "terminal"
+# Follow the host terminal's light/dark appearance.
+name = "catppuccin"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
 
-[theme.custom]
-# The active tab is drawn as panel_bg text on an accent background, so panel_bg
-# has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
-panel_bg = "reset"
-# Preserve Ashen's terminal-based active accent while using Tokyo Night's
-# semantic agent colors for working, done/unseen, and idle/seen.
-yellow = "#e0af68"
-teal = "#7dcfff"
-green = "#9ece6a"
+# Herdr's built-in dark Catppuccin is Mocha; override it with Macchiato.
+[theme.custom.dark]
+accent = "#8aadf4"
+panel_bg = "#24273a"
+sidebar_bg = "#1e2030"
+active_row_bg = "#363a4f"
+selection_bg = "#494d64"
+surface0 = "#363a4f"
+surface1 = "#494d64"
+surface_dim = "#1e2030"
+overlay0 = "#6e738d"
+overlay1 = "#8087a2"
+text = "#cad3f5"
+subtext0 = "#a5adcb"
+mauve = "#c6a0f6"
+green = "#a6da95"
+yellow = "#eed49f"
+red = "#ed8796"
+blue = "#8aadf4"
+teal = "#8bd5ca"
+peach = "#f5a97f"
+
+[theme.custom.light]
+accent = "#1e66f5"
 
 [terminal]
 # Matches -c "#{pane_current_path}" on every split, window, and session
 new_cwd = "follow"
 
 [keys]
-# Keep these Omarchy-style aliases in addition to Herdr's defaults.
+# Keep these familiar aliases in addition to Herdr's defaults.
 previous_agent = "alt+k"
 next_agent = "alt+j"
 focus_agent = "alt+1..9"
@@ -61,13 +79,11 @@ tab_bar_right = [{ type = "zoom" }, { type = "hostname" }]
 # and it resolves on the server so remote sessions name the remote host.
 window_title = "{hostname}: {workspace}"
 
+status_indicators = "symbols"
 [ui.sidebar.agents.rows_by_agent]
 pi = [
   ["state_icon", "workspace"],
-  [
-    { token = "$session_name", fg = "#C6C8C6" },
-    { token = "agent", fg = "#C6C8C6" },
-  ],
+  ["$session_name", "agent"],
 ]
 
 [experimental]
@@ -75,5 +91,5 @@ pi = [
 kitty_graphics = true
 
 [ui.toast]
-# Desktop popups are provided by local.omarchy-agent-notify (Niri Pi Notifications).
+# Desktop notification plugin removed; keep toast delivery disabled.
 delivery = "off"

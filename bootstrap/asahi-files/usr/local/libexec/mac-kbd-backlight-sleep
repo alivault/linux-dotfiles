@@ -23,7 +23,7 @@ get_user_restore_state() {
 sync_user_restore_state() {
   local runtime uid gid saved_file
 
-  # Omarchy blanks the keyboard while locked and uses brightnessctl's
+  # The legacy idle helper blanks the keyboard while locked and uses brightnessctl's
   # per-user saved value on unlock. Keep that value aligned with this cycle.
   for runtime in /run/user/[0-9]*; do
     [[ -d "$runtime" ]] || continue
@@ -45,7 +45,7 @@ case "${1:-}" in
       sync_restore=1
       source=live
 
-      # If Omarchy already blanked a locked keyboard, the live zero is
+      # If the idle helper already blanked a locked keyboard, the live zero is
       # temporary. Its brightnessctl state still holds the pre-lock value.
       if [[ $brightness == 0 ]]; then
         saved_brightness=$(get_user_restore_state || true)

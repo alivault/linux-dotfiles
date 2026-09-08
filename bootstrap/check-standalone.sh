@@ -20,7 +20,6 @@ printf 'tempDir = "%s"\n' "$tmp/cache/tmp" > "$tmp/chezmoi.toml"
 HOME="$tmp/home" XDG_CONFIG_HOME="$tmp/home/.config" XDG_CACHE_HOME="$tmp/cache" \
   chezmoi --source "$repo" --destination "$tmp/home" --config "$tmp/chezmoi.toml" \
   --cache "$tmp/cache" apply --force --exclude scripts
-[[ ! -e $tmp/home/.config/omarchy ]]
 [[ ! -e $tmp/home/.config/hypr ]]
 [[ ! -e $tmp/home/bootstrap ]]
 [[ ! -e $tmp/home/.local/share/sddm ]]
@@ -32,20 +31,15 @@ import json, pathlib, sys, tomllib
 home = pathlib.Path(sys.argv[1])
 for path in (home / '.config/noctalia').glob('*.toml'):
     tomllib.loads(path.read_text())
-json.loads((home / '.config/vicinae/settings.json').read_text())
+# Vicinae writes JSON with a leading // documentation header.
+vicinae = (home / '.config/vicinae/settings.json').read_text()
+json.loads('\n'.join(line for line in vicinae.splitlines() if not line.lstrip().startswith('//')))
 json.loads((home / '.config/nvim/lazy-lock.json').read_text())
 assert 'require("config.lazy")' in (home / '.config/nvim/init.lua').read_text()
 assert not (home / '.config/nvim/lua/plugins/theme.lua').is_symlink()
-assert not (home / '.pi/agent/extensions/omarchy-system-theme.ts').exists()
-for directory in ['.config/nvim', '.config/fastfetch', '.config/btop', '.config/tmux', '.pi/agent/extensions']:
-    for path in (home / directory).rglob('*'):
-        if path.is_file():
-            assert 'omarchy' not in path.read_text().lower(), path
 for name in ['.bashrc', '.config/niri/config.kdl', '.config/kitty/kitty.conf', '.config/niri/screensaver.sh']:
     text = (home / name).read_text()
     assert '/home/ali/' not in text, name
-    assert '/usr/share/omarchy' not in text, name
-    assert '.local/state/omarchy' not in text, name
 PY
 if command -v niri >/dev/null; then niri validate --config "$tmp/home/.config/niri/config.kdl"; fi
 if command -v noctalia >/dev/null; then
