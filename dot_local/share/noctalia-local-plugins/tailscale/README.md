@@ -22,6 +22,19 @@ You need permission to operate the daemon (operator user or equivalent).
 
 ## Usage
 
+### Automatic Taildrop reception (local customization)
+
+This local `ali/tailscale` copy automatically saves incoming Taildrop files to your XDG
+Downloads folder (fallback: `~/Downloads`) and shows a Noctalia notification.
+In plugin settings, disable **Automatically receive Taildrop files**, choose a custom
+**Taildrop receive folder** (absolute path or `~/path`), or turn off success notifications.
+Checks run at the status refresh interval while Tailscale is connected and the plugin runs.
+Existing inbox files are collected too; duplicate names are renamed, never overwritten.
+The receive folder is created if needed. Files are not opened or executed.
+Identical repeated errors are suppressed until a successful check. Disabling reception
+does not cancel a batch already in progress. Do not run another auto-receiver alongside it.
+No separate systemd service or `notify-send` is needed.
+
 Add the **status** bar widget (`davemhammer/tailscale:status`). Click for the panel.
 
 Panel tabs:

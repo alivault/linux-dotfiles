@@ -103,9 +103,23 @@
     "ssh_on": "Tailscale SSH enabled",
     "ssh_started": "Opening SSH to {name}…",
     "success": "Done",
+    "taildrop_received": "Taildrop: saved {n} file(s) to your receive folder.",
+    "taildrop_failed": "Taildrop receive failed: {error}",
     "up": "Tailscale connected"
   },
   "settings": {
+    "taildrop_auto_receive": {
+      "label": "Automatically receive Taildrop files",
+      "description": "Save incoming files while the plugin is enabled. Existing files are renamed, never overwritten."
+    },
+    "taildrop_directory": {
+      "label": "Taildrop receive folder",
+      "description": "Empty uses XDG Downloads (fallback: ~/Downloads). Otherwise use an absolute path or ~/path."
+    },
+    "taildrop_notify": {
+      "label": "Notify when Taildrop files arrive",
+      "description": "Notify after files are saved. Receive errors are always reported."
+    },
     "admin_url": {
       "description": "Override the admin machines URL opened from the panel.",
       "label": "Admin console URL"

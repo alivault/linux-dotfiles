@@ -2,7 +2,7 @@
 
 id = "ali/tailscale"
 name = "Tailscale"
-version = "1.0.6"
+version = "1.0.7"
 plugin_api = 28
 author = "davemhammer"
 license = "MIT"
@@ -25,6 +25,27 @@ key = "notify_on_peer_change"
 type = "bool"
 label_key = "settings.notify_on_peer_change.label"
 description_key = "settings.notify_on_peer_change.description"
+default = true
+
+[[setting]]
+key = "taildrop_auto_receive"
+type = "bool"
+label_key = "settings.taildrop_auto_receive.label"
+description_key = "settings.taildrop_auto_receive.description"
+default = true
+
+[[setting]]
+key = "taildrop_directory"
+type = "string"
+label_key = "settings.taildrop_directory.label"
+description_key = "settings.taildrop_directory.description"
+default = ""
+
+[[setting]]
+key = "taildrop_notify"
+type = "bool"
+label_key = "settings.taildrop_notify.label"
+description_key = "settings.taildrop_notify.description"
 default = true
 
 [[setting]]

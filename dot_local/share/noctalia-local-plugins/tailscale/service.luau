@@ -143,6 +143,62 @@ local function notifyErr(msg)
   noctalia.notifyError(noctalia.tr("title"), msg)
 end
 
+local receiveBusy = false
+local receiveCheckedAt = 0
+local receiveError = ""
+
+local function receiveFiles()
+  if noctalia.getConfig("taildrop_auto_receive") ~= true then
+    receiveError = ""
+    return
+  end
+  if receiveBusy or not snapshot.running or nowSec() - receiveCheckedAt < refreshIntervalMs() / 1000 then
+    return
+  end
+  receiveBusy = true
+  receiveCheckedAt = nowSec()
+  local directory = trim(noctalia.getConfig("taildrop_directory"))
+  -- Quote configured paths; only expand ~/ ourselves, never evaluate shell input.
+  local cmd = "dir=" .. shellQuote(directory) .. "\n" .. [[
+if [ -z "$dir" ]; then
+  dir=$(xdg-user-dir DOWNLOAD 2>/dev/null) || dir=
+  [ -n "$dir" ] || dir="$HOME/Downloads"
+fi
+case "$dir" in
+  '~/'*) dir="$HOME/${dir#\~/}" ;;
+esac
+case "$dir" in
+  /*) ;;
+  *) echo 'Taildrop destination must be an absolute path' >&2; exit 1 ;;
+esac
+mkdir -p -- "$dir" || exit 1
+]] .. shellCommand({ tsBin(), "file", "get", "--verbose", "--conflict=rename" }) .. ' "$dir"'
+  noctalia.runAsync(cmd, function(result)
+    receiveBusy = false
+    local output = tostring(result and result.stdout or "")
+    local count = 0
+    for line in (output .. "\n"):gmatch("(.-)\n") do
+      if line:match("^wrote .+ %(%d+ bytes%)$") then
+        count += 1
+      end
+    end
+    -- Partial batches may save files before reporting an error.
+    if count > 0 and noctalia.getConfig("taildrop_notify") ~= false then
+      notifyOk(noctalia.tr("result.taildrop_received", { n = count }))
+    end
+    if not result or result.exitCode ~= 0 then
+      local err = trim(result and (result.stderr ~= "" and result.stderr or result.stdout) or "receive timed out")
+      if err == "" then err = "receive failed" end
+      if err ~= receiveError then
+        notifyErr(noctalia.tr("result.taildrop_failed", { error = err }))
+      end
+      receiveError = err
+    else
+      receiveError = ""
+    end
+  end, 1200000)
+end
+
 local function asString(v)
   if v == nil then
     return ""
@@ -479,6 +535,7 @@ local function applyBag(statusData, prefsData, exitStdout, errors)
   snapshot.loading = false
   snapshot.backendState = st.backendState or ""
   snapshot.running = st.running == true
+  receiveFiles()
   snapshot.hostname = st.hostname or ""
   snapshot.dnsName = st.dnsName or ""
   snapshot.ipv4 = st.ipv4 or ""
