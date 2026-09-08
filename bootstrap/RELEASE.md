@@ -14,8 +14,7 @@ incremental migration notes, which remain in the local migration archive.
 - Personal wallpaper excluded from publication; existing local JPEG still used.
   Fresh machines get original generated artwork; required third-party notices
   and the Neovim Apache license are retained.
-- Worker project: `~/code/dotfiles-bootstrap`. New canonical hostname is
-  `dots.aliabbas.dev`; `d.aliabbas.dev` will be retired without a redirect.
+- Worker project: `~/code/dotfiles-bootstrap`, serving `dots.aliabbas.dev`.
   The Worker checks both the immutable commit and bootstrap content checksum.
   Its release guard prevents deployment without a published, checksum-matching pin.
 
@@ -62,8 +61,7 @@ the unused runtime bridge. Other firewall rules, cached images and QEMU remain.
 Commit, push and deployment were authorized on 2026-09-08. Publish the reviewed
 dotfiles commit before pinning its exact ref and bootstrap SHA256 in the Worker.
 The Worker's release guard checks the public source before deployment; its
-`wrangler.jsonc` records the immutable release being served. The old hostname
-must not serve the retired installer or redirect to the new hostname.
+`wrangler.jsonc` records the immutable release being served.
 
 The native iWeather plugin, World Clock, native Tailscale tray and desktop
 appearance changes are included. Personal weather settings/cache remain local.

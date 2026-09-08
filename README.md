@@ -1,12 +1,15 @@
 # Ali's Linux dotfiles
 
-Standalone **Arch Linux / Arch Linux ARM + Niri + Noctalia + Vicinae**, managed by
-chezmoi. Tested on an Asahi MacBook Air M1; x86_64 is supported by the manifests
-and release pins but still needs a fresh-machine smoke test.
+Personal **Arch Linux / Arch Linux ARM** desktop configuration and explicit setup
+scripts, managed by [chezmoi](https://www.chezmoi.io/). The desktop uses **Niri**,
+**Noctalia** and **Vicinae**, with **Kitty + Herdr + Pi** for coding.
 
-No Omarchy installation, repository, service or runtime integration is required.
-This configures an **already installed, bootable Arch system**; it never partitions
-disks or installs/replaces Asahi kernels, firmware, bootloaders or speaker safety.
+Used on an Asahi MacBook Air M1. The manifests and release pins also target
+x86_64, but fresh-machine and x86_64 boot smoke tests remain outstanding.
+
+This is a standalone profile for an **already installed, bootable Arch system**,
+not an OS installer. It does not require Omarchy, partition disks, or install or
+replace Asahi kernels, firmware, bootloaders or speaker-safety components.
 
 The bar includes a native [iWeather widget](dot_local/share/noctalia-local-plugins/iweather/README.md)
 with hourly/five-day forecasts, city search and unit switching. No API key is
@@ -14,9 +17,9 @@ needed; chosen locations and cached forecasts stay outside the public source.
 
 ## Install
 
-The canonical entry point is below. The old `d.aliabbas.dev` hostname is retired;
-do not use old installer copies. Fresh-machine and x86_64 boot smoke tests are
-still outstanding; review the [release notes](bootstrap/RELEASE.md).
+Start with an updated Arch Linux or Arch Linux ARM system, networking, a normal
+login user, and `git`, `curl` and `polkit` installed. Review the
+[setup requirements](bootstrap/README.md) and [release notes](bootstrap/RELEASE.md).
 
 ```sh
 curl -fsSL https://dots.aliabbas.dev -o /tmp/dotfiles-bootstrap.sh
@@ -24,9 +27,10 @@ less /tmp/dotfiles-bootstrap.sh
 sh /tmp/dotfiles-bootstrap.sh
 ```
 
-The Worker verifies the bootstrap checksum and injects an immutable repository
-commit. Setup asks before provisioning and applying configuration. Local
-authentication stays in pkexec; never paste a password into a chat or script.
+The bootstrap endpoint verifies the script checksum and selects an immutable
+repository commit. Setup asks before provisioning and applying configuration;
+package installation and system changes require local administrator approval.
+The hosted release is pinned separately from this repository's latest commit.
 
 For the current local checkout:
 
@@ -37,7 +41,8 @@ bash bootstrap/setup.sh --plan
 # Review bootstrap/README.md, then explicitly run bootstrap/setup.sh when needed.
 ```
 
-Normal updates remain configuration-only:
+To preview and apply configuration from your current chezmoi checkout without
+running the provisioning pipeline:
 
 ```sh
 chezmoi diff
@@ -51,8 +56,10 @@ chezmoi apply --exclude scripts
   2x internal-panel scaling only on detected Asahi machines.
 - Noctalia shell, notifications, authentication, idle/lock, Tokyo Night and
   Adwaita icons; Vicinae launcher, clipboard and emoji.
-- Kitty, Chromium, Obsidian, LibreOffice, LazyVim/Neovim, tmux, Herdr,
-  mise-managed Node/Pi/Codex CLI, F9 toggle dictation.
+- Kitty, Herdr and Pi, including clickable desktop notifications that return to
+  the originating agent pane and raise its Kitty window through Niri.
+- Chromium, Obsidian, LibreOffice, LazyVim/Neovim, tmux, mise-managed
+  Node/Pi/Codex CLI, and F9 toggle dictation.
 - Explicit setup for Tailscale, Syncthing, SSH, printing, Bitwarden, keyd,
   Noctalia Greeter and the tested Asahi keyboard-backlight suspend helper.
 - SHA256-pinned native tools/model/build sources; separate optional Vite+,
@@ -82,7 +89,8 @@ Only selected source files are managed. Credentials, browser profiles, SSH keys,
 Pi history/auth/trust, Bitwarden vaults, Syncthing identities and runtime state
 are not captured. Noctalia GUI overrides remain local. Pi settings are merged,
 preserving unrelated local values and package filters; required package versions
-are pinned and telemetry is disabled.
+are pinned and Pi telemetry is disabled. Herdr plugin registration preserves
+other installed plugins and the notification plugin's enabled/disabled choice.
 
 The existing personal `~/.local/share/desktop-assets/wallpaper.jpg` is preserved
 if present, but is not redistributed. Fresh installs use the original generated
