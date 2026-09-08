@@ -1,6 +1,6 @@
 # Plugin code is managed by Noctalia; credentials and runtime data stay local.
 [plugins]
-enabled = ["noctalia/world_clock", "ali/iweather"]
+enabled = ["noctalia/world_clock", "ali/iweather", "ali/tailscale"]
 
 [[plugins.source]]
 name = "official"
@@ -25,3 +25,7 @@ enabled = true
 
 [widget.iweather]
 type = "ali/iweather:weather"
+
+[widget.tailscale]
+type = "ali/tailscale:status"
+show_counts = false

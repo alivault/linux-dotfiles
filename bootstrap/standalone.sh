@@ -94,7 +94,8 @@ case ${1:---help} in
     systemctl --user enable syncthing.service
     systemctl --user enable fcitx5.service
     systemctl --user enable bt-agent.service
-    systemctl --user enable tailscale-systray.service
+    # Noctalia's community Tailscale plugin replaces the standalone tray app.
+    systemctl --user disable --now tailscale-systray.service 2>/dev/null || true
     if [[ -x $HOME/.local/bin/voxtype ]]; then
       systemctl --user enable voxtype.service
     else
