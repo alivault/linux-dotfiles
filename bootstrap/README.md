@@ -9,6 +9,12 @@ refreshes must be part of a full Arch upgrade, not `pacman -Sy` partial upgrades
 Use the appropriate upstream Asahi installation process before this profile;
 this project never supplies kernels, firmware, boot configuration or disk setup.
 
+The profile is used on an Asahi MacBook Air M1. Manifests and release pins also
+target x86_64, but fresh-machine and x86_64 boot smoke tests remain outstanding.
+The setup does not replace Asahi speaker-safety components. Internal-panel 2x
+scaling and the keyboard-backlight suspend helper apply only on detected Asahi
+machines.
+
 Keep another TTY/login available. Review these files before privileged setup:
 
 - `packages/*.txt`: official packages only; availability is checked before the
@@ -24,6 +30,26 @@ Keep another TTY/login available. Review these files before privileged setup:
 - `greeter/`: SHA256-pinned Noctalia Greeter 1.3.1 build. Its upstream setup helper
   adds the PAM runtime-session module, preserves a backup and prepares greeter
   state. No blanket passwordless appearance-sync permission is installed.
+
+## Bootstrap and validation
+
+The hosted entry point at `https://dots.aliabbas.dev` is served by a Worker that
+verifies the bootstrap checksum and injects an immutable repository commit.
+That release is pinned separately from this repository's latest commit. Setup
+asks before provisioning and applying configuration; system changes require
+local administrator approval through pkexec.
+
+To validate and preview setup from your current checkout:
+
+```sh
+cd "$(chezmoi source-path)"
+bash bootstrap/check-source.sh
+bash bootstrap/setup.sh --plan
+```
+
+Native tools, model downloads and build sources are SHA256-pinned. Node/Pi/Codex
+and required Pi packages have explicit version pins. Arch and Flatpak remain
+rolling repositories: these pins are **not a hermetic OS snapshot**.
 
 ## Pipeline
 
@@ -95,6 +121,24 @@ as the latest security release and is not installed by the default pipeline.
   QEMU itself does not require Docker.
   Review `/etc/resolv.conf` against the enabled resolver on a new installation;
   the installer deliberately does not replace an existing resolver symlink.
+
+## Privacy and appearance
+
+Only selected source files are managed. Credentials, browser profiles, SSH keys,
+Pi history/auth/trust, Bitwarden vaults, Syncthing identities and runtime state
+are not captured. Noctalia GUI overrides remain local. Pi settings are merged,
+preserving unrelated local values and package filters; Pi telemetry is disabled.
+Herdr plugin registration preserves other installed plugins and the notification
+plugin's enabled/disabled choice.
+
+The existing personal `~/.local/share/desktop-assets/wallpaper.jpg` is preserved
+if present, but is not redistributed. Fresh installs use the original generated
+`wallpaper.png`; its generator is `bootstrap/generate-wallpaper.py`. Third-party
+attributions and license exceptions are in
+[THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+
+The native iWeather widget needs no API key. Chosen locations and cached forecasts
+remain local, outside the public source.
 
 ## Recovery
 
