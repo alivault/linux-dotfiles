@@ -73,3 +73,7 @@ pi = [
 [experimental]
 # Render Kitty graphics emitted by pane applications in attached local clients.
 kitty_graphics = true
+
+[ui.toast]
+# Desktop popups are provided by local.omarchy-agent-notify (Niri Pi Notifications).
+delivery = "off"

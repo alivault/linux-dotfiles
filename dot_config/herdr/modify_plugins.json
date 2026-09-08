@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+"""Register the local notification plugin without replacing other plugins."""
+import json
+from pathlib import Path
+import sys
+
+raw = sys.stdin.read()
+plugins = json.loads(raw) if raw.strip() else []
+if not isinstance(plugins, list):
+    raise SystemExit("Expected Herdr plugins.json to contain an array")
+
+root = Path.home() / ".local/share/herdr/plugins/omarchy-agent-notify"
+plugin_id = "local.omarchy-agent-notify"
+existing = next((p for p in plugins if p.get("plugin_id") == plugin_id), {})
+entry = {
+    **existing,
+    "plugin_id": plugin_id,
+    "name": "Niri Pi Notifications",
+    "version": "0.2.0",
+    "min_herdr_version": "0.8.2",
+    "description": "Clickable Pi desktop notifications targeting the Herdr pane and attached Kitty window on Niri.",
+    "manifest_path": str(root / "herdr-plugin.toml"),
+    "plugin_root": str(root),
+    "enabled": existing.get("enabled", True),
+    "platforms": ["linux"],
+    "events": [{"on": "pane.agent_status_changed", "command": ["bash", "notify.sh"]}],
+    "source": {"kind": "local"},
+}
+plugins = [p for p in plugins if p.get("plugin_id") != plugin_id]
+plugins.append(entry)
+json.dump(plugins, sys.stdout, indent=2)
+sys.stdout.write("\n")

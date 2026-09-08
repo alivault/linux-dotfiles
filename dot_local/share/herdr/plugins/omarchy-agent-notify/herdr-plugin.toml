@@ -1,0 +1,10 @@
+id = "local.omarchy-agent-notify"
+name = "Niri Pi Notifications"
+version = "0.2.0"
+min_herdr_version = "0.8.2"
+description = "Clickable Pi desktop notifications targeting the Herdr pane and attached Kitty window on Niri."
+platforms = ["linux"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["bash", "notify.sh"]
