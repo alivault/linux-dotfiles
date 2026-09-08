@@ -40,7 +40,7 @@ lock_before_suspend = true
 
 [idle]
 pre_action_fade_seconds = 0
-behavior_order = ["screensaver", "lock", "screen-off"]
+behavior_order = ["screensaver", "lock", "screen-off", "keyboard-off"]
 
 [idle.behavior.screensaver]
 timeout = 150
@@ -62,6 +62,15 @@ action = "screen_off"
 timeout = 0
 locked_timeout = 5
 enabled = true
+
+# Match screen-off above; restore the saved keyboard brightness on activity.
+[idle.behavior.keyboard-off]
+action = "command"
+timeout = 0
+locked_timeout = 5
+enabled = true
+command = "{{ .chezmoi.homeDir }}/.local/bin/keyboard-backlight-idle off"
+resume_command = "{{ .chezmoi.homeDir }}/.local/bin/keyboard-backlight-idle restore"
 
 [dock]
 enabled = false

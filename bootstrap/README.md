@@ -31,6 +31,39 @@ Keep another TTY/login available. Review these files before privileged setup:
   adds the PAM runtime-session module, preserves a backup and prepares greeter
   state. No blanket passwordless appearance-sync permission is installed.
 
+## Personal lock-screen and greeter appearance
+
+`~/.config/noctalia/95-lockscreen.toml` defines a compact 260px password panel
+and a static “Ali Abbas” label on `eDP-1` (1280×800 logical coordinates).
+The session menu keeps Noctalia's defaults. Adjust the output and placement
+for other monitors. Preview while unlocked with
+`noctalia msg lockscreen-widgets-edit`.
+
+Noctalia's GUI state (`~/.local/state/noctalia/settings.toml`) is intentionally
+not tracked. Existing `[lockscreen_widgets]` overrides there take precedence;
+back up that file and remove only those overrides if the managed layout does
+not appear. Do not replace unrelated GUI preferences.
+
+The keyboard backlight uses the same five-second locked-idle timeout as the
+display. `keyboard-backlight-idle` saves brightness under `$XDG_RUNTIME_DIR`
+and restores it on activity. It targets the Asahi `kbd_backlight` LED device;
+disable the `keyboard-off` behavior on machines without that device.
+Automatic suspend is not enabled.
+
+These one-time actions are not run by `chezmoi apply`:
+
+- Sync the current wallpaper/palette to the greeter with
+  `noctalia msg greeter-sync`, approving authentication if requested.
+- Set the system account's display name (not username or home directory) using
+  AccountsService. For this account:
+  ```sh
+  busctl --system call org.freedesktop.Accounts /org/freedesktop/Accounts \
+    org.freedesktop.Accounts FindUserByName s ali
+  # Use the returned object path; User1001 is specific to this machine.
+  busctl --system call org.freedesktop.Accounts /org/freedesktop/Accounts/User1001 \
+    org.freedesktop.Accounts.User SetRealName s 'Ali Abbas'
+  ```
+
 ## Bootstrap and validation
 
 The hosted entry point at `https://dots.aliabbas.dev` is served by a Worker that

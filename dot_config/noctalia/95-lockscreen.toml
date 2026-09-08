@@ -1,0 +1,53 @@
+# Minimal lock screen, positioned for the laptop's 1280x800 logical output.
+[lockscreen_widgets]
+enabled = true
+schema_version = 2
+widget_order = ["lockscreen-name", "lockscreen-login-box@eDP-1"]
+
+[lockscreen_widgets.grid]
+visible = false
+
+[lockscreen_widgets.widget.lockscreen-name]
+type = "label"
+output = "eDP-1"
+cx = 640.0
+cy = 372.0
+box_width = 0.0
+box_height = 0.0
+placement_width = 1280.0
+placement_height = 800.0
+rotation = 0.0
+
+[lockscreen_widgets.widget.lockscreen-name.settings]
+title = "Ali Abbas"
+description = ""
+font_family = "sans-serif"
+color = "#ffffff"
+background = false
+shadow = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+type = "login_box"
+output = "eDP-1"
+cx = 640.0
+cy = 420.0
+box_width = 260.0
+box_height = 72.0
+placement_width = 1280.0
+placement_height = 800.0
+rotation = 0.0
+
+[lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+layout = "compact"
+background_opacity = 0.0
+background_radius = 0.0
+show_media = false
+show_weather = false
+show_session_buttons = true
+show_login_button = false
+show_keyboard_layout = false
+show_unlock_hint = false
+show_caps_lock = true
+center_password_text = false
+input_opacity = 0.65
+input_radius = 8.0
