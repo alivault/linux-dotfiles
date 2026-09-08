@@ -7,9 +7,14 @@ That original design derives from Omarchy's weather widget. No Omarchy or QML
 runtime code, configuration, commands or packages are required here.
 
 - Left click opens the forecast; middle click refreshes; right click switches °C/°F.
-- Click the city name to search by city/ZIP, press Enter, then select a result.
+- Click the city name to reveal city/ZIP search, unit switching and refresh.
+  Press Enter to search, then select a result.
 - Six hourly slots and five daily ranges reproduce the original layout. Main
   colors follow Noctalia; temperature bars retain iWeather's blue/pink gradient.
+- The compact panel uses a 12pt (16 logical px) sans-serif base, 40px daily rows,
+  aligned day/icon/low/range/high columns and a 440×480 logical-pixel surface.
+  Hour labels use compact 24-hour notation. Noctalia handles HiDPI scaling.
+  The normal forecast fits without scrolling; expanded search can scroll.
 - First use reads the already-resolved location from Noctalia's local cache.
   Otherwise the panel asks for a location. No additional IP geolocation service
   is contacted. A selected location and units persist only in pluginDataDir().
