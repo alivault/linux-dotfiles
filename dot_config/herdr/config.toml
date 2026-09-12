@@ -30,6 +30,7 @@ previous_workspace = "alt+h"
 next_workspace = "alt+l"
 
 [ui]
+mouse_scroll_lines = 1
 accent = "blue"
 agent_panel_sort = "spaces"
 show_agent_labels_on_pane_borders = true
