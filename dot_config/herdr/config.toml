@@ -28,6 +28,8 @@ move_tab_previous = "alt+shift+["
 move_tab_next = "alt+shift+]"
 previous_workspace = "alt+h"
 next_workspace = "alt+l"
+cycle_pane_next = ""
+last_pane = "prefix+tab"
 
 [[keys.command]]
 key = "prefix+m"
