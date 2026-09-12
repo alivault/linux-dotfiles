@@ -1,2 +1,2 @@
-# Login shells and niri-session receive the same independent user-tool PATH.
+# Login shells receive the Omarchy environment and personal Bash overrides.
 [[ -f ~/.bashrc ]] && . ~/.bashrc

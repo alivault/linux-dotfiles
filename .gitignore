@@ -3,8 +3,6 @@
 
 # Pi credentials, conversations, caches, and installed packages
 dot_pi/agent/auth.json
-dot_pi/agent/private_auth.json
-dot_pi/agent/private_settings.json
 dot_pi/agent/sessions/
 dot_pi/agent/npm/
 dot_pi/agent/git/
@@ -26,30 +24,21 @@ dot_config/google-chrome/
 dot_config/BraveSoftware/
 dot_config/chromium-flags.conf
 
-# Historical backups and personal wallpaper (not licensed for redistribution)
-dot_local/share/desktop-assets/wallpaper.jpg
+# Generated Omarchy state and historical backups
+dot_config/omarchy/current/
 **/*.bak.*
 **/.ali.keybindings.bak.*/
 **/hypr-v3-backup/
 **/hypr-quattro-broken/
-dot_ssh/
-dot_aws/
-dot_kube/
-dot_local/state/
-dot_config/syncthing/
-dot_config/private_syncthing/
-dot_config/Bitwarden/
-dot_config/noctalia/private_settings.toml
 
 # Herdr runtime state
 dot_config/herdr/logs/
 dot_config/herdr/sessions/
 dot_local/state/herdr/
 
-# Build artifacts stay outside the public source tree.
-*.pkg.tar.*
-node_modules/
-.wrangler/
+# Tmux is deliberately not managed here
+dot_config/tmux/
+dot_tmux.conf
 
 # Common private-key and environment-file formats
 *.pem
@@ -58,5 +47,4 @@ node_modules/
 *.key
 .env
 .env.*
-**/__pycache__/
-*.pyc
+__pycache__/

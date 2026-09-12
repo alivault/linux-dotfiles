@@ -1,0 +1,7 @@
+[".config/omarchy/plugins/ali.iweather"]
+    type = "git-repo"
+    url = "https://github.com/alivault/iweather.git"
+    exact = true
+    refreshPeriod = "168h"
+    [".config/omarchy/plugins/ali.iweather".pull]
+        args = ["--ff-only"]

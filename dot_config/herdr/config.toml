@@ -3,36 +3,15 @@ onboarding = false
 # tmux session -> herdr workspace, tmux window -> herdr tab, tmux pane -> herdr pane
 
 [theme]
-# Follow the host terminal's light/dark appearance.
-name = "catppuccin"
-auto_switch = true
-dark_name = "catppuccin"
-light_name = "catppuccin-latte"
+# Follow Omarchy's generated terminal palette, as in the original profile.
+name = "terminal"
 
-# Herdr's built-in dark Catppuccin is Mocha; override it with Macchiato.
-[theme.custom.dark]
-accent = "#8aadf4"
-panel_bg = "#24273a"
-sidebar_bg = "#1e2030"
-active_row_bg = "#363a4f"
-selection_bg = "#494d64"
-surface0 = "#363a4f"
-surface1 = "#494d64"
-surface_dim = "#1e2030"
-overlay0 = "#6e738d"
-overlay1 = "#8087a2"
-text = "#cad3f5"
-subtext0 = "#a5adcb"
-mauve = "#c6a0f6"
-green = "#a6da95"
-yellow = "#eed49f"
-red = "#ed8796"
-blue = "#8aadf4"
-teal = "#8bd5ca"
-peach = "#f5a97f"
-
-[theme.custom.light]
-accent = "#1e66f5"
+[theme.custom]
+panel_bg = "reset"
+# Keep semantic agent colors while the terminal follows the selected theme.
+yellow = "#e0af68"
+teal = "#7dcfff"
+green = "#9ece6a"
 
 [terminal]
 # Matches -c "#{pane_current_path}" on every split, window, and session

@@ -1,3 +1,3 @@
 #!/bin/bash
 # Never change global tool versions just by launching the CLI.
-exec "$HOME/.local/bin/mise" exec pi@0.85.1 -- pi "$@"
+exec mise exec pi@0.85.1 -- pi "$@"

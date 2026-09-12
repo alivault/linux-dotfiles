@@ -1,18 +1,12 @@
-# Standalone user tools.
-export PATH="$HOME/.local/share/mise/shims:$HOME/.local/bin:$PATH"
-export EDITOR=nvim
-export VISUAL=nvim
-export TERMINAL=kitty
+# Omarchy 4 environment (OMARCHY_PATH + PATH), needed even for non-interactive shells.
+[[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] && source /usr/share/omarchy/default/bash/env-bootstrap
 
 # If not running interactively, don't do anything else.
 [[ $- != *i* ]] && return
 
-[[ -r /usr/share/bash-completion/bash_completion ]] && source /usr/share/bash-completion/bash_completion
-command -v mise >/dev/null && eval "$(mise activate bash)"
-command -v starship >/dev/null && eval "$(starship init bash)"
-command -v zoxide >/dev/null && eval "$(zoxide init bash)"
-alias ll='ls -alh'
-alias vim=nvim
+# All the default Omarchy aliases and functions
+# (don't mess with these directly, just overwrite them here!)
+source "$OMARCHY_PATH/default/bash/rc"
 
 # Add your own exports, aliases, and functions here.
 #
@@ -25,4 +19,5 @@ pi() {
   FFF_ENABLE_HOME_SCAN="${FFF_ENABLE_HOME_SCAN:-0}" command pi "$@"
 }
 
-# Node is managed by mise. Vite+ is optional, not prepended to PATH here.
+# Vite+ bin (https://viteplus.dev)
+[[ -r "$HOME/.vite-plus/env" ]] && . "$HOME/.vite-plus/env"

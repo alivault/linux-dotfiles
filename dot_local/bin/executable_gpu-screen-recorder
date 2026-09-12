@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Omarchy's Asahi package installs wf-recorder, but its capture command invokes
+# gpu-screen-recorder. Keep the process name Omarchy expects and run the local
+# Asahi compatibility backend.
+exec -a gpu-screen-recorder python3 "$HOME/.local/libexec/omarchy-asahi-screenrecord.py" "$@"
