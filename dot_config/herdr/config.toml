@@ -61,7 +61,7 @@ window_title = "{hostname}: {workspace}"
 status_indicators = "symbols"
 [ui.sidebar.agents.rows_by_agent]
 pi = [
-  ["state_icon", "workspace"],
+  ["state_icon", "machine", "workspace"],
   ["$session_name", "agent"],
 ]
 
