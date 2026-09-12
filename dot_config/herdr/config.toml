@@ -29,6 +29,18 @@ move_tab_next = "alt+shift+]"
 previous_workspace = "alt+h"
 next_workspace = "alt+l"
 
+[[keys.command]]
+key = "prefix+m"
+type = "shell"
+command = 'bash "$HOME/.config/herdr/move-pane.sh" new'
+description = "move pane to new tab"
+
+[[keys.command]]
+key = "prefix+backspace"
+type = "shell"
+command = 'bash "$HOME/.config/herdr/move-pane.sh" previous'
+description = "move pane into previous tab"
+
 [ui]
 mouse_scroll_lines = 1
 accent = "blue"
