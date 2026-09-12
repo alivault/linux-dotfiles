@@ -7,7 +7,8 @@ Public, allowlisted Chezmoi source for Ali's Omarchy workstation.
 Install **Omarchy 4 first** (including the supported Apple Silicon port on
 Asahi). This repository is your chezmoi configuration layer, not an OS installer.
 It does not install Niri/Noctalia, replace the login manager, or change disks,
-bootloaders or the boot setup.
+bootloaders. On Asahi, keyboard provisioning rebuilds the initramfs to persist
+media-key mode.
 
 The public bootstrap hostname remains **`dots.aliabbas.dev`**:
 
@@ -98,6 +99,7 @@ mode on systems where `/tmp` is a tmpfs.
   account support through Omarchy's stock installer
 - Hyprland bindings, input, appearance, and monitor overrides
 - System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout
+- Asahi media keys without Fn (hold Fn for F1–F12), via explicit provisioning
 - Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
 - Vite+ (`vp`) installed in `~/.vite-plus` without replacing the existing Node.js manager
 - Git, Herdr, imv, and the Hyprland preview share picker

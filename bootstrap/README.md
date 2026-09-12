@@ -3,7 +3,8 @@
 Start with a working, updated **Omarchy 4** installation. On Apple Silicon, use
 the supported Asahi Omarchy port first. This bootstrap only configures an
 existing Omarchy system; it does not partition, install a desktop/login manager,
-replace boot files, or reboot.
+replace bootloaders, or reboot. The Asahi media-key step rebuilds the initramfs
+to persist its keyboard-driver setting.
 
 ## From a reviewed checkout
 
@@ -43,6 +44,7 @@ downloads, keyd configuration and service activation remain explicit:
 bash bootstrap/provision.sh --list
 bash bootstrap/provision.sh                 # all steps, after chezmoi apply
 bash bootstrap/provision.sh tailscale       # one step
+bash bootstrap/provision.sh apple-media-keys # Asahi: media keys without Fn
 bash bootstrap/doctor.sh
 ```
 
@@ -50,6 +52,11 @@ Provisioning installs Kitty, mise tools, pinned Vite+, keyd, Bitwarden,
 Obsidian, Syncthing, Chromium account support and Tailscale. It may request
 `sudo` and start/reload keyd, Syncthing and Tailscale. Fish configuration is
 retained but does not change your login shell; install Fish separately if wanted.
+
+On Asahi, provisioning restores brightness/volume keys without holding Fn
+(`hid_apple fnmode=1`). A separate modprobe override preserves Omarchy's driver
+configuration, applies the mode immediately when the driver is loaded, and
+rebuilds the initramfs for reboot persistence. Other machines skip this step.
 
 Sign into applications and Pi/Codex manually. Pair Syncthing devices/folders,
 authenticate Tailscale, and choose the Obsidian vault yourself. No identities,
