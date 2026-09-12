@@ -4,6 +4,7 @@ import type { ExtensionAPI, ExtensionContext, InputEvent } from "@earendil-works
 const MAX_SESSION_NAME_LENGTH = 48;
 const MAX_SESSION_NAME_WORDS = 6;
 const MAX_PROMPT_CHARS = 1600;
+const GENERATION_TIMEOUT_MS = 30_000;
 const IMAGE_ONLY_NAME = "Image task";
 const TITLE_SYSTEM_PROMPT = `You write short session names for coding-agent terminal tabs.
 
@@ -137,7 +138,7 @@ function summarizeContent(content: unknown): { text: string; imageCount: number 
 }
 
 function getCurrentSessionName(ctx: ExtensionContext): string | undefined {
-	return cleanupCandidate(ctx.sessionManager.getSessionName());
+	return ctx.sessionManager.getSessionName()?.trim() || undefined;
 }
 
 function setCurrentSessionName(pi: ExtensionAPI, name: string, ctx: ExtensionContext): void {
@@ -174,11 +175,14 @@ async function generateSessionNameWithLlm(
 	text: string,
 	imageCount: number,
 	ctx: ExtensionContext,
-): Promise<string | undefined> {
-	const model = ctx.modelRegistry.find("openai-codex", "gpt-5.4-mini");
-	if (!model) return undefined;
+	signal: AbortSignal,
+): Promise<string> {
+	// A catalog entry does not guarantee account access (notably with Codex
+	// subscriptions). Use the session's selected model instead of a fixed mini.
+	const model = ctx.model;
+	if (!model) throw new Error("No model selected");
 
-	if (!ctx.modelRegistry.hasConfiguredAuth(model)) return undefined;
+	if (!ctx.modelRegistry.hasConfiguredAuth(model)) throw new Error(`No authentication configured for ${model.provider}`);
 
 	const response = await ctx.modelRegistry.complete(
 		model,
@@ -197,15 +201,22 @@ async function generateSessionNameWithLlm(
 				},
 			],
 		},
-		{ reasoningEffort: "minimal" },
+		{ reasoningEffort: "low", signal },
 	);
+
+	// Provider failures are commonly returned as messages, not thrown errors.
+	if (response.stopReason === "error" || response.stopReason === "aborted") {
+		throw new Error(response.errorMessage || `Title generation ${response.stopReason}`);
+	}
 
 	const raw = response.content
 		.filter((block): block is { type: "text"; text: string } => block.type === "text")
 		.map((block) => block.text)
 		.join(" ");
 
-	return cleanupCandidate(raw);
+	const name = cleanupCandidate(raw);
+	if (!name) throw new Error("Model returned an empty title");
+	return name;
 }
 
 function extractFirstUserPromptFromBranch(ctx: ExtensionContext): { text: string; imageCount: number } | undefined {
@@ -224,8 +235,10 @@ export default function (pi: ExtensionAPI) {
 	let pendingGeneration = false;
 	let managedSessionName: string | undefined;
 	let disposed = false;
+	let generationController: AbortController | undefined;
 
 	function resetState(ctx: ExtensionContext): void {
+		generationController?.abort();
 		sessionNonce += 1;
 		activeSessionId = ctx.sessionManager.getSessionId();
 		pendingGeneration = false;
@@ -251,27 +264,33 @@ export default function (pi: ExtensionAPI) {
 		return true;
 	}
 
-	function scheduleRefinement(text: string, imageCount: number, ctx: ExtensionContext): void {
+	async function scheduleRefinement(text: string, imageCount: number, ctx: ExtensionContext): Promise<void> {
 		if (pendingGeneration) return;
 		pendingGeneration = true;
+		const controller = new AbortController();
+		generationController = controller;
+		const timeout = setTimeout(() => controller.abort(new Error("Title generation timed out")), GENERATION_TIMEOUT_MS);
 
 		const nonce = sessionNonce;
 		const sessionId = activeSessionId;
 
-		void (async () => {
-			try {
-				const generated = await generateSessionNameWithLlm(text, imageCount, ctx);
-				if (!generated) return;
-				if (disposed || nonce !== sessionNonce || sessionId !== activeSessionId) return;
-				applyManagedName(generated, "refine", ctx);
-			} catch {
-				// Keep the heuristic name when generation fails.
-			} finally {
-				if (nonce === sessionNonce) {
-					pendingGeneration = false;
-				}
+		try {
+			const generated = await generateSessionNameWithLlm(text, imageCount, ctx, controller.signal);
+			controller.signal.throwIfAborted();
+			if (disposed || nonce !== sessionNonce || sessionId !== activeSessionId) return;
+			applyManagedName(generated, "refine", ctx);
+		} catch (error) {
+			// Keep the existing title, but don't silently conceal a broken model.
+			if (!disposed && nonce === sessionNonce && ctx.hasUI) {
+				ctx.ui.notify(`Auto-name: ${error instanceof Error ? error.message : String(error)}. Kept the current title; retry with /auto-name.`, "warning");
 			}
-		})();
+		} finally {
+			clearTimeout(timeout);
+			if (nonce === sessionNonce) {
+				pendingGeneration = false;
+				generationController = undefined;
+			}
+		}
 	}
 
 	function startAutoNaming(text: string, imageCount: number, ctx: ExtensionContext): void {
@@ -279,8 +298,25 @@ export default function (pi: ExtensionAPI) {
 
 		const heuristic = deriveHeuristicSessionName(text, imageCount);
 		applyManagedName(heuristic, "initial", ctx);
-		scheduleRefinement(text, imageCount, ctx);
+		void scheduleRefinement(text, imageCount, ctx);
 	}
+
+	pi.registerCommand("auto-name", {
+		description: "Regenerate the session title from its first prompt using the current model",
+		handler: async (_args, ctx) => {
+			if (pendingGeneration) {
+				if (ctx.hasUI) ctx.ui.notify("Auto-name is already generating a title", "info");
+				return;
+			}
+			const firstPrompt = extractFirstUserPromptFromBranch(ctx);
+			if (!firstPrompt) {
+				if (ctx.hasUI) ctx.ui.notify("Send a message before running /auto-name", "info");
+				return;
+			}
+			managedSessionName = getCurrentSessionName(ctx);
+			await scheduleRefinement(firstPrompt.text, firstPrompt.imageCount, ctx);
+		},
+	});
 
 	pi.on("session_start", async (_event, ctx) => {
 		resetState(ctx);
@@ -294,6 +330,7 @@ export default function (pi: ExtensionAPI) {
 
 	pi.on("session_shutdown", async () => {
 		disposed = true;
+		generationController?.abort();
 		sessionNonce += 1;
 		pendingGeneration = false;
 	});
