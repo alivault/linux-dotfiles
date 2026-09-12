@@ -49,6 +49,7 @@ hl.config({
   input = {
     touchpad = {
       natural_scroll = true,
+      scroll_factor = 0.2,
     },
   },
 })
@@ -59,6 +60,20 @@ hl.config({
 
 -- Agent terminals use a dedicated app-id, so match Kitty's terminal speed.
 o.window("org\\.omarchy\\.agent", { scroll_touchpad = 1.5 })
+
+-- Include Chromium in kinetic scrolling when the optional plugin is loaded.
+if hl.plugin and hl.plugin.kinetic_scroll then
+  hl.config({
+    plugin = {
+      kinetic_scroll = {
+        decel = 0.95,
+        delta_multiplier = 1.0,
+        min_velocity = 0.2,
+      },
+    },
+  })
+  hl.plugin.kinetic_scroll.enable("chromium")
+end
 
 -- Enable touchpad gestures for changing workspaces.
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Gestures/
