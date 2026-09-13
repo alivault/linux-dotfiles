@@ -5,3 +5,11 @@
     refreshPeriod = "168h"
     [".config/omarchy/plugins/ali.iweather".pull]
         args = ["--ff-only"]
+
+[".config/omarchy/plugins/ali.world-clock"]
+    type = "git-repo"
+    url = "https://github.com/alivault/omarchy-world-clock.git"
+    exact = true
+    refreshPeriod = "168h"
+    [".config/omarchy/plugins/ali.world-clock".pull]
+        args = ["--ff-only"]

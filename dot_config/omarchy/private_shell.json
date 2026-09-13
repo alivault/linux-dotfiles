@@ -33,23 +33,30 @@
       ],
       "right": [
         {
-          "id": "io.github.sspaeti.timezones",
+          "id": "ali.world-clock",
           "zones": [
             {
-              "label": "Home",
-              "shortLabel": "HOME",
-              "zone": "",
-              "home": true
+              "label": "New York",
+              "zone": "America/New_York"
+            },
+            {
+              "label": "London",
+              "zone": "Europe/London"
             },
             {
               "label": "Bergen",
-              "shortLabel": "BGO",
               "zone": "Europe/Oslo"
+            },
+            {
+              "label": "Istanbul",
+              "zone": "Europe/Istanbul"
+            },
+            {
+              "label": "Tokyo",
+              "zone": "Asia/Tokyo"
             }
           ],
-          "rightClick": "toggleHourFormat",
-          "hourFormat": "24h",
-          "hoverExpand": false
+          "hourFormat": "12h"
         },
         {
           "id": "omarchy.tailscale"
