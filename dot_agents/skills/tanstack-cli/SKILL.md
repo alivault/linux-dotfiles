@@ -1,120 +1,67 @@
 ---
 name: tanstack-cli
-description: Use the TanStack CLI to create TanStack Start or Router apps, discover and apply add-ons, retrieve official TanStack docs, inspect ecosystem metadata, author templates/add-ons, and pin TanStack versions. Trigger for `tanstack` CLI work and TanStack library documentation.
+description: >
+  Use the TanStack CLI for app scaffolding, add-ons, and versioned TanStack
+  documentation lookup. Applies to CLI operations and TanStack API research.
 metadata:
   version: "0.3.0"
 ---
 
 # TanStack CLI
 
-Use the installed CLI and its current catalog as the source of truth. TanStack
-commands, flags, add-on IDs, compatibility rules, and library APIs change.
+## Discovery
 
-## Start with discovery
+Use the installed CLI for supported commands and flags. Check `tanstack --version`
+and relevant `tanstack <command> --help` when needed; reuse verified results within
+the task. Prefer `--json` for discovery. If the CLI is unavailable, use the
+[official documentation](https://tanstack.com/cli/latest/docs/cli-reference).
 
-```bash
-tanstack --version
-tanstack --help
-tanstack <command> --help
-```
+For latest-version questions, compare `npm view @tanstack/cli version` with the
+installed version and the matching package release in
+[TanStack/cli](https://github.com/TanStack/cli/releases).
 
-When "latest" matters, compare with `npm view @tanstack/cli version` and inspect
-the package-specific stable release. Prefer `--json` for automation.
+## Documentation lookup
 
-Match the target project's framework and installed major versions. Search and
-fetch official, versioned documentation before answering API questions:
+Match the project's framework and installed library version. Find and fetch the
+relevant official page; reuse sources already checked for the task.
 
 ```bash
 tanstack libraries --json
-tanstack search-docs "route loaders" --library router --framework react --json
-tanstack doc router framework/react/guide/data-loading
-tanstack doc query framework/react/overview --docs-version v5
+tanstack search-docs "<query>" --library <id> --framework <framework> --json
+tanstack doc <library> <path> --docs-version <version>
 ```
 
-The fetch command is singular: `tanstack doc`. Use `libraries` to discover IDs.
-Convert a result URL to its library and path by removing the TanStack host,
-library/version/docs prefix, query, and anchor. Use documented major labels such
-as `v1` or `v5`, not an npm patch version. Cite pages used for behavior claims.
+Discover library IDs when unknown. Convert a result URL to its library and
+relative documentation path, omitting the URL prefix, version segment, query,
+and anchor. Documentation versions are labels such as `v1` or `v5`, not npm
+patch versions. Cite the specific pages used.
 
-## Create applications
+## Scaffolding and add-ons
 
-`tanstack create` defaults to TanStack Start. Use `--router-only` for a
-file-routed Router SPA and `--blank` for a minimal scaffold.
+`tanstack create` defaults to Start with SSR. `--router-only` creates a Router
+SPA and restricts add-ons, deployment, and templates; check current help for
+compatible choices.
+
+Where supported, `--blank` omits the starter UI, examples, Tailwind, devtools,
+tests, and Intent setup. `--no-examples` only removes examples. Check flag
+availability before using newer scaffold modes.
+
+Discover integrations before choosing them:
 
 ```bash
-tanstack create --help
 tanstack create --list-add-ons --framework React --json
-tanstack create --addon-details drizzle --framework React --json
-tanstack create my-app --package-manager pnpm \
-  --add-ons tanstack-query,drizzle --no-examples --intent -y
+tanstack create --addon-details <id> --framework React --json
 ```
 
-- Discover add-ons and their options, dependencies, supported modes, and
-  conflicts instead of guessing IDs or combinations.
-- Use `--template`; `--starter` is deprecated.
-- Standard scaffolds include Tailwind. Use `--blank` when a minimal app without
-  Tailwind/examples/devtools/tests is wanted; legacy Tailwind flags are
-  compatibility flags.
-- Router-only mode excludes Start-oriented templates, deployments, and general
-  add-ons. Confirm current help for toolchain support.
-- Use `--intent` deliberately when agent mappings are wanted.
-- Inspect a non-empty destination before using `--force`; do not overwrite
-  user files without approval.
+Use the target framework. Inspect compatibility, dependencies, configuration
+options, and conflicts; ecosystem partner IDs are not necessarily add-on IDs.
+For existing projects, inspect `.cta.json` and current files before `tanstack add`.
+Avoid overwrite or conflict-bypass flags unless the requested change requires
+them and the affected files have been reviewed.
 
-## Existing projects and add-ons
+After changes, review generated files, dependencies, environment requirements,
+and demo routes; run the project's relevant checks.
 
-Current TanStack scaffolds use `.cta.json` at the application root. Inspect it,
-the git state, and add-on details before running:
-
-```bash
-tanstack add --help
-tanstack add tanstack-query drizzle
-```
-
-Avoid `--forced`: it bypasses conflict and overwrite protection. After adding,
-review source and manifest diffs, `.env.example`, generated demos, integration
-hooks, and dependency changes. The ecosystem catalog is discovery metadata, not
-proof that an add-on with the same ID exists:
-
-```bash
-tanstack ecosystem --category database --json
-tanstack clean-demos --dry-run
-```
-
-## Less common workflows
-
-Inspect subcommand help before using these:
-
-```bash
-tanstack template init       # then edit metadata and compile
-tanstack template compile
-tanstack add-on init         # then edit .add-on metadata/assets
-tanstack add-on compile
-tanstack add-on dev
-tanstack pin-versions
-```
-
-Test templates and add-ons against clean scaffolds. `pin-versions` removes range
-prefixes from TanStack packages and may add missing peers; review manifest and
-lockfile changes, reinstall, and validate. Do not run it merely because updates
-exist.
-
-The old CLI-level `tanstack mcp` command is removed. Use JSON-capable
-`libraries`, `doc`, `search-docs`, `ecosystem`, and create-discovery commands.
-An application add-on named `mcp`, when present in the catalog, is separate.
-
-TanStack CLI telemetry can be inspected or disabled with:
-
-```bash
-tanstack telemetry status
-tanstack telemetry disable
-```
-
-Honor `DO_NOT_TRACK=1` or `TANSTACK_CLI_TELEMETRY_DISABLED=1` in automation.
-
-## Validation
-
-After scaffolding or add-on changes, inspect the diff and run the generated
-project's install, typecheck/lint, tests, and build scripts as available. Report
-commands, modified/generated files, required environment variables, and manual
-follow-up.
+For template authoring, custom add-ons, version pinning, or telemetry controls,
+consult command help and the linked CLI reference only when those operations
+are needed.

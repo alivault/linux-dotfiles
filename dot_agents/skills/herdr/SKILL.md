@@ -1,21 +1,15 @@
 ---
 name: herdr
-description: "Control Herdr, a terminal multiplexer for coding agents. Use only when the user explicitly mentions Herdr or asks to use Herdr to inspect or control panes, tabs, workspaces, commands, or another agent. Do not use merely because a task could benefit from a background terminal, delegation, or parallel work. Requires HERDR_ENV=1."
+description: "Control Herdr, a terminal multiplexer for coding agents. Use only when the user explicitly mentions Herdr or asks to use Herdr to inspect or control panes, tabs, workspaces, commands, or another agent. Do not use merely because a task could benefit from a background terminal, delegation, or parallel work. Supports inspection and control from inside or outside Herdr."
 ---
 
 # Herdr
 
 Herdr organizes terminals into workspaces, tabs, and panes, recognizes coding agents running inside panes, and exposes the current session through the `herdr` CLI.
 
-Before issuing any control command, verify that this agent is running inside a Herdr-managed pane:
+The `herdr` CLI can inspect and control running sessions from inside or outside a Herdr-managed pane. `HERDR_ENV=1` indicates inherited caller context; it is not a permission requirement. Do not stop merely because it is absent, and do not fabricate caller environment variables.
 
-```bash
-test "${HERDR_ENV:-}" = 1
-```
-
-If the check fails, say that you are not running inside Herdr and stop. Do not inspect or control the focused Herdr session from outside Herdr.
-
-When the check passes, the `herdr` binary in `PATH` talks to the current session. Use it to inspect neighboring work, create terminal layout, start agents and commands, read output, and wait for state changes.
+Inside Herdr, use the inherited session and pane context when they match the task. Outside Herdr, discover the intended running session and explicitly target its workspace, tab, pane, or agent using the workflow below. The same task authorization applies in both cases.
 
 ## Learn the current CLI
 
@@ -42,6 +36,34 @@ herdr session
 Do not run bare `herdr` for discovery; it launches or attaches the TUI. Do not probe a mutating nested command by omitting arguments. Commands such as `herdr workspace create` are valid with defaults and will execute.
 
 Most control commands return JSON. Read identifiers and state from those responses instead of predicting them.
+
+## Connect from outside Herdr
+
+Discover existing sessions without launching or attaching a terminal UI:
+
+```bash
+herdr session list --json
+```
+
+Choose a running session that matches the user's request or project. Inspect its topology with an explicit session name, including `default` for the default session:
+
+```bash
+herdr --session <session-name> workspace list
+herdr --session <session-name> tab list --workspace <workspace-id>
+herdr --session <session-name> pane list --workspace <workspace-id>
+herdr --session <session-name> pane get <pane-id>
+```
+
+Use labels and pane working directories to identify the requested target. Keep `--session <session-name>` on subsequent commands and use returned IDs or a unique agent name; do not rely on UI focus or `--current` outside Herdr. If discovery leaves multiple plausible targets, clarify before sending input or changing state. If no matching session is running, report that instead of starting or attaching one unless the task calls for it.
+
+Examples after resolving the session and pane:
+
+```bash
+herdr --session <session-name> pane read <pane-id> --source recent-unwrapped --lines 120
+herdr --session <session-name> pane run <pane-id> "vp run build"
+```
+
+The unprefixed and `--current` examples below assume inherited Herdr context. When working from outside, add the selected session and replace caller-relative targets with explicit pane or workspace IDs.
 
 ## Understand layout, panes, and agents
 
@@ -73,7 +95,7 @@ Herdr injects the caller's context into each managed pane:
 printf '%s\n' "$HERDR_WORKSPACE_ID" "$HERDR_TAB_ID" "$HERDR_PANE_ID"
 ```
 
-Prefer `--current` when a pane command should target the calling pane. Omitting a target may use the UI-focused pane, which can belong to the user or another client.
+Inside Herdr, prefer `--current` when a pane command should target the calling pane. Omitting a target may use the UI-focused pane, which can belong to the user or another client.
 
 Discover live state with:
 
@@ -89,7 +111,7 @@ Creation responses expose the IDs to use next. `workspace create` returns `.resu
 
 ## Start and coordinate an agent
 
-Default to a sibling pane in the current tab and the current working directory. Do not create a workspace, tab, worktree, or different cwd unless the user explicitly requests that topology or location.
+Inside Herdr, default to a sibling pane in the current tab and the current working directory. Outside Herdr, use the resolved target pane as the split anchor and set the working directory explicitly for the task. Do not create a workspace, tab, worktree, or different cwd unless the user explicitly requests that topology or location.
 
 Honor a direction requested by the user. Otherwise inspect the caller pane:
 
@@ -187,7 +209,7 @@ After that failed read, ask the agent to write its complete response as Markdown
 ## Safety and coordination rules
 
 - Use `--no-focus` for background work unless the user asked to switch context.
-- Use `--current`, an explicit pane ID, or a unique agent name. Do not rely on another client's focused pane.
+- Use an explicit pane ID or unique agent name, or `--current` only with inherited caller context. Outside Herdr, also select the session explicitly. Do not rely on another client's focused pane.
 - Parse IDs from JSON responses. Do not derive them from sidebar order or examples.
 - Clean up temporary panes you created once their delegated work is complete, you have captured the needed result, and no follow-up is expected. Do not close a pane while its agent or command is working or blocked, when it contains a process the user may still need, or when the user asked to keep it open. Never treat the caller's pane as temporary cleanup.
 - Do not close workspaces, tabs, panes, or sessions you did not create unless the user explicitly asked.
