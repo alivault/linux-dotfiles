@@ -33,30 +33,7 @@
       ],
       "right": [
         {
-          "id": "ali.world-clock",
-          "zones": [
-            {
-              "label": "New York",
-              "zone": "America/New_York"
-            },
-            {
-              "label": "London",
-              "zone": "Europe/London"
-            },
-            {
-              "label": "Bergen",
-              "zone": "Europe/Oslo"
-            },
-            {
-              "label": "Istanbul",
-              "zone": "Europe/Istanbul"
-            },
-            {
-              "label": "Tokyo",
-              "zone": "Asia/Tokyo"
-            }
-          ],
-          "hourFormat": "12h"
+          "id": "io.github.nimbleaininja.omachron"
         },
         {
           "id": "omarchy.tailscale"

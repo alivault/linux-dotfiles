@@ -89,11 +89,9 @@ mode on systems where `/tmp` is a tmpfs.
   presented as the process-free Unified Launcher with integrated clipboard history
   plus emoji picker and reminder views; the companion `ali.indicators` clone
   routes the bar reminder button into those views
-- Public iWeather and World Clock plugins installed as weekly fast-forward-only
+- Public iWeather and Omachron plugins installed as weekly fast-forward-only
   Chezmoi Git externals
-- World Clock on the right side of the bar with New York, London, Bergen,
-  Istanbul, and Tokyo; inline Edit/+ controls, drag-to-reorder city editing,
-  and a right-click 12/24-hour menu
+- Omachron on the right side of the bar, with a day/night world map and city clocks
 - Bootstrap installation of Tailscale, Syncthing, Bitwarden, and Obsidian,
   enabling Syncthing's user service automatically and using native Omarchy
   packages where available with Flatpak fallbacks on ARM, plus Chromium Google

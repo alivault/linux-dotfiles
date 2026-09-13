@@ -6,10 +6,10 @@
     [".config/omarchy/plugins/ali.iweather".pull]
         args = ["--ff-only"]
 
-[".config/omarchy/plugins/ali.world-clock"]
+[".config/omarchy/plugins/io.github.nimbleaininja.omachron"]
     type = "git-repo"
-    url = "https://github.com/alivault/omarchy-world-clock.git"
+    url = "https://github.com/NimbleAINinja/omarchy-omachron.git"
     exact = true
     refreshPeriod = "168h"
-    [".config/omarchy/plugins/ali.world-clock".pull]
+    [".config/omarchy/plugins/io.github.nimbleaininja.omachron".pull]
         args = ["--ff-only"]

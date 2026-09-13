@@ -79,6 +79,6 @@ git status --short
 
 Validation runs offline safety tests, source/credential heuristics, syntax
 checks and a disposable-home chezmoi apply. That apply fetches the public
-iWeather and World Clock externals, so it needs GitHub access. It does not provision the host.
+iWeather and Omachron externals, so it needs GitHub access. It does not provision the host.
 These checks are not a substitute for a fresh-machine test or physical
 lock/unlock, suspend, capture and hardware checks.
