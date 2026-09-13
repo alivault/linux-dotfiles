@@ -62,6 +62,59 @@ Sign into applications and Pi/Codex manually. Pair Syncthing devices/folders,
 authenticate Tailscale, and choose the Obsidian vault yourself. No identities,
 passwords, browser profiles or authentication stores are imported.
 
+## Journal retention and Voxtype
+
+The `journal-retention` provisioning step installs
+`files/journald-retention.conf` into `/etc/systemd/journald.conf.d/retention.conf`
+and restarts journald. Persistent logs are limited to 256 MiB and seven days;
+activating these limits can permanently delete older diagnostics. This step
+runs only during explicit provisioning, never during `chezmoi apply`.
+For an immediate archived-log cleanup after applying the limits:
+
+```bash
+bash bootstrap/provision.sh journal-retention
+sudo journalctl --rotate
+sudo journalctl --vacuum-time=7d --vacuum-size=256M
+```
+
+Chezmoi manages Voxtype's configuration, its **Voxtype Configuration** desktop
+entry (launching `omarchy voxtype config`), and a user-service privacy drop-in.
+The drop-in sets `RUST_LOG=warn` to suppress INFO-level dictated-text logging
+while retaining warnings/errors. Existing journal entries are not scrubbed.
+After applying it, restart Voxtype while idle:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user restart voxtype.service
+```
+
+Voxtype, its model, and its daemon service must already be installed. Built
+binaries, models, audio, and journals are not stored in this repository.
+The ARM workstation uses source-built Voxtype 0.7.2 with its own GTK4 OSD,
+not an Omarchy OSD bridge. To reproduce just the matching OSD binaries on a
+machine with Rust, Git, GTK4, gtk4-layer-shell, ALSA, clang, CMake and pkgconf:
+
+```bash
+build_dir=$(mktemp -d)
+git clone https://github.com/peteonrails/voxtype.git "$build_dir/voxtype"
+git -C "$build_dir/voxtype" checkout --detach 858a4ece13490bc6cdba88777c56246d8e89ffad
+(
+  cd "$build_dir/voxtype"
+  cargo build --locked --release --features osd-gtk4 \
+    --bin voxtype-osd --bin voxtype-osd-gtk4 -j 2
+)
+mkdir -p ~/.local/bin
+install -m755 "$build_dir/voxtype/target/release/voxtype-osd" \
+  "$build_dir/voxtype/target/release/voxtype-osd-gtk4" ~/.local/bin/
+systemctl --user restart voxtype.service
+```
+
+Both `voxtype-osd` and `voxtype-osd-gtk4` must be on the daemon's PATH.
+Version 0.7.2 enables the GTK4 OSD by default and supervises it automatically;
+no separate OSD service is needed. Match the OSD version to the installed
+daemon rather than mixing these binaries with a newer release.
+Syncthing discovery and firewall rules are deliberately not changed.
+
 ## Hosted bootstrap
 
 Keep **https://dots.aliabbas.dev**. The Worker lives separately at
