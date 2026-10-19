@@ -24,6 +24,7 @@ aarch64)
 esac
 
 bin="$HOME/.local/bin"
+changed=0
 if [[ -x $bin/voxtype ]] && "$bin/voxtype" --version 2>/dev/null | grep -qx "voxtype $version" &&
   [[ -x $bin/voxtype-osd && -x $bin/voxtype-osd-gtk4 ]]; then
   bootstrap_log "voxtype $version is already installed"
@@ -38,12 +39,18 @@ else
   install -m 0755 "$directory/cpu" "$bin/voxtype"
   install -m 0755 "$directory/osd" "$bin/voxtype-osd"
   install -m 0755 "$directory/osd-gtk4" "$bin/voxtype-osd-gtk4"
+  changed=1
 fi
 
 "$bin/voxtype" setup --download --model base.en --quiet --no-post-install
 [[ -f $HOME/.config/systemd/user/voxtype.service ]] ||
   "$bin/voxtype" setup --quiet systemd
 systemctl --user daemon-reload
-systemctl --user enable voxtype.service
-systemctl --user restart voxtype.service
+# Restart only for new binaries: a restart ends a dictation in progress.
+if ((changed)); then
+  systemctl --user enable voxtype.service
+  systemctl --user restart voxtype.service
+else
+  systemctl --user enable --now voxtype.service
+fi
 bootstrap_log "voxtype $version is installed for ALNIAC dictation"
