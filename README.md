@@ -56,7 +56,8 @@ apply.
 
 - **ALNIAC user profile** (`~/.config/alniac`): `config.kdl`, `bindings.kdl`,
   `shell.json`, `dock.json`, the launcher menu (`extensions/alniac-menu.jsonc`)
-  and the selected theme. Files that ALNIAC generates from the release
+  the selected theme, and the branding art (`branding/screensaver.txt`, the
+  screensaver's Arch logo, and `branding/about.txt`). Files that ALNIAC generates from the release
   (`theme.kdl`, `defaults.kdl`, `default-bindings.kdl`, wallpapers, themed
   templates) are not managed.
 - **ALNIAC session units**: links in `~/.config/systemd/user` to the units of
