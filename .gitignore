@@ -33,7 +33,9 @@ dot_config/alniac/fish/
 dot_config/alniac/hooks/
 dot_config/alniac/scripts/
 dot_config/alniac/themed/
-dot_config/alniac/themes/
+# Your own theme files; the installed/uninstalled choice is tracked.
+dot_config/alniac/themes/*
+!dot_config/alniac/themes/installed.json
 dot_config/alniac/wallpapers/
 
 # Historical backups

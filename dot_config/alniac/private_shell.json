@@ -7,13 +7,10 @@
           "id": "alniac.menu"
         },
         {
-          "id": "ali.active-window"
+          "id": "alniac.workspaces"
         }
       ],
       "right": [
-        {
-          "id": "alniac.tailscale"
-        },
         {
           "id": "alniac.keyboard-layout"
         },
@@ -21,7 +18,7 @@
           "id": "alniac.tray"
         },
         {
-          "id": "ali.airdrop"
+          "id": "alniac.divider"
         },
         {
           "id": "alniac.control",
@@ -49,10 +46,10 @@
           "showWhen": "active"
         },
         {
-          "id": "alniac.divider"
+          "id": "alniac.system-update"
         },
         {
-          "id": "alniac.system-update"
+          "id": "alniac.traffic"
         },
         {
           "id": "alniac.cpu"
@@ -61,17 +58,11 @@
           "id": "alniac.memory"
         },
         {
-          "id": "alniac.traffic"
-        },
-        {
           "id": "alniac.disk"
         },
         {
+          "display": "stacked",
           "id": "alniac.sensors"
-        },
-        {
-          "id": "alniac.weather",
-          "unit": "imperial"
         },
         {
           "id": "alniac.agents"
@@ -86,20 +77,21 @@
           "id": "alniac.audio"
         },
         {
-          "id": "alniac.monitor"
+          "display": "icon",
+          "id": "alniac.power"
         },
         {
-          "id": "alniac.power",
-          "showPercentage": false
+          "id": "alniac.weather",
+          "unit": "imperial"
+        },
+        {
+          "format": "h:mm AP",
+          "formatAlt": "h:mm AP",
+          "id": "alniac.time",
+          "verticalFormat": "h\n—\nmm\nAP"
         },
         {
           "id": "alniac.control-center"
-        },
-        {
-          "id": "alniac.time",
-          "format": "h:mm AP",
-          "formatAlt": "h:mm AP",
-          "verticalFormat": "h\n—\nmm\nAP"
         }
       ]
     },
@@ -115,7 +107,10 @@
   ],
   "idle": {
     "lock": 300,
-    "screensaver": 150
+    "screensaver": 120
+  },
+  "overview": {
+    "desktops": "wallpaper"
   },
   "plugins": [],
   "version": 1

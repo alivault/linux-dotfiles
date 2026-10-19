@@ -56,7 +56,8 @@ apply.
 ## Managed configuration
 
 - **ALNIAC user profile** (`~/.config/alniac`): `config.kdl`, `bindings.kdl`,
-  `shell.json`, `dock.json`, the launcher menu (`extensions/alniac-menu.jsonc`)
+  `shell.json`, `dock.json`, `desktop.json` (icons, title bars), `appearance`,
+  the theme choice (`themes/installed.json`), the launcher menu (`extensions/alniac-menu.jsonc`)
   the selected theme, and the branding art (`branding/screensaver.txt`, the
   screensaver's Arch logo, and `branding/about.txt`). Files that ALNIAC generates from the release
   (`theme.kdl`, `defaults.kdl`, `default-bindings.kdl`, wallpapers, themed

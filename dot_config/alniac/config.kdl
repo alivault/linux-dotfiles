@@ -22,3 +22,29 @@ window-rule {
     scroll-factor 0.1
 }
 include "bindings.kdl"
+layout {
+    open-maximized-to-edges
+    shadow {
+        off
+    }
+}
+overview {
+    backdrop-blur {
+        on
+        radius 40
+    }
+    workspace-highlight {
+        border-width 0
+        off
+    }
+}
+gestures {
+    hot-corners {
+        off
+    }
+}
+recent-windows {
+    container {
+        blur-radius 40
+    }
+}

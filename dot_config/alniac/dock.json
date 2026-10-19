@@ -2,13 +2,19 @@
   "apps": [
     "files",
     "chromium",
+    "messages",
+    "email",
+    "photos",
+    "calendar",
+    "reminders",
+    "notes",
     "kitty",
-    "obsidian"
+    "settings"
   ],
-  "size": 56,
+  "size": 64,
   "magnify": 1.75,
   "style": "default",
-  "magnification": true,
+  "magnification": false,
   "autohide": true,
   "indicators": true,
   "bounce": true,
