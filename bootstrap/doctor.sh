@@ -72,6 +72,19 @@ for unit in alniac alniac-audio alniac-bt-agent alniac-crash-watch alniac-fcitx5
   fi
 done
 
+if [[ -f $HOME/.config/autostart/org.fcitx.Fcitx5.desktop ]]; then
+  pass 'The system Fcitx5 autostart is hidden (ALNIAC runs its own)'
+else
+  fail 'The system Fcitx5 autostart is not hidden; run: bootstrap/provision.sh alniac-configs'
+fi
+
+fcitx_count=$(pgrep -u "$USER" -x fcitx5 | wc -l)
+if ((fcitx_count <= 1)); then
+  pass "One Fcitx5 at most is running ($fcitx_count)"
+else
+  fail "$fcitx_count Fcitx5 processes are running; stop: systemctl --user stop app-org.fcitx.Fcitx5@autostart.service"
+fi
+
 if systemctl --user is-active --quiet alniac.service; then
   pass 'ALNIAC session is running'
 else

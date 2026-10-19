@@ -83,6 +83,7 @@ apply.
 | --- | --- |
 | `preflight` | Requires ALNIAC; installs `jq` |
 | `session-units` | Checks the unit links; reloads the user manager |
+| `alniac-configs` | Installs ALNIAC's missing default configs (terminals, Chromium flags, autostart overrides); keeps existing files |
 | `kitty` | `alniac-install-terminal kitty` |
 | `mise-tools` | `mise install` from the managed config |
 | `vite-plus` | Installs Vite+ 0.3.0 from a checksum-pinned installer (`vp upgrade` updates it) |
