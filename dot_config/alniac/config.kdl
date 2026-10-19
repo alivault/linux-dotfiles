@@ -11,40 +11,4 @@ include "theme.kdl"
 output "eDP-1" {
     scale 2
 }
-// Per-window scrolling: touchpad factors X=2.0, Y=1.0 × this 0.1 rule give X=0.2, Y=0.1.
-window-rule {
-    match app-id=r#"^chromium$"#
-    match app-id=r#"^chrome-chatgpt\.com__-.*$"#
-    match app-id=r#"^chrome-web\.whatsapp\.com__-.*$"#
-    match app-id=r#"^org\.gnome\.Evince$"#
-    match app-id=r#"^chrome-nngceckbapebfimnlniiiahkandclblb-Default$"#
-    match app-id=r#"^(md\.obsidian\.Obsidian|obsidian)$"#
-    scroll-factor 0.1
-}
 include "bindings.kdl"
-layout {
-    open-maximized-to-edges
-    shadow {
-        off
-    }
-}
-overview {
-    backdrop-blur {
-        on
-        radius 40
-    }
-    workspace-highlight {
-        border-width 0
-        off
-    }
-}
-gestures {
-    hot-corners {
-        off
-    }
-}
-recent-windows {
-    container {
-        blur-radius 40
-    }
-}
