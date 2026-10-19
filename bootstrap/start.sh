@@ -1,11 +1,11 @@
 #!/bin/sh
-# dots.aliabbas.dev injects the reviewed, immutable DOTFILES_REF.
+# dots.aliabbas.dev injects DOTFILES_REF: the commit of main this script came from.
 set -eu
 die() { printf '%s\n' "$*" >&2; exit 1; }
 [ "$#" -le 1 ] || die 'Usage: bootstrap [--plan|--apply]'
 case ${1:-} in ''|--plan|--apply) ;; *) die 'Usage: bootstrap [--plan|--apply]' ;; esac
 [ "$(id -u)" != 0 ] || die 'Run as your normal desktop user, not root.'
-case ${DOTFILES_REF:-} in ''|*[!0-9a-f]*) die 'A reviewed DOTFILES_REF commit is required.' ;; esac
+case ${DOTFILES_REF:-} in ''|*[!0-9a-f]*) die 'A DOTFILES_REF commit is required.' ;; esac
 [ "${#DOTFILES_REF}" = 40 ] || die 'DOTFILES_REF must be a full commit hash.'
 for command_name in bash git curl install sha256sum mktemp pacman; do
   command -v "$command_name" >/dev/null 2>&1 || die "Install prerequisite: $command_name."

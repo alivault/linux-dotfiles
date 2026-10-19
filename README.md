@@ -25,9 +25,10 @@ sh /tmp/dotfiles-bootstrap.sh
 ```
 
 The hosted script must identify itself as the **ALNIAC** profile. The Worker
-pins a reviewed commit and the checksum of `bootstrap/start.sh`; see
+serves `bootstrap/start.sh` from the head of `main`, so **every push to `main`
+is live for new machines within minutes**; see
 [`bootstrap/RELEASE.md`](bootstrap/RELEASE.md). The script installs pinned
-chezmoi into `~/.local/bin`, checks out the release into
+chezmoi into `~/.local/bin`, checks out that commit into
 `~/.local/share/chezmoi`, and runs `bootstrap/setup.sh`: review and apply the
 configuration, provision tools and services, and check health. Provisioning
 can ask for `sudo` in the terminal. From a reviewed checkout, run

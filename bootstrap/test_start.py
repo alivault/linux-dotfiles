@@ -66,7 +66,7 @@ class StartTests(unittest.TestCase):
 
     def test_mutable_ref_and_root(self):
         self.env['DOTFILES_REF'] = 'main'
-        self.assert_refused('reviewed DOTFILES_REF')
+        self.assert_refused('DOTFILES_REF commit is required')
         self.env['DOTFILES_REF'] = 'a' * 40
         self.stub('id', 'echo 0')
         self.assert_refused('not root')

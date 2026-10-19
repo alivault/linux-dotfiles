@@ -81,8 +81,8 @@ journal. To update voxtype, change the version and the three checksums in
 ## Hosted bootstrap
 
 Keep **https://dots.aliabbas.dev**. The Worker is a separate project,
-`~/code/dotfiles-bootstrap`; a change here does not change its release pin.
-See [RELEASE.md](RELEASE.md).
+`~/code/dotfiles-bootstrap`. It serves the head of `main`; see
+[RELEASE.md](RELEASE.md).
 
 ## Validation
 
