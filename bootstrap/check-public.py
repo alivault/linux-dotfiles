@@ -11,6 +11,7 @@ patterns = [
     re.compile(rb'sk-(?:proj-)?[A-Za-z0-9_-]{30,}'),
 ]
 blocked = ('dot_ssh/', 'dot_aws/', 'dot_kube/', 'dot_local/state/',
+           'private_dot_pi/agent/sessions/', 'private_dot_pi/agent/npm/', 'private_dot_pi/agent/git/',
            'dot_pi/agent/sessions/', 'dot_pi/agent/npm/', 'dot_pi/agent/git/',
            'dot_config/syncthing/', 'dot_config/Bitwarden/',
            'dot_config/niri/', 'dot_config/noctalia/',

@@ -2,14 +2,14 @@
 # line of defense against accidentally adding credentials or runtime state.
 
 # Pi credentials, conversations, caches, and installed packages
-dot_pi/agent/auth.json
-dot_pi/agent/sessions/
-dot_pi/agent/npm/
-dot_pi/agent/git/
-dot_pi/agent/fff/
-dot_pi/agent/models-store.json
-dot_pi/agent/trust.json
-dot_pi/agent/*changelog*.json
+private_dot_pi/agent/auth.json
+private_dot_pi/agent/sessions/
+private_dot_pi/agent/npm/
+private_dot_pi/agent/git/
+private_dot_pi/agent/fff/
+private_dot_pi/agent/models-store.json
+private_dot_pi/agent/trust.json
+private_dot_pi/agent/*changelog*.json
 
 # Credential and secret stores
 dot_config/gh/

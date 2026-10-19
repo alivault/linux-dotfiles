@@ -3,7 +3,7 @@ from pathlib import Path
 import subprocess
 import unittest
 
-MODIFIER = Path(__file__).resolve().parent.parent / 'dot_pi/agent/modify_private_settings.json'
+MODIFIER = Path(__file__).resolve().parent.parent / 'private_dot_pi/agent/modify_private_settings.json'
 
 
 def apply(data):
