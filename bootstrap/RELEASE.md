@@ -1,25 +1,21 @@
-# Omarchy configuration release
+# ALNIAC configuration release
 
-The hostname remains **`dots.aliabbas.dev`**. Do not revert it to the former
-hostname or deploy the retired standalone bootstrap.
+The hostname stays **`dots.aliabbas.dev`**.
 
-The separate Worker project is `~/code/dotfiles-bootstrap`. Its release guard
-checks an immutable, published dotfiles commit and the SHA-256 of that commit's
-`bootstrap/start.sh`. This repository restoration does not itself change the
-hosted release. At restoration time, the endpoint still served `b468b33`.
+The Worker project is `~/code/dotfiles-bootstrap`. Its release guard checks a
+published, immutable dotfiles commit and the SHA-256 of that commit's
+`bootstrap/start.sh`, and it accepts only the ALNIAC profile.
 
-1. Run `bash bootstrap/check-source.sh`; review `git diff --check`, all restored
-   and removed files, and `git status --short` (restored files may be untracked).
-2. Test setup on a disposable, already-installed Omarchy 4 machine. Local
-   rendering tests alone do not qualify a fresh bootstrap.
-3. With publication approval, commit and push the reviewed restoration.
-4. In the Worker project, update the immutable dotfiles ref and bootstrap
-   SHA-256 to that published commit. Keep the existing `dots.aliabbas.dev` route.
-5. Run the Worker's tests, checksum/publication guard and deployment dry run.
-   Deploy only with approval.
-6. Download the hosted response and verify its ref, checksum and Omarchy
-   preflight. Do not execute it on the working laptop merely to test deployment.
+1. Run `bash bootstrap/check-source.sh`. Review `git diff --check`, every added
+   and removed file, and `git status --short`.
+2. Test setup on an ALNIAC machine. Local rendering tests alone do not qualify
+   a fresh bootstrap.
+3. With approval, commit and push the reviewed change to `main`.
+4. In the Worker project, set the dotfiles ref and the bootstrap SHA-256 to
+   that published commit. Keep the `dots.aliabbas.dev` route.
+5. Run the Worker's tests, release guard and deployment dry run. Deploy only
+   with approval.
+6. Download the hosted response and check its ref, checksum and ALNIAC
+   preflight. Do not run it on the working laptop only to test the deployment.
 
-Keep the root README's release-review guidance when updating the pin. Applying
-dotfiles and publishing/deploying releases are separate, explicit actions;
-neither requires restoring historical boot artifacts.
+Applying dotfiles and publishing a release are separate, explicit actions.

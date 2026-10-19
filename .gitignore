@@ -24,12 +24,20 @@ dot_config/google-chrome/
 dot_config/BraveSoftware/
 dot_config/chromium-flags.conf
 
-# Generated Omarchy state and historical backups
-dot_config/omarchy/current/
+# ALNIAC writes these from the running release; only the user profile is managed
+dot_config/alniac/theme.kdl
+dot_config/alniac/defaults.kdl
+dot_config/alniac/default-bindings.kdl
+dot_config/alniac/defaults/
+dot_config/alniac/fish/
+dot_config/alniac/hooks/
+dot_config/alniac/scripts/
+dot_config/alniac/themed/
+dot_config/alniac/themes/
+dot_config/alniac/wallpapers/
+
+# Historical backups
 **/*.bak.*
-**/.ali.keybindings.bak.*/
-**/hypr-v3-backup/
-**/hypr-quattro-broken/
 
 # Herdr runtime state
 dot_config/herdr/logs/

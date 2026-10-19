@@ -1,137 +1,114 @@
 # linux-dotfiles
 
-Public, allowlisted Chezmoi source for Ali's Omarchy workstation.
+Public, allowlisted chezmoi source for Ali's personal layer on top of
+[ALNIAC](https://github.com/alivault/alniac), the Niri desktop on the Asahi Mac.
+
+ALNIAC owns the desktop: Niri, the shell, themes, the login, the configs it
+ships (Kitty, herdr, Alacritty, Foot, Ghostty, lazygit, Starship, imv, btop),
+Neovim and the apps. This repository keeps only what is personal, and the few
+system settings that ALNIAC does not make.
+
+The Omarchy 4 profile that came before is at the tag `omarchy-final`.
 
 ## Bootstrap
 
-Install **Omarchy 4 first** (including the supported Apple Silicon port on
-Asahi). This repository is your chezmoi configuration layer, not an OS installer.
-It does not install Niri/Noctalia, replace the login manager, or change disks,
-bootloaders. On Asahi, keyboard provisioning rebuilds the initramfs to persist
-media-key mode.
-
-The public bootstrap hostname remains **`dots.aliabbas.dev`**:
+Install **ALNIAC first**: a staged release in `~/.local/share/alniac/current`
+and its checkout in `~/code/alniac`. This repository is a configuration layer,
+not an OS installer.
 
 ```bash
 curl -fsSL https://dots.aliabbas.dev -o /tmp/dotfiles-bootstrap.sh
 less /tmp/dotfiles-bootstrap.sh
 sh /tmp/dotfiles-bootstrap.sh --plan
-# Only after reviewing the plan and confirming this is the Omarchy release:
+# Only after you review the plan:
 sh /tmp/dotfiles-bootstrap.sh
 ```
 
-The hosted script must identify itself as the **Omarchy 4** profile. Never run
-an older standalone-desktop release on Omarchy. The Worker is pinned separately
-from this repository; see [`bootstrap/RELEASE.md`](bootstrap/RELEASE.md) when
-publishing changes. To use a reviewed local checkout instead, run
+The hosted script must identify itself as the **ALNIAC** profile. The Worker
+pins a reviewed commit and the checksum of `bootstrap/start.sh`; see
+[`bootstrap/RELEASE.md`](bootstrap/RELEASE.md). The script installs pinned
+chezmoi into `~/.local/bin`, checks out the release into
+`~/.local/share/chezmoi`, and runs `bootstrap/setup.sh`: review and apply the
+configuration, provision tools and services, and check health. Provisioning
+can ask for `sudo` in the terminal. From a reviewed checkout, run
 `bash bootstrap/setup.sh --plan` and `bash bootstrap/setup.sh` there.
-
-The Worker pins a reviewed Git commit and the bootstrap script checksum. It
-installs pinned chezmoi into `~/.local/bin`, checks out the release into
-`~/.local/share/chezmoi`, then runs the same explicit `bootstrap/setup.sh`
-pipeline: preview/apply configuration, provision tools and services, activate
-Ashen, and check health. Provisioning may request `sudo` in the terminal.
-See [`bootstrap/README.md`](bootstrap/README.md) for checkout-based setup.
-
-Normal Chezmoi applies are configuration-only. Package installation, service
-activation, and system-wide configuration live under `bootstrap/` in the
-source repository and never run implicitly during `chezmoi apply`.
 
 ## Normal workflow
 
 ```bash
-# See local files that differ from the saved source state
-chezmoi status
+chezmoi status                 # local files that differ from the source
+chezmoi diff && chezmoi apply  # review and apply repository changes
+chezmoi update                 # pull from GitHub and apply
 
-# Refresh a managed file in the source state
-chezmoi add ~/.config/hypr/bindings.lua
+# ALNIAC's Settings app writes ~/.config/alniac; save your changes with:
+chezmoi re-add ~/.config/alniac
 
-# Review and apply repository changes to this machine
-chezmoi diff
-chezmoi apply
-
-# Pull from GitHub and apply
-chezmoi update
-
-# Install packages and configure services explicitly
-~/.local/share/chezmoi/bootstrap/provision.sh
-
-# Re-run one provisioning step
-~/.local/share/chezmoi/bootstrap/provision.sh tailscale
-
-# Validate a configured workstation
-~/.local/share/chezmoi/bootstrap/doctor.sh
+~/.local/share/chezmoi/bootstrap/provision.sh          # all provisioning steps
+~/.local/share/chezmoi/bootstrap/provision.sh voxtype  # one step
+~/.local/share/chezmoi/bootstrap/doctor.sh             # health check
 ```
 
-The source repository is available locally with `chezmoi cd` or at
-`~/.local/share/chezmoi`.
-
-## Omarchy compatibility
-
-This repository targets Omarchy 4. Its paths follow the Omarchy 4 split:
-
-- `/usr/share/omarchy` contains packaged Omarchy files.
-- `~/.config/omarchy` contains user configuration managed by chezmoi.
-- `~/.local/state/omarchy/current` contains generated current-theme state and
-  must not be added to chezmoi.
-
-The chezmoi source checkout living under `~/.local/share/chezmoi` is normal
-chezmoi behavior and is unrelated to the Omarchy version.
-
-Chezmoi uses a private temporary directory beneath its cache. An initialization
-hook creates it with mode `0700`. This keeps temporary files on the same
-filesystem as the source state, enabling `chezmoi edit` hardlinks and watch
-mode on systems where `/tmp` is a tmpfs.
+`chezmoi apply` changes configuration only. Package installation, service
+activation and system-wide files live in `bootstrap/` and never run during an
+apply.
 
 ## Managed configuration
 
-- Omarchy shell settings, branding, menu extension, and `ali.menu` plugin,
-  presented as the process-free Unified Launcher with integrated clipboard history
-  plus emoji picker and reminder views; the companion `ali.indicators` clone
-  routes the bar reminder button into those views
-- Public iWeather and Omachron plugins installed as weekly fast-forward-only
-  Chezmoi Git externals
-- Omachron on the right side of the bar, with a day/night world map and city clocks
-- Bootstrap installation of Tailscale, Syncthing, Bitwarden, and Obsidian,
-  enabling Syncthing's user service automatically and using native Omarchy
-  packages where available with Flatpak fallbacks on ARM, plus Chromium Google
-  account support through Omarchy's stock installer
-- Hyprland bindings, input, appearance, and monitor overrides
-- System-wide keyd Caps Lock mapping: tap for Escape, hold for Control, with a 150 ms tap timeout
-- Asahi media keys without Fn (hold Fn for F1–F12), via explicit provisioning
-- Alacritty, Foot, Ghostty, and Kitty settings, with Kitty as the default terminal
-- Vite+ (`vp`) installed in `~/.vite-plus` without replacing the existing Node.js manager
-- Git, Herdr, imv, and the Hyprland preview share picker
-- Pi settings, keybindings, extensions, theme, and shared Herdr skill
-- Retained desktop-independent Fish/Starship preferences, current Herdr
-  keybindings, and pinned mise/Pi/Codex tools and package preferences
+- **ALNIAC user profile** (`~/.config/alniac`): `config.kdl`, `bindings.kdl`,
+  `shell.json`, `dock.json`, the launcher menu (`extensions/alniac-menu.jsonc`)
+  and the selected theme. Files that ALNIAC generates from the release
+  (`theme.kdl`, `defaults.kdl`, `default-bindings.kdl`, wallpapers, themed
+  templates) are not managed.
+- **ALNIAC session units**: links in `~/.config/systemd/user` to the units of
+  the staged release (`alniac.service` and its helpers, plus the voxtype
+  drop-in). The login needs them, and no ALNIAC script creates them.
+- **Bash**: ALNIAC's default `~/.bashrc` with personal settings (editor, vi
+  mode, fzf previews, the `v`, `lg` and `j` aliases) and Vite+ on `PATH`.
+- **Git** settings, and **mise** tools: node and python pinned; chezmoi,
+  codex and pi on `latest`.
+- **Pi** settings, keybindings and extensions; **Claude Code** settings; shared
+  agent skills (herdr, tanstack-cli).
+- **Voxtype** configuration, its launcher (`alniac voxtype config`) and a
+  service drop-in that keeps dictated text out of the journal.
+- **fastfetch** layout for ALNIAC's About window; a Neovim neo-tree override;
+  an `obsidian` launcher that finds the package, AppImage or Flatpak.
 
-The Vite+ bootstrap is pinned to version `0.3.0`. Its versioned installer is
-downloaded from the upstream release tag and verified with SHA-256 before use.
-The public bootstrap similarly pins Chezmoi and verifies its installer.
+## Provisioning
 
-Asahi-specific screen-recording compatibility files and 2x display scaling are
-enabled only when the device tree identifies an Apple ARM platform. Other
-Omarchy systems use normal 1x automatic monitor scaling.
+`bootstrap/provision.sh` runs these steps in order. Each one is idempotent.
 
-Tmux is deliberately not included.
+| Step | Does |
+| --- | --- |
+| `preflight` | Requires ALNIAC; installs `jq` |
+| `session-units` | Checks the unit links; reloads the user manager |
+| `kitty` | `alniac-install-terminal kitty` |
+| `mise-tools` | `mise install` from the managed config |
+| `vite-plus` | Installs Vite+ 0.3.0 from a checksum-pinned installer (`vp upgrade` updates it) |
+| `keyd` | Caps Lock: tap for Escape, hold for Control (150 ms) |
+| `apple-media-keys` | Asahi: media keys without Fn; rebuilds the initramfs |
+| `bitwarden`, `obsidian` | Installs the apps (package, else Flatpak) |
+| `syncthing`, `tailscale` | Installs and starts the services |
+| `chromium-google-account` | `alniac-install-chromium-google-account` |
+| `journal-retention` | Limits the journal to 256 MiB and seven days |
+| `alniac-apps` | Runs `ui/install.sh` and every `apps/*/install.sh` from `~/code/alniac` |
+| `voxtype` | Installs checksum-pinned voxtype 1.1.1, its OSD and the base.en model |
+| `airpods` | Runs `~/code/alniac/airpods/setup` (builds airpodsd) |
 
-The Omarchy configuration is restored from `29c2d3b`, the last revision before
-the standalone-desktop migration. It includes the Arch-logo screensaver from
-`6f4d8e8`, natural trackpad scrolling, and the original personal Omarchy plugins.
-Newer desktop-independent preferences are retained. Nothing in this restoration
-automatically applies files to an existing desktop or removes its old live data.
+Sign in to the apps, Pi, Codex and Claude Code yourself. Pair Syncthing
+devices, authenticate Tailscale and open the Obsidian vault yourself.
 
 ## Security boundary
 
-This is an allowlisted repository. It intentionally excludes browser
-profiles and preferences, OAuth-bearing Chromium flags, GitHub CLI auth,
-password stores, Pi auth and sessions, Syncthing identities and configuration,
-cookies, caches, generated package trees, logs, session state, themes generated
-by Omarchy, and historical backups. Do not bulk-add `$HOME` or `~/.config`.
+This is an allowlisted repository. It excludes browser profiles and
+preferences, OAuth-bearing Chromium flags, GitHub CLI auth, password stores,
+Pi auth and sessions, Syncthing identities and configuration, SSH keys,
+cookies, caches, logs, session state, generated theme files and backups. Do
+not bulk-add `$HOME` or `~/.config`.
+
+Chezmoi is not a backup. Documents, code and app data need their own backups.
 
 ## License
 
 Original work in this repository is available under the [MIT License](LICENSE).
-See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for code copied from or
-derived from Omarchy.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for code derived from
+Omarchy.

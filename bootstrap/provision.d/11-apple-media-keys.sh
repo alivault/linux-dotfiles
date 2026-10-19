@@ -14,7 +14,7 @@ fi
 require_command sudo mkinitcpio
 
 config="$script_dir/files/apple-media-keys.conf"
-# Load after Omarchy's hid_apple.conf without replacing other driver options.
+# Load after any other hid_apple.conf without replacing other driver options.
 destination=/etc/modprobe.d/zz-apple-media-keys.conf
 
 if ! cmp -s "$config" "$destination"; then

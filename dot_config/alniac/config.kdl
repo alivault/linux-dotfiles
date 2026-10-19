@@ -1,0 +1,24 @@
+// ALNIAC Niri configuration: your settings. ALNIAC's defaults come first
+// (defaults.kdl, from the running release; don't edit it); anything here
+// overrides them. Delete a line to go back to the default.
+//
+// A section merges setting by setting (`input { touchpad { tap; } }` changes
+// only tap). A default window rule is changed by `window-rule "name" { ... }`
+// with its name from defaults.kdl, and switched off by `window-rule "name" { off; }`.
+// Settings writes here too, and shows what you changed.
+include "defaults.kdl"
+include "theme.kdl"
+output "eDP-1" {
+    scale 2
+}
+// Per-window scrolling: touchpad factors X=2.0, Y=1.0 × this 0.1 rule give X=0.2, Y=0.1.
+window-rule {
+    match app-id=r#"^chromium$"#
+    match app-id=r#"^chrome-chatgpt\.com__-.*$"#
+    match app-id=r#"^chrome-web\.whatsapp\.com__-.*$"#
+    match app-id=r#"^org\.gnome\.Evince$"#
+    match app-id=r#"^chrome-nngceckbapebfimnlniiiahkandclblb-Default$"#
+    match app-id=r#"^(md\.obsidian\.Obsidian|obsidian)$"#
+    scroll-factor 0.1
+}
+include "bindings.kdl"

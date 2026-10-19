@@ -1,23 +1,29 @@
-# Omarchy 4 environment (OMARCHY_PATH + PATH), needed even for non-interactive shells.
-[[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] && source /usr/share/omarchy/default/bash/env-bootstrap
+# ALNIAC environment (ALNIAC_PATH + PATH), needed even for non-interactive shells
+[[ -r $HOME/.local/share/alniac/current/default/bash/env-bootstrap ]] && source $HOME/.local/share/alniac/current/default/bash/env-bootstrap
 
-# If not running interactively, don't do anything else.
+# If not running interactively, don't do anything else (leave this above the rc source)
 [[ $- != *i* ]] && return
 
-# All the default Omarchy aliases and functions
+# All the default ALNIAC aliases and functions
 # (don't mess with these directly, just overwrite them here!)
-source "$OMARCHY_PATH/default/bash/rc"
+source "$ALNIAC_PATH/default/bash/rc"
 
 # Add your own exports, aliases, and functions here.
 #
 # Make an alias for invoking commands you use constantly
 # alias p='python'
 
-# Keep pi-fff from indexing the entire home directory by default.
-# An explicit environment value or Pi CLI flag can still override this.
-pi() {
-  FFF_ENABLE_HOME_SCAN="${FFF_ENABLE_HOME_SCAN:-0}" command pi "$@"
-}
+# Personal settings (moved from fish config, 2026-10-19)
+export EDITOR=nvim VISUAL=nvim TERMINAL=kitty
+export FFF_ENABLE_HOME_SCAN=${FFF_ENABLE_HOME_SCAN:-0}
+[[ -r $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
+set -o vi
+export FZF_DEFAULT_OPTS='--height=100% --bind "ctrl-/:toggle-preview" --bind "shift-up:preview-page-up,shift-down:preview-page-down"'
+if command -v eza &>/dev/null && command -v bat &>/dev/null; then
+  export FZF_CTRL_T_OPTS='--preview "if [ -d {} ]; then eza --tree --level=3 --color=always --icons=always --group-directories-first -- {} | head -250; else bat --style=numbers --color=always --line-range :500 -- {}; fi" --preview-window=right,80%,border-left'
+  export FZF_ALT_C_OPTS='--preview "eza --tree --level=3 --color=always --icons=always --group-directories-first -- {} | head -250" --preview-window=right,80%,border-left'
+fi
+alias v=nvim lg=lazygit j=zellij
 
 # Vite+ bin (https://viteplus.dev)
-[[ -r "$HOME/.vite-plus/env" ]] && . "$HOME/.vite-plus/env"
+. "$HOME/.vite-plus/env"

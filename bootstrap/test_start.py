@@ -21,13 +21,15 @@ class StartTests(unittest.TestCase):
         self.env = dict(os.environ, HOME=str(self.home), PATH=f'{self.bin}:/usr/bin:/bin',
                         XDG_CACHE_HOME=str(self.home / '.cache'), DOTFILES_REF='a' * 40,
                         CALL_LOG=str(self.log), FAKE_ORIGIN='https://github.com/alivault/linux-dotfiles.git',
-                        FAKE_BRANCH='main', OMARCHY_VERSION='4.0.2-mac.1')
+                        FAKE_BRANCH='main')
         self.stub('id', 'echo 1000')
         self.stub('pacman', 'echo unexpected >> "$CALL_LOG"; exit 90')
-        self.stub('omarchy', '''case "$*" in
-          version) printf '%s' "$OMARCHY_VERSION" ;;
-          *) echo "omarchy $*" >> "$CALL_LOG" ;;
-        esac''')
+        # An installed ALNIAC: a staged release and the ~/code/alniac checkout.
+        self.alniac_version = self.home / '.local/share/alniac/current/bin/alniac-version'
+        self.alniac_version.parent.mkdir(parents=True)
+        self.alniac_version.write_text('#!/bin/sh\necho 20261019-alniac-01\n')
+        self.alniac_version.chmod(0o755)
+        (self.home / 'code/alniac/.git').mkdir(parents=True)
         self.stub('git', '''case "$*" in
           *'status --porcelain'*) printf '%s' "${FAKE_STATUS:-}" ;;
           *'config --get remote.origin.url'*) printf '%s' "$FAKE_ORIGIN" ;;
@@ -69,9 +71,9 @@ class StartTests(unittest.TestCase):
         self.stub('id', 'echo 0')
         self.assert_refused('not root')
 
-    def test_omarchy_version_before_checkout(self):
-        self.env['OMARCHY_VERSION'] = '3.0.0'
-        self.assert_refused('requires Omarchy 4')
+    def test_alniac_required_before_checkout(self):
+        self.alniac_version.unlink()
+        self.assert_refused('requires ALNIAC')
 
     def test_existing_non_repository(self):
         (self.source / '.git').rmdir()
@@ -81,7 +83,7 @@ class StartTests(unittest.TestCase):
         for shell, script in [('sh', self.script), ('/usr/bin/bash', ROOT / 'setup.sh')]:
             result = subprocess.run([shell, str(script), '--plan'], env=self.env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn('Omarchy', result.stdout)
+            self.assertIn('ALNIAC', result.stdout)
             self.assertFalse(self.log.exists())
             self.assertFalse((self.home / '.cache').exists())
 
@@ -98,13 +100,13 @@ class StartTests(unittest.TestCase):
         self.assertIn('unknown provisioning step', result.stderr)
         self.assertFalse(self.log.exists())
 
-    def test_setup_rejects_non_omarchy_before_apply(self):
+    def test_setup_rejects_missing_alniac_before_apply(self):
         self.stub('chezmoi', 'echo unexpected >> "$CALL_LOG"; exit 90')
-        self.env['OMARCHY_VERSION'] = '3.0.0'
+        self.alniac_version.unlink()
         result = subprocess.run(['/usr/bin/bash', str(ROOT / 'setup.sh'), '--apply'],
                                 env=self.env, capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('requires Omarchy 4', result.stderr)
+        self.assertIn('requires ALNIAC', result.stderr)
         self.assertFalse(self.log.exists())
 
     def test_setup_pipeline_with_stubbed_actions(self):
@@ -114,13 +116,12 @@ class StartTests(unittest.TestCase):
                                 env=self.env, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         calls = self.log.read_text().splitlines()
-        self.assertEqual(len(calls), 6)
+        self.assertEqual(len(calls), 5)
         self.assertIn('chezmoi init --source', calls[0])
         self.assertIn('diff --exclude scripts', calls[1])
         self.assertIn('apply --exclude scripts', calls[2])
         self.assertIn('provision.sh', calls[3])
-        self.assertEqual(calls[4], 'omarchy theme set ashen')
-        self.assertIn('doctor.sh', calls[5])
+        self.assertIn('doctor.sh', calls[4])
 
 
 if __name__ == '__main__':

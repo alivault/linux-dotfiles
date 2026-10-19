@@ -1,0 +1,122 @@
+{
+  "bar": {
+    "id": "alniac.bar",
+    "layout": {
+      "left": [
+        {
+          "id": "alniac.menu"
+        },
+        {
+          "id": "ali.active-window"
+        }
+      ],
+      "right": [
+        {
+          "id": "alniac.tailscale"
+        },
+        {
+          "id": "alniac.keyboard-layout"
+        },
+        {
+          "id": "alniac.tray"
+        },
+        {
+          "id": "ali.airdrop"
+        },
+        {
+          "id": "alniac.control",
+          "item": "dictation",
+          "showWhen": "active"
+        },
+        {
+          "id": "alniac.control",
+          "item": "screen-recording",
+          "showWhen": "active"
+        },
+        {
+          "id": "alniac.control",
+          "item": "night-light",
+          "showWhen": "active"
+        },
+        {
+          "id": "alniac.control",
+          "item": "focus",
+          "showWhen": "active"
+        },
+        {
+          "id": "alniac.control",
+          "item": "stay-awake",
+          "showWhen": "active"
+        },
+        {
+          "id": "alniac.divider"
+        },
+        {
+          "id": "alniac.system-update"
+        },
+        {
+          "id": "alniac.cpu"
+        },
+        {
+          "id": "alniac.memory"
+        },
+        {
+          "id": "alniac.traffic"
+        },
+        {
+          "id": "alniac.disk"
+        },
+        {
+          "id": "alniac.sensors"
+        },
+        {
+          "id": "alniac.weather",
+          "unit": "imperial"
+        },
+        {
+          "id": "alniac.agents"
+        },
+        {
+          "id": "alniac.bluetooth"
+        },
+        {
+          "id": "alniac.network"
+        },
+        {
+          "id": "alniac.audio"
+        },
+        {
+          "id": "alniac.monitor"
+        },
+        {
+          "id": "alniac.power",
+          "showPercentage": false
+        },
+        {
+          "id": "alniac.control-center"
+        },
+        {
+          "id": "alniac.time",
+          "format": "h:mm AP",
+          "formatAlt": "h:mm AP",
+          "verticalFormat": "h\n—\nmm\nAP"
+        }
+      ]
+    },
+    "position": "top",
+    "transparent": false
+  },
+  "cloneSourceRestores": [
+    "alniac.menu"
+  ],
+  "disabledPlugins": [
+    "alniac.idle",
+    "alniac.nightlight"
+  ],
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
+  },
+  "plugins": [],
+  "version": 1
+}

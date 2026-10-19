@@ -6,14 +6,12 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 # shellcheck source=../lib.sh
 source "$script_dir/lib.sh"
 
-require_command curl git omarchy pacman sha256sum sudo systemctl
+require_command curl git pacman sha256sum sudo systemctl
 
-case $(omarchy version) in
-4.*) ;;
-*) bootstrap_die "this repository requires Omarchy 4" ;;
-esac
+alniac_installed ||
+  bootstrap_die "this repository requires ALNIAC: a staged release and ~/code/alniac"
 
 ensure_package jq
 require_command jq
 
-bootstrap_log "Omarchy $(omarchy version) on $(uname -m)"
+bootstrap_log "ALNIAC $(alniac-version) on $(uname -m)"

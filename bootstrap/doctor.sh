@@ -31,80 +31,51 @@ has_command() {
   fi
 }
 
-printf '%s\n' 'Omarchy bootstrap doctor' '========================'
+printf '%s\n' 'ALNIAC bootstrap doctor' '======================='
 
-for command_name in chezmoi git jq omarchy; do
+for command_name in chezmoi git jq; do
   has_command "$command_name"
 done
 
-if command -v omarchy >/dev/null 2>&1; then
-  omarchy_version=$(omarchy version 2>/dev/null || true)
-  case $omarchy_version in
-  4.*) pass "Omarchy version is supported: $omarchy_version" ;;
-  '') fail 'could not determine the Omarchy version' ;;
-  *) fail "unsupported Omarchy version: $omarchy_version" ;;
-  esac
-fi
-
-shell_config="$HOME/.config/omarchy/shell.json"
-if command -v jq >/dev/null 2>&1 && jq empty "$shell_config" >/dev/null 2>&1; then
-  pass 'Omarchy shell configuration is valid JSON'
+release="$HOME/.local/share/alniac/current"
+if [[ -x $release/bin/alniac-version ]]; then
+  pass "ALNIAC release is staged: $("$release/bin/alniac-version")"
 else
-  fail "invalid or missing shell configuration: $shell_config"
+  fail "no staged ALNIAC release: $release"
 fi
 
-if command -v omarchy >/dev/null 2>&1 && command -v jq >/dev/null 2>&1 &&
-  [[ -r $shell_config ]]; then
-  plugin_json=$(omarchy plugin list --json 2>/dev/null || true)
-  if jq -e 'type == "array"' >/dev/null 2>&1 <<<"$plugin_json"; then
-    plugin_failure=0
-    while IFS= read -r plugin_id; do
-      if jq -e --arg id "$plugin_id" \
-        'any(.[]; .id == $id and .enabled == true)' \
-        >/dev/null <<<"$plugin_json"; then
-        pass "bar plugin is installed and enabled: $plugin_id"
-      else
-        fail "bar plugin is missing or disabled: $plugin_id"
-        plugin_failure=1
-      fi
-    done < <(jq -r '.bar.layout[][]?.id' "$shell_config" | sort -u)
-
-    if ((plugin_failure == 0)); then
-      pass 'all configured bar plugins are available'
-    fi
-  else
-    fail 'could not read the Omarchy plugin registry'
-  fi
-
-  for manifest in "$HOME/.config/omarchy/plugins"/*/manifest.json; do
-    [[ -f $manifest ]] || continue
-    plugin_dir=${manifest%/manifest.json}
-    plugin_id=$(jq -r '.id // empty' "$manifest")
-    if omarchy plugin validate "$plugin_dir" >/dev/null 2>&1; then
-      pass "plugin manifest is valid: $plugin_id"
-    else
-      fail "plugin validation failed: $plugin_dir"
-    fi
-  done
-fi
-
-if command -v omarchy-shell >/dev/null 2>&1; then
-  if OMARCHY_SHELL_IPC_TIMEOUT=3s omarchy-shell shell ping >/dev/null 2>&1; then
-    pass 'Omarchy shell IPC is healthy'
-  else
-    warn 'Omarchy shell is not running or did not answer IPC'
-  fi
-fi
-
-if command -v hyprctl >/dev/null 2>&1 && [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
-  hypr_errors=$(hyprctl configerrors 2>/dev/null || true)
-  if [[ -z $hypr_errors ]]; then
-    pass 'Hyprland reports no configuration errors'
-  else
-    fail "Hyprland configuration errors: $hypr_errors"
-  fi
+if [[ -d $HOME/code/alniac/.git ]]; then
+  pass 'ALNIAC checkout exists: ~/code/alniac'
 else
-  warn 'Hyprland is not active; runtime configuration check skipped'
+  fail 'ALNIAC checkout is missing: ~/code/alniac'
+fi
+
+# The same preflight the login runs: release hashes, tuned Niri, config validation.
+if [[ -r $release/session/check.py ]] &&
+  env -u ALNIAC_PATH /usr/bin/python3 "$release/session/check.py" >/dev/null 2>&1; then
+  pass 'ALNIAC login preflight passes'
+else
+  fail 'ALNIAC login preflight fails; run: python3 ~/.local/share/alniac/current/session/check.py'
+fi
+
+if [[ -r $HOME/.config/alniac/shell.json ]] && jq empty "$HOME/.config/alniac/shell.json" >/dev/null 2>&1; then
+  pass 'ALNIAC shell configuration is valid JSON'
+else
+  fail 'invalid or missing ALNIAC shell configuration: ~/.config/alniac/shell.json'
+fi
+
+for unit in alniac alniac-audio alniac-bt-agent alniac-crash-watch alniac-fcitx5 alniac-tailscale-receive; do
+  if [[ -f $HOME/.config/systemd/user/$unit.service ]]; then
+    pass "ALNIAC unit is linked: $unit.service"
+  else
+    fail "ALNIAC unit link is missing or broken: $unit.service"
+  fi
+done
+
+if systemctl --user is-active --quiet alniac.service; then
+  pass 'ALNIAC session is running'
+else
+  warn 'ALNIAC session is not running (not logged in graphically?)'
 fi
 
 if command -v chezmoi >/dev/null 2>&1; then
@@ -168,23 +139,34 @@ else
   fail 'Obsidian is not installed'
 fi
 
-if grep -aq 'apple,arm-platform' \
-  /sys/firmware/devicetree/base/compatible 2>/dev/null; then
-  if [[ -x $HOME/.local/bin/gpu-screen-recorder &&
-    -x $HOME/.local/libexec/omarchy-asahi-screenrecord.py ]]; then
-    pass 'Asahi screen-recording compatibility files are installed'
-  else
-    fail 'Asahi screen-recording compatibility files are missing'
-  fi
+if [[ -x $HOME/.local/bin/voxtype && -x $HOME/.local/bin/voxtype-osd-gtk4 ]]; then
+  pass "$("$HOME/.local/bin/voxtype" --version 2>/dev/null) and its OSD are installed"
+else
+  fail 'voxtype or its OSD is not installed in ~/.local/bin'
 fi
 
-if command -v omarchy >/dev/null 2>&1; then
-  current_theme=$(omarchy theme current 2>/dev/null || true)
-  if [[ $current_theme == Ashen ]]; then
-    pass 'Ashen theme is active'
-  else
-    warn "Ashen theme is not active (current: ${current_theme:-unknown})"
-  fi
+if systemctl --user is-active --quiet voxtype.service; then
+  pass 'voxtype service is active'
+else
+  fail 'voxtype service is not active'
+fi
+
+if systemctl --user is-active --quiet airpods.service; then
+  pass 'AirPods daemon is active'
+else
+  warn 'AirPods daemon is not active'
+fi
+
+missing_apps=()
+for installer in "$HOME"/code/alniac/apps/*/install.sh; do
+  [[ -f $installer ]] || continue
+  app=$(basename "$(dirname "$installer")")
+  [[ -e $HOME/.local/bin/$app ]] || missing_apps+=("$app")
+done
+if ((${#missing_apps[@]} == 0)); then
+  pass 'ALNIAC apps are installed'
+else
+  fail "ALNIAC apps are not installed: ${missing_apps[*]}"
 fi
 
 printf '\nSummary: %d passed, %d warning(s), %d failed.\n' \

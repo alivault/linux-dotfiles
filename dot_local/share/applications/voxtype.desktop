@@ -2,7 +2,7 @@
 Type=Application
 Name=Voxtype Configuration
 Comment=Configure voice typing and dictation
-Exec=omarchy voxtype config
+Exec=alniac voxtype config
 Icon=audio-input-microphone
 Terminal=false
 Categories=Settings;Accessibility;

@@ -14,6 +14,11 @@ class VoxtypeTests(unittest.TestCase):
         self.assertFalse(config['output']['notification']['on_recording_start'])
         self.assertFalse(config['output']['notification']['on_recording_stop'])
 
+    def test_alniac_owns_the_hotkey(self):
+        with (ROOT / 'dot_config/voxtype/config.toml').open('rb') as file:
+            config = tomllib.load(file)
+        self.assertFalse(config['hotkey']['enabled'])
+
     def test_service_privacy(self):
         config = configparser.ConfigParser()
         config.read(ROOT / 'dot_config/systemd/user/voxtype.service.d/privacy.conf')
@@ -25,10 +30,10 @@ class VoxtypeTests(unittest.TestCase):
         self.assertEqual(config['Journal']['SystemMaxUse'], '256M')
         self.assertEqual(config['Journal']['MaxRetentionSec'], '7day')
 
-    def test_launcher_uses_omarchy(self):
+    def test_launcher_uses_alniac(self):
         config = configparser.ConfigParser()
         config.read(ROOT / 'dot_local/share/applications/voxtype.desktop')
-        self.assertEqual(config['Desktop Entry']['Exec'], 'omarchy voxtype config')
+        self.assertEqual(config['Desktop Entry']['Exec'], 'alniac voxtype config')
         self.assertEqual(config['Desktop Entry']['Terminal'], 'false')
 
 

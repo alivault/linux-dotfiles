@@ -1,2 +1,2 @@
-# Login shells receive the Omarchy environment and personal Bash overrides.
+# Login shells load the ALNIAC environment and personal settings from ~/.bashrc.
 [[ -f ~/.bashrc ]] && . ~/.bashrc

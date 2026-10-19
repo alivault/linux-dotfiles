@@ -2,4 +2,8 @@
 
 set -euo pipefail
 
-omarchy install chromium google account
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+# shellcheck source=../lib.sh
+source "$script_dir/lib.sh"
+
+alniac-install-chromium-google-account

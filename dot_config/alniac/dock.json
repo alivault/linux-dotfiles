@@ -1,0 +1,17 @@
+{
+  "apps": [
+    "files",
+    "chromium",
+    "kitty",
+    "obsidian"
+  ],
+  "size": 56,
+  "magnify": 1.75,
+  "style": "default",
+  "magnification": true,
+  "autohide": true,
+  "indicators": true,
+  "bounce": true,
+  "showRunning": true,
+  "showTrash": true
+}

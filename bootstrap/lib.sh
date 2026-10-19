@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+# ALNIAC's commands live in the staged release; scripts may run outside its PATH (SSH, cron).
+ALNIAC_RELEASE_BIN="$HOME/.local/share/alniac/current/bin"
+case ":$PATH:" in *":$ALNIAC_RELEASE_BIN:"*) ;; *) PATH="$ALNIAC_RELEASE_BIN:$PATH" ;; esac
+export PATH
+
 bootstrap_log() {
   printf '==> %s\n' "$*"
 }
@@ -28,7 +33,11 @@ package_available() {
 }
 
 ensure_package() {
-  omarchy pkg add "$@"
+  alniac-pkg-add "$@"
+}
+
+alniac_installed() {
+  [[ -x $ALNIAC_RELEASE_BIN/alniac-version && -d $HOME/code/alniac/.git ]]
 }
 
 flatpak_has() {

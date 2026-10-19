@@ -1,75 +1,67 @@
-# Omarchy + chezmoi setup
+# ALNIAC + chezmoi setup
 
-Start with a working, updated **Omarchy 4** installation. On Apple Silicon, use
-the supported Asahi Omarchy port first. This bootstrap only configures an
-existing Omarchy system; it does not partition, install a desktop/login manager,
-replace bootloaders, or reboot. The Asahi media-key step rebuilds the initramfs
-to persist its keyboard-driver setting.
+Start with a working **ALNIAC** installation: a staged release in
+`~/.local/share/alniac/current` and the checkout in `~/code/alniac`. This
+bootstrap only configures an existing ALNIAC system. It does not partition,
+install a desktop or login manager, replace bootloaders or reboot. The Asahi
+media-key step rebuilds the initramfs to keep its keyboard-driver setting.
 
 ## From a reviewed checkout
 
-Install chezmoi and Git with Omarchy's package workflow if missing. On a fresh
-machine, after the restored revision has been published:
-
 ```bash
-omarchy pkg add chezmoi git
+alniac pkg add chezmoi git
 chezmoi init https://github.com/alivault/linux-dotfiles.git
 cd "$(chezmoi source-path)"
 bash bootstrap/setup.sh --plan
 bash bootstrap/setup.sh
 ```
 
-For an existing checkout such as `~/code/linux-dotfiles`, run those final two
-commands there instead. Review `git status` first. The plan makes no changes.
-This does not switch your default chezmoi source directory: with a separate
-clone, use `chezmoi --source ~/code/linux-dotfiles diff` and
-`chezmoi --source ~/code/linux-dotfiles apply` for subsequent updates. The normal
-commands in the root README assume the standard `~/.local/share/chezmoi` source.
-Normal setup asks for confirmation, shows `chezmoi diff`, asks before applying,
-and retains chezmoi's overwrite/conflict prompts. `--apply` explicitly skips the
-two wrapper confirmations, not package-manager or authentication prompts.
+For another checkout, such as `~/code/linux-dotfiles`, run the last two
+commands there. Look at `git status` first. The plan makes no changes. Setup
+asks for confirmation, shows `chezmoi diff`, asks again before it applies, and
+keeps chezmoi's overwrite prompts. `--apply` skips the two confirmations of
+the script, not the package-manager or authentication prompts.
 
-The pipeline initializes chezmoi against that checkout, applies user files,
-runs `provision.sh`, selects Ashen, and runs `doctor.sh`. It does not run the
-retired standalone installers. Running setup is an explicit opt-in to your
-personal Omarchy profile, including its shell/menu plugins and shortcuts.
+The pipeline initializes chezmoi against the checkout, applies the user files,
+runs `provision.sh` and then `doctor.sh`.
 
 ## Configuration versus provisioning
 
-`chezmoi diff` / `chezmoi apply` manage user configuration only. The sole
-initialization hook creates a private temporary directory. Packages, mise tool
-downloads, keyd configuration and service activation remain explicit:
+`chezmoi diff` and `chezmoi apply` manage user configuration only. The only
+initialization hook makes a private temporary directory. Packages, tool
+downloads, system files and services are explicit:
 
 ```bash
 bash bootstrap/provision.sh --list
-bash bootstrap/provision.sh                 # all steps, after chezmoi apply
-bash bootstrap/provision.sh tailscale       # one step
+bash bootstrap/provision.sh                  # all steps, after chezmoi apply
+bash bootstrap/provision.sh voxtype          # one step
 bash bootstrap/provision.sh apple-media-keys # Asahi: media keys without Fn
 bash bootstrap/doctor.sh
 ```
 
-Provisioning installs Kitty, mise tools, pinned Vite+, keyd, Bitwarden,
-Obsidian, Syncthing, Chromium account support and Tailscale. It may request
-`sudo` and start/reload keyd, Syncthing and Tailscale. Fish configuration is
-retained but does not change your login shell; install Fish separately if wanted.
+Provisioning can ask for `sudo` and can start or reload keyd, Syncthing and
+Tailscale. The steps that need ALNIAC (`kitty`, `chromium-google-account`,
+`alniac-apps`, `airpods`) use its commands and its checkout.
 
-On Asahi, provisioning restores brightness/volume keys without holding Fn
-(`hid_apple fnmode=1`). A separate modprobe override preserves Omarchy's driver
-configuration, applies the mode immediately when the driver is loaded, and
-rebuilds the initramfs for reboot persistence. Other machines skip this step.
+On Asahi, provisioning makes the brightness and volume keys work without Fn
+(`hid_apple fnmode=1`). A separate modprobe file keeps other driver options,
+applies the mode at once when the driver is loaded, and rebuilds the initramfs
+so that the setting stays after a reboot. Other machines skip this step.
 
-Sign into applications and Pi/Codex manually. Pair Syncthing devices/folders,
-authenticate Tailscale, and choose the Obsidian vault yourself. No identities,
-passwords, browser profiles or authentication stores are imported.
+## Session units
+
+The ALNIAC login (`alniac-session`) starts `alniac.service` and expects its
+helper units in `~/.config/systemd/user`. Chezmoi links them to
+`~/.local/share/alniac/current/session/systemd`, so they follow the staged
+release. The `session-units` step checks the links and reloads the user
+manager. The apps and the AirPods setup make their own timers and units.
 
 ## Journal retention and Voxtype
 
-The `journal-retention` provisioning step installs
-`files/journald-retention.conf` into `/etc/systemd/journald.conf.d/retention.conf`
-and restarts journald. Persistent logs are limited to 256 MiB and seven days;
-activating these limits can permanently delete older diagnostics. This step
-runs only during explicit provisioning, never during `chezmoi apply`.
-For an immediate archived-log cleanup after applying the limits:
+The `journal-retention` step installs `files/journald-retention.conf` into
+`/etc/systemd/journald.conf.d/retention.conf` and restarts journald. Persistent
+logs are limited to 256 MiB and seven days. This can delete older diagnostics
+permanently. To remove archived logs at once after the limits apply:
 
 ```bash
 bash bootstrap/provision.sh journal-retention
@@ -77,50 +69,20 @@ sudo journalctl --rotate
 sudo journalctl --vacuum-time=7d --vacuum-size=256M
 ```
 
-Chezmoi manages Voxtype's configuration, its **Voxtype Configuration** desktop
-entry (launching `omarchy voxtype config`), and a user-service privacy drop-in.
-The drop-in sets `RUST_LOG=warn` to suppress INFO-level dictated-text logging
-while retaining warnings/errors. Existing journal entries are not scrubbed.
-After applying it, restart Voxtype while idle:
-
-```bash
-systemctl --user daemon-reload
-systemctl --user restart voxtype.service
-```
-
-Voxtype, its model, and its daemon service must already be installed. Built
-binaries, models, audio, and journals are not stored in this repository.
-The ARM workstation uses source-built Voxtype 0.7.2 with its own GTK4 OSD,
-not an Omarchy OSD bridge. To reproduce just the matching OSD binaries on a
-machine with Rust, Git, GTK4, gtk4-layer-shell, ALSA, clang, CMake and pkgconf:
-
-```bash
-build_dir=$(mktemp -d)
-git clone https://github.com/peteonrails/voxtype.git "$build_dir/voxtype"
-git -C "$build_dir/voxtype" checkout --detach 858a4ece13490bc6cdba88777c56246d8e89ffad
-(
-  cd "$build_dir/voxtype"
-  cargo build --locked --release --features osd-gtk4 \
-    --bin voxtype-osd --bin voxtype-osd-gtk4 -j 2
-)
-mkdir -p ~/.local/bin
-install -m755 "$build_dir/voxtype/target/release/voxtype-osd" \
-  "$build_dir/voxtype/target/release/voxtype-osd-gtk4" ~/.local/bin/
-systemctl --user restart voxtype.service
-```
-
-Both `voxtype-osd` and `voxtype-osd-gtk4` must be on the daemon's PATH.
-Version 0.7.2 enables the GTK4 OSD by default and supervises it automatically;
-no separate OSD service is needed. Match the OSD version to the installed
-daemon rather than mixing these binaries with a newer release.
-Syncthing discovery and firewall rules are deliberately not changed.
+ALNIAC's dictation (`profile/dictation.py`) runs `~/.local/bin/voxtype` with
+`--no-hotkey`, so the dictation key belongs to ALNIAC. The `voxtype` step
+installs voxtype 1.1.1 and its OSD (`voxtype-osd`, `voxtype-osd-gtk4`) from
+the release binaries, verified with SHA-256, downloads the base.en model, and
+enables `voxtype.service`. Chezmoi links ALNIAC's service drop-in and keeps a
+privacy drop-in that sets `RUST_LOG=warn`, so dictated text stays out of the
+journal. To update voxtype, change the version and the three checksums in
+`provision.d/31-voxtype.sh`.
 
 ## Hosted bootstrap
 
-Keep **https://dots.aliabbas.dev**. The Worker lives separately at
-`~/code/dotfiles-bootstrap`; changing this repo cannot update its release pin.
-See [RELEASE.md](RELEASE.md). Never use the old standalone release to test this
-Omarchy restoration on a live machine.
+Keep **https://dots.aliabbas.dev**. The Worker is a separate project,
+`~/code/dotfiles-bootstrap`; a change here does not change its release pin.
+See [RELEASE.md](RELEASE.md).
 
 ## Validation
 
@@ -130,8 +92,6 @@ git diff --check
 git status --short
 ```
 
-Validation runs offline safety tests, source/credential heuristics, syntax
-checks and a disposable-home chezmoi apply. That apply fetches the public
-iWeather and Omachron externals, so it needs GitHub access. It does not provision the host.
-These checks are not a substitute for a fresh-machine test or physical
-lock/unlock, suspend, capture and hardware checks.
+Validation runs offline safety tests, source and credential checks, syntax
+checks and a chezmoi apply into a disposable home. It does not provision the
+host, and it is not a substitute for a test on a fresh ALNIAC machine.

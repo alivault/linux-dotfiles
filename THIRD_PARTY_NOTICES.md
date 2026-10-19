@@ -2,8 +2,9 @@
 
 ## Omarchy
 
-Portions of the Omarchy shell configuration and plugins in this repository
-are copied from or derived from [Omarchy](https://github.com/basecamp/omarchy).
+The Bash startup file (`dot_bashrc`, from ALNIAC's default) and the fastfetch
+layout in this repository derive from [Omarchy](https://github.com/basecamp/omarchy),
+through ALNIAC, which keeps the same notice.
 
 Copyright (c) David Heinemeier Hansson
 

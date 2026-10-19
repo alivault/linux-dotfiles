@@ -1,5 +1,6 @@
 [tools]
+chezmoi = "latest"
+codex = "latest"
 node = "26.8.1"
-pi = "0.85.1"
-codex = "0.153.4"
-gh = "latest"
+pi = "latest"
+python = "3.13.15"

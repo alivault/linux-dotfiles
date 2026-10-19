@@ -25,15 +25,6 @@ while IFS= read -r json_file; do
   jq empty "$json_file"
 done < <(find . -type f -name '*.json' -not -path './.git/*' | sort)
 
-python3 - <<'PY'
-import pathlib
-import tomllib
-
-for path in (pathlib.Path('.chezmoiexternal.toml'),):
-    with path.open('rb') as file:
-        tomllib.load(file)
-PY
-
 if command -v lua >/dev/null 2>&1; then
   while IFS= read -r lua_file; do
     LUA_FILE="$lua_file" lua -e 'assert(loadfile(os.getenv("LUA_FILE")))'
@@ -42,12 +33,6 @@ fi
 
 chezmoi execute-template <.chezmoiignore >/dev/null
 chezmoi execute-template <.chezmoi.toml.tmpl >/dev/null
-rendered_monitor=$(mktemp)
-chezmoi execute-template <dot_config/hypr/monitors.lua.tmpl >"$rendered_monitor"
-if command -v lua >/dev/null 2>&1; then
-  LUA_FILE="$rendered_monitor" lua -e 'assert(loadfile(os.getenv("LUA_FILE")))'
-fi
-rm -f "$rendered_monitor"
 
 temp_root=$(mktemp -d)
 trap 'rm -rf "$temp_root"' EXIT
@@ -68,20 +53,26 @@ XDG_CACHE_HOME="$temp_root/cache" \
   --cache "$temp_root/cache/chezmoi" \
   apply --force --exclude scripts
 
-rendered_shell="$temp_root/home/.config/omarchy/shell.json"
-jq empty "$rendered_shell"
+# ALNIAC's user profile renders and parses.
+profile="$temp_root/home/.config/alniac"
+jq empty "$profile/shell.json" "$profile/dock.json"
+[[ -s $profile/config.kdl && -s $profile/bindings.kdl ]]
 
-while IFS= read -r plugin_id; do
-  if ! find "$temp_root/home/.config/omarchy/plugins" \
-    -mindepth 2 -maxdepth 2 -name manifest.json -print0 |
-    xargs -0 -r jq -e --arg id "$plugin_id" \
-      'select(.id == $id)' >/dev/null; then
-    printf 'missing custom bar plugin in isolated apply: %s\n' \
-      "$plugin_id" >&2
+# Session unit links point into the staged release, as the login expects.
+units="$temp_root/home/.config/systemd/user"
+release="$temp_root/home/.local/share/alniac/current/session/systemd"
+for unit in alniac alniac-audio alniac-bt-agent alniac-crash-watch alniac-fcitx5 alniac-tailscale-receive; do
+  [[ $(readlink "$units/$unit.service") == "$release/$unit.service" ]] || {
+    printf 'unexpected ALNIAC unit link: %s\n' "$unit.service" >&2
     exit 1
-  fi
-done < <(jq -r '.bar.layout[][]?.id | select(startswith("omarchy.") | not)' \
-  "$rendered_shell" | sort -u)
+  }
+done
+for unit in alniac-bt-agent alniac-crash-watch alniac-fcitx5 alniac-tailscale-receive; do
+  [[ $(readlink "$units/graphical-session.target.wants/$unit.service") == "$units/$unit.service" ]] || {
+    printf 'unexpected graphical-session want: %s\n' "$unit.service" >&2
+    exit 1
+  }
+done
 
 [[ ! -e $temp_root/home/bootstrap ]]
 [[ ! -e $temp_root/home/.github ]]

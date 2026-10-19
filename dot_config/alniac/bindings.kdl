@@ -1,0 +1,6 @@
+// Your key bindings: only what differs from ALNIAC's (default-bindings.kdl,
+// from the running release; don't edit it). A key bound here replaces the
+// default; `KEY { unbind; }` frees a default key; delete a line to go back
+// to the default. Settings › Keyboard › Keyboard Shortcuts writes here too.
+binds {
+}

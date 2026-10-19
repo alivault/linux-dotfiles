@@ -9,9 +9,7 @@ source "$script_dir/lib.sh"
 ensure_package tailscale
 sudo systemctl enable --now tailscaled.service
 
-if systemctl --user cat omarchy-tailscale-receive.service >/dev/null 2>&1; then
-  systemctl --user enable --now omarchy-tailscale-receive.service
-fi
+# Taildrop receiving is the ALNIAC session unit alniac-tailscale-receive.service.
 
 if tailscale status >/dev/null 2>&1; then
   sudo tailscale set --operator="$USER"
