@@ -1,7 +1,8 @@
 {
-  "tui.input.submit": "alt+enter",
-  "app.message.followUp": "enter",
   "app.session.new": "ctrl+n",
   "app.session.resume": "ctrl+s",
-  "app.thinking.cycle": "ctrl+r"
+  "app.thinking.cycle": "ctrl+r",
+  "app.model.cycleForward": "alt+m",
+  "tui.input.submit": "alt+enter",
+  "app.message.followUp": "enter"
 }

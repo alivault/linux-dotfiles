@@ -11,23 +11,43 @@ printf '%s\n' "$settings" | jq '
     (if type == "object" then .source else . end)
     | sub("@[^/@]+$"; "")
     | sub("^git:git@github.com:"; "git:https://github.com/");
+  # Packages as on the Mac (~/dotfiles/pi), pinned to the versions installed there.
   [
-    "git:https://github.com/alivault/pi-queue-steer@d3a276d213f74013445744fabfcc914a141d5d4f",
-    "npm:@ogulcancelik/pi-herdr@0.4.0",
-    "npm:@ff-labs/pi-fff@0.10.6",
-    "npm:pi-mcp-adapter@2.32.1",
-    "npm:@howaboua/pi-codex-conversion@3.0.29"
+    "git:https://github.com/alivault/pi-queue-steer@db7989db548d02a72a99527e52ae84fb5cf3f26e",
+    "npm:@ogulcancelik/pi-herdr@0.4.1",
+    "npm:pi-web-access@0.39.0",
+    "npm:@gotgenes/pi-anthropic-auth@3.4.2"
   ] as $required_packages
-  | (if (.packages | type) == "array" then .packages else [] end) as $existing_packages
-  | .quietStartup = true
+  # Packages this machine had before; removed so it matches the Mac.
+  | [
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-mcp-adapter",
+    "npm:@howaboua/pi-codex-conversion",
+    "npm:@injaneity/pi-computer-use"
+  ] as $retired_packages
+  | ((if (.packages | type) == "array" then .packages else [] end)
+    | map(select(identity as $id | ($retired_packages | index($id)) == null))) as $existing_packages
+  # Settings as on the Mac.
+  | .defaultProvider = "anthropic"
+  | .defaultModel = "claude-opus-5-5"
+  | .defaultThinkingLevel = "medium"
+  | .hideThinkingBlock = false
+  | .quietStartup = false
+  | .treeFilterMode = "no-tools"
+  | .doubleEscapeAction = "tree"
+  | .collapseChangelog = false
+  | .editorPaddingX = 0
+  | .showHardwareCursor = false
+  | .theme = "dark"
+  | .terminal = ((.terminal // {}) + {"showTerminalProgress": false})
+  | .outputPad = 1
+  | .showCacheMissNotices = true
+  | .tuiMode = "fullscreen"
+  | .markdown = ((.markdown // {}) + {"mermaid": "streaming"})
   | .enableInstallTelemetry = false
+  # This machine only: no analytics, npm from the pinned node.
   | .enableAnalytics = false
   | .npmCommand = ["mise", "exec", "node@26.8.1", "--", "npm"]
-  | .treeFilterMode = "no-tools"
-  | .defaultProvider = "openai-codex"
-  | .defaultModel = "gpt-6-astra"
-  | .defaultThinkingLevel = "low"
-  | .hideThinkingBlock = true
   # Before every agent bash command (pi, and the agents of Pico): an unset variable is
   # an error, and the rm guard (~/.local/share/agent-guard/bin) comes first.
   | .shellCommandPrefix = "set -u\nexport PATH=\"$HOME/.local/share/agent-guard/bin:$PATH\""

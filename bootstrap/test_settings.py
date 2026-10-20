@@ -13,7 +13,7 @@ def apply(data):
 class SettingsTests(unittest.TestCase):
     def test_fresh_defaults_and_idempotence(self):
         result = apply({})
-        self.assertEqual(len(result['packages']), 5)
+        self.assertEqual(len(result['packages']), 4)
         self.assertEqual(apply(result), result)
         self.assertFalse(result['enableInstallTelemetry'])
         self.assertTrue(all('@' in package for package in result['packages']))
@@ -25,15 +25,29 @@ class SettingsTests(unittest.TestCase):
 
     def test_local_values_and_package_filters_are_preserved(self):
         result = apply({'localValue': 'preserve-me', 'packages': [
-            {'source': 'npm:@ff-labs/pi-fff', 'skills': [], 'extensions': ['extension.ts']},
+            {'source': 'npm:pi-web-access', 'skills': [], 'extensions': ['extension.ts']},
             'git:git@github.com:alivault/pi-queue-steer',
             'npm:another-local-package@1.0.0',
         ]})
         self.assertEqual(result['localValue'], 'preserve-me')
-        self.assertEqual(len(result['packages']), 6)
+        self.assertEqual(len(result['packages']), 5)
         filtered = next(p for p in result['packages'] if isinstance(p, dict))
-        self.assertEqual(filtered, {'source': 'npm:@ff-labs/pi-fff@0.10.6', 'skills': [], 'extensions': ['extension.ts']})
+        self.assertEqual(filtered, {'source': 'npm:pi-web-access@0.39.0', 'skills': [], 'extensions': ['extension.ts']})
 
+    def test_retired_packages_are_removed(self):
+        result = apply({'packages': ['npm:@ff-labs/pi-fff@0.10.6', 'npm:pi-mcp-adapter@2.32.1',
+                                     'npm:@howaboua/pi-codex-conversion@3.0.29',
+                                     'npm:@injaneity/pi-computer-use@0.5.1', 'npm:kept-local@1.0.0']})
+        sources = [p if isinstance(p, str) else p['source'] for p in result['packages']]
+        self.assertFalse(any(x in s for s in sources for x in ('pi-fff', 'mcp-adapter', 'codex-conversion', 'computer-use')))
+        self.assertIn('npm:kept-local@1.0.0', sources)
+
+    def test_the_macs_choices(self):
+        result = apply({'terminal': {'other': 1}})
+        self.assertEqual((result['defaultProvider'], result['defaultModel'], result['defaultThinkingLevel']),
+                         ('anthropic', 'claude-opus-5-5', 'medium'))
+        self.assertEqual(result['terminal'], {'other': 1, 'showTerminalProgress': False}, 'merged, not replaced')
+        self.assertEqual(result['markdown'], {'mermaid': 'streaming'})
 
 if __name__ == '__main__':
     unittest.main()
