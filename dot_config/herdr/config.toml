@@ -7,7 +7,9 @@ onboarding = false
 name = "terminal"
 
 [theme.custom]
-panel_bg = "reset"
+# The active tab is drawn as panel_bg text on an accent background, so panel_bg
+# has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
+panel_bg = "black"
 # Keep semantic agent colors while the terminal follows the selected theme.
 yellow = "#e0af68"
 teal = "#7dcfff"
