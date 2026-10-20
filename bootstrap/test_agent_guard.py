@@ -26,7 +26,7 @@ class GuardTests(unittest.TestCase):
         self.env = dict(os.environ, HOME=str(self.home), AGENT_GUARD_REAL_RM=str(stub), RAN_LOG=str(self.log))
 
     def rm(self, *args):
-        result = subprocess.run(['bash', str(GUARD), *args], env=self.env, capture_output=True, text=True,
+        result = subprocess.run([os.environ.get('GUARD_BASH', 'bash'), str(GUARD), *args], env=self.env, capture_output=True, text=True,
                                 cwd=self.home)
         ran = self.log.read_text().split('\n')[:-1] if self.log.exists() else None
         if self.log.exists():

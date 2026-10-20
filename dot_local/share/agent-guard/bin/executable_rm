@@ -7,10 +7,54 @@
 # Refused: /, any top-level directory, $HOME, anything directly in $HOME, the
 # directories directly in ~/.config, ~/.local/share, ~/.local/state and
 # ~/code, and (recursive only) any directory that is a git repository.
-# Use `gio trash` for those, or run /usr/bin/rm yourself.
+# Use the trash for those (`gio trash` on Linux, `trash` on macOS).
+#
+# Portable: Linux and macOS, bash 3.2 and later, no GNU realpath.
 set -u
+set -f # no globbing of path parts
 
-home=$(realpath -m -- "$HOME")
+# The logical absolute path: relative to $PWD, with . and .. resolved and
+# symlinks not followed (rm removes a link, not its target).
+normalize() {
+  local path=$1 part parts=() out=()
+  [[ $path == /* ]] || path="$PWD/$path"
+  # Split on / with read (bash 3.2 merges a quoted array slice under a custom IFS).
+  IFS=/ read -r -a parts <<<"$path"
+  for part in ${parts[@]+"${parts[@]}"}; do
+    case $part in
+    '' | .) ;;
+    ..) ((${#out[@]})) && unset "out[$((${#out[@]} - 1))]" ;;
+    *) out+=("$part") ;;
+    esac
+  done
+  if ((${#out[@]})); then
+    printf '/%s' "${out[@]}"
+  else
+    printf '/'
+  fi
+}
+
+# The same path with its parent directory resolved physically (cd -P), so a
+# path through a symlink (macOS: /var -> /private/var) is checked too. The last
+# part is kept as it is: rm of a symlink removes only the link.
+physical() {
+  local logical dir base rest=''
+  logical=$(normalize "$1")
+  [[ $logical == / ]] && { printf '/'; return; }
+  dir=${logical%/*}
+  base=${logical##*/}
+  [[ -n $dir ]] || dir=/
+  while [[ ! -d $dir ]]; do
+    rest="/${dir##*/}$rest"
+    dir=${dir%/*}
+    [[ -n $dir ]] || dir=/
+  done
+  dir=$(cd -P -- "$dir" 2>/dev/null && pwd -P) || dir=${logical%/*}
+  printf '%s%s/%s' "${dir%/}" "$rest" "$base"
+}
+
+home=$(normalize "$HOME")
+home_physical=$(cd -P -- "$HOME" 2>/dev/null && pwd -P) || home_physical=$home
 recursive=0
 targets=()
 options_done=0
@@ -28,14 +72,14 @@ done
 
 refuse() {
   printf 'rm (agent guard): refusing to remove %s: %s.\n' "$1" "$2" >&2
-  printf 'Use a narrower path, or `gio trash` (recoverable). Each bash call is a new shell:\n' >&2
-  printf 'a variable set in an earlier call is empty here.\n' >&2
+  printf 'Use a narrower path, or the trash (gio trash on Linux, trash on macOS).\n' >&2
+  printf 'Each bash call is a new shell: a variable set in an earlier call is empty here.\n' >&2
   exit 1
 }
 
-for target in "${targets[@]}"; do
-  # Logical path (symlinks not followed): rm removes a link, not its target.
-  path=$(realpath -m -s -- "$target")
+# The rules for one form of a target: its path, and the home directory in that form.
+check() {
+  local path=$1 home=$2 rest below parent inner
   case $path in
   / | "$home") refuse "$path" "it is / or your home directory" ;;
   esac
@@ -54,7 +98,12 @@ for target in "${targets[@]}"; do
   if ((recursive)) && [[ -d $path/.git || -f $path/.git ]]; then
     refuse "$path" "it is a git repository"
   fi
+}
+
+for target in ${targets[@]+"${targets[@]}"}; do
+  check "$(normalize "$target")" "$home"
+  check "$(physical "$target")" "$home_physical"
 done
 
 # Tests replace the real rm with a stub (bootstrap/test_agent_guard.py).
-exec "${AGENT_GUARD_REAL_RM:-/usr/bin/rm}" "$@"
+exec "${AGENT_GUARD_REAL_RM:-/bin/rm}" "$@"
