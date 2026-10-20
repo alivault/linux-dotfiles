@@ -69,7 +69,8 @@ apply.
   mode, fzf previews, the `v`, `lg` and `j` aliases) and Vite+ on `PATH`.
 - **Git** settings, and **mise** tools: node and python pinned; chezmoi,
   codex and pi on `latest`.
-- **Pi** settings, keybindings and extensions; **Claude Code** settings; shared
+- **Pi** settings, keybindings, extensions and packages as on the Mac (packages not
+  pinned: `pi update` keeps them current); **Claude Code** settings; shared
   agent skills (herdr, tanstack-cli).
 - **Voxtype** configuration, its launcher (`alniac voxtype config`) and a
   service drop-in that keeps dictated text out of the journal.

@@ -11,12 +11,12 @@ printf '%s\n' "$settings" | jq '
     (if type == "object" then .source else . end)
     | sub("@[^/@]+$"; "")
     | sub("^git:git@github.com:"; "git:https://github.com/");
-  # Packages as on the Mac (~/dotfiles/pi), pinned to the versions installed there.
+  # Packages as on the Mac (~/dotfiles/pi). Not pinned: pi update keeps them current.
   [
-    "git:https://github.com/alivault/pi-queue-steer@db7989db548d02a72a99527e52ae84fb5cf3f26e",
-    "npm:@ogulcancelik/pi-herdr@0.4.1",
-    "npm:pi-web-access@0.39.0",
-    "npm:@gotgenes/pi-anthropic-auth@3.4.2"
+    "git:https://github.com/alivault/pi-queue-steer",
+    "npm:@ogulcancelik/pi-herdr",
+    "npm:pi-web-access",
+    "npm:@gotgenes/pi-anthropic-auth"
   ] as $required_packages
   # Packages this machine had before; removed so it matches the Mac.
   | [

@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 import subprocess
 import unittest
@@ -16,7 +17,7 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(len(result['packages']), 4)
         self.assertEqual(apply(result), result)
         self.assertFalse(result['enableInstallTelemetry'])
-        self.assertTrue(all('@' in package for package in result['packages']))
+        self.assertFalse(any(re.search(r'@[^/@]+$', p) for p in result['packages']), 'not pinned: they get updates')
 
     def test_agent_shell_prefix(self):
         prefix = apply({})['shellCommandPrefix'].split('\n')
@@ -32,7 +33,12 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(result['localValue'], 'preserve-me')
         self.assertEqual(len(result['packages']), 5)
         filtered = next(p for p in result['packages'] if isinstance(p, dict))
-        self.assertEqual(filtered, {'source': 'npm:pi-web-access@0.39.0', 'skills': [], 'extensions': ['extension.ts']})
+        self.assertEqual(filtered, {'source': 'npm:pi-web-access', 'skills': [], 'extensions': ['extension.ts']})
+
+    def test_old_pins_are_dropped(self):
+        result = apply({'packages': ['npm:pi-web-access@0.39.0', 'git:https://github.com/alivault/pi-queue-steer@db7989db']})
+        self.assertIn('npm:pi-web-access', result['packages'])
+        self.assertIn('git:https://github.com/alivault/pi-queue-steer', result['packages'])
 
     def test_retired_packages_are_removed(self):
         result = apply({'packages': ['npm:@ff-labs/pi-fff@0.10.6', 'npm:pi-mcp-adapter@2.32.1',
