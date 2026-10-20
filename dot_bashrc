@@ -1,6 +1,10 @@
 # ALNIAC environment (ALNIAC_PATH + PATH), needed even for non-interactive shells
 [[ -r $HOME/.local/share/alniac/current/default/bash/env-bootstrap ]] && source $HOME/.local/share/alniac/current/default/bash/env-bootstrap
 
+# Tools on PATH for every bash, interactive or not (scripts, agents, builds)
+[[ -r $HOME/.cargo/env ]] && . "$HOME/.cargo/env"
+[[ -r $HOME/.vite-plus/env ]] && . "$HOME/.vite-plus/env"
+
 # If not running interactively, don't do anything else (leave this above the rc source)
 [[ $- != *i* ]] && return
 
@@ -16,7 +20,6 @@ source "$ALNIAC_PATH/default/bash/rc"
 # Personal settings (moved from fish config, 2026-10-19)
 export EDITOR=nvim VISUAL=nvim TERMINAL=kitty
 export FFF_ENABLE_HOME_SCAN=${FFF_ENABLE_HOME_SCAN:-0}
-[[ -r $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
 set -o vi
 export FZF_DEFAULT_OPTS='--height=100% --bind "ctrl-/:toggle-preview" --bind "shift-up:preview-page-up,shift-down:preview-page-down"'
 if command -v eza &>/dev/null && command -v bat &>/dev/null; then
@@ -24,6 +27,3 @@ if command -v eza &>/dev/null && command -v bat &>/dev/null; then
   export FZF_ALT_C_OPTS='--preview "eza --tree --level=3 --color=always --icons=always --group-directories-first -- {} | head -250" --preview-window=right,80%,border-left'
 fi
 alias v=nvim lg=lazygit j=zellij
-
-# Vite+ bin (https://viteplus.dev)
-. "$HOME/.vite-plus/env"
