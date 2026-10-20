@@ -10,8 +10,9 @@ name = "terminal"
 # The active tab is drawn as panel_bg text on an accent background, so panel_bg
 # has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
 panel_bg = "black"
-# Selected sidebar rows: ANSI 0 is base01, the Base16 line-highlight color
-active_row_bg = "black"
+# Selected sidebar rows: base01 of the theme. Hex, because ANSI 0 is the
+# background and herdr cannot name the extended slot 18 (base01)
+active_row_bg = "#2c2c2e"
 # Keep semantic agent colors while the terminal follows the selected theme.
 yellow = "#e0af68"
 teal = "#7dcfff"
