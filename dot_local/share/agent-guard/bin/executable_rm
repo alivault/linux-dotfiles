@@ -1,0 +1,60 @@
+#!/bin/bash
+# rm for coding agents (pi's shellCommandPrefix puts this directory first on
+# PATH). It refuses targets whose loss is a disaster, then runs the real rm.
+# The shell has expanded the arguments already: `rm -rf "$T"/*` with T empty
+# arrives as `rm -rf /bin /boot /home ...` and is refused here.
+#
+# Refused: /, any top-level directory, $HOME, anything directly in $HOME, the
+# directories directly in ~/.config, ~/.local/share, ~/.local/state and
+# ~/code, and (recursive only) any directory that is a git repository.
+# Use `gio trash` for those, or run /usr/bin/rm yourself.
+set -u
+
+home=$(realpath -m -- "$HOME")
+recursive=0
+targets=()
+options_done=0
+for arg in "$@"; do
+  if ((!options_done)) && [[ $arg == -- ]]; then
+    options_done=1
+  elif ((!options_done)) && [[ $arg == --recursive ]]; then
+    recursive=1
+  elif ((!options_done)) && [[ $arg == -* && $arg != --* ]]; then
+    [[ $arg == *[rR]* ]] && recursive=1
+  elif ((options_done)) || [[ $arg != -* ]]; then
+    targets+=("$arg")
+  fi
+done
+
+refuse() {
+  printf 'rm (agent guard): refusing to remove %s: %s.\n' "$1" "$2" >&2
+  printf 'Use a narrower path, or `gio trash` (recoverable). Each bash call is a new shell:\n' >&2
+  printf 'a variable set in an earlier call is empty here.\n' >&2
+  exit 1
+}
+
+for target in "${targets[@]}"; do
+  # Logical path (symlinks not followed): rm removes a link, not its target.
+  path=$(realpath -m -s -- "$target")
+  case $path in
+  / | "$home") refuse "$path" "it is / or your home directory" ;;
+  esac
+  rest=${path#/}
+  [[ $rest != */* ]] && refuse "$path" "it is a top-level directory"
+  if [[ $path == "$home"/* ]]; then
+    below=${path#"$home"/}
+    [[ $below != */* ]] && refuse "$path" "it is directly in your home directory"
+    for parent in .config .local/share .local/state code; do
+      if [[ $below == "$parent"/* ]]; then
+        inner=${below#"$parent"/}
+        [[ $inner != */* ]] && refuse "$path" "it is a whole directory in ~/$parent"
+      fi
+    done
+  fi
+  if ((recursive)) && [[ -d $path/.git || -f $path/.git ]]; then
+    refuse "$path" "it is a git repository"
+  fi
+done
+
+# Tests replace the real rm with a stub (bootstrap/test_agent_guard.py).
+exec "${AGENT_GUARD_REAL_RM:-/usr/bin/rm}" "$@"

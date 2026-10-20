@@ -182,6 +182,28 @@ else
   fail "ALNIAC apps are not installed: ${missing_apps[*]}"
 fi
 
+# Work that exists only on this disk is lost with it (2026-10-19): every
+# repository in ~/code needs a remote, and its commits pushed.
+for repo in "$HOME"/code/*/; do
+  repo=${repo%/}
+  [[ -e $repo/.git ]] || continue
+  name=${repo#"$HOME"/}
+  if [[ -z $(git -C "$repo" remote 2>/dev/null) ]]; then
+    fail "$name has no remote: its history exists only on this disk"
+    continue
+  fi
+  unpushed=$(git -C "$repo" log --branches --not --remotes --oneline 2>/dev/null | wc -l)
+  if ((unpushed > 0)); then
+    warn "$name has $unpushed commit(s) that are not pushed"
+  fi
+  if [[ -n $(git -C "$repo" status --porcelain 2>/dev/null) ]]; then
+    warn "$name has uncommitted changes"
+  fi
+  if ((unpushed == 0)) && [[ -z $(git -C "$repo" status --porcelain 2>/dev/null) ]]; then
+    pass "$name is pushed"
+  fi
+done
+
 printf '\nSummary: %d passed, %d warning(s), %d failed.\n' \
   "$passes" "$warnings" "$failures"
 

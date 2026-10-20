@@ -18,6 +18,11 @@ class SettingsTests(unittest.TestCase):
         self.assertFalse(result['enableInstallTelemetry'])
         self.assertTrue(all('@' in package for package in result['packages']))
 
+    def test_agent_shell_prefix(self):
+        prefix = apply({})['shellCommandPrefix'].split('\n')
+        self.assertEqual(prefix[0], 'set -u', 'an unset variable is an error')
+        self.assertEqual(prefix[1], 'export PATH="$HOME/.local/share/agent-guard/bin:$PATH"', 'the rm guard first')
+
     def test_local_values_and_package_filters_are_preserved(self):
         result = apply({'localValue': 'preserve-me', 'packages': [
             {'source': 'npm:@ff-labs/pi-fff', 'skills': [], 'extensions': ['extension.ts']},

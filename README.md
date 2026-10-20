@@ -76,6 +76,24 @@ apply.
 - **fastfetch** layout for ALNIAC's About window; a Neovim neo-tree override;
   an `obsidian` launcher that finds the package, AppImage or Flatpak.
 
+## Agent safety
+
+On 2026-10-19 an agent ran `rm -rf $T/*` in a new shell where `T` was empty,
+and deleted the home directory. These guard every coding agent:
+
+- **`set -u` before every command:** pi's `shellCommandPrefix`
+  (`~/.pi/agent/settings.json`, which Pico's agents also use). An unset
+  variable stops the command before it runs.
+- **An `rm` guard first on agents' `PATH`** (`~/.local/share/agent-guard/bin/rm`):
+  it refuses `/`, top-level directories, `$HOME` and what is directly in it,
+  the directories directly in `~/.config`, `~/.local/share`, `~/.local/state`
+  and `~/code`, and git repositories. Tests: `bootstrap/test_agent_guard.py`.
+- **One set of agent rules** in `~/.pi/agent/AGENTS.md`, linked as
+  `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`: each bash call is a new
+  shell; use `gio trash`, not `rm`; push what you commit.
+- **The doctor fails a repository in `~/code` without a remote**, and warns
+  about commits that are not pushed.
+
 ## Provisioning
 
 `bootstrap/provision.sh` runs these steps in order. Each one is idempotent.

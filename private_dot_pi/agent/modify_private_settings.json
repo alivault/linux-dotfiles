@@ -28,6 +28,9 @@ printf '%s\n' "$settings" | jq '
   | .defaultModel = "gpt-6-astra"
   | .defaultThinkingLevel = "low"
   | .hideThinkingBlock = true
+  # Before every agent bash command (pi, and the agents of Pico): an unset variable is
+  # an error, and the rm guard (~/.local/share/agent-guard/bin) comes first.
+  | .shellCommandPrefix = "set -u\nexport PATH=\"$HOME/.local/share/agent-guard/bin:$PATH\""
   | .packages = (
       [
         $required_packages[] as $pin
