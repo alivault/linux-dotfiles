@@ -119,6 +119,7 @@ and deleted the home directory. These guard every coding agent:
 | `alniac-apps` | Runs `ui/install.sh` and every `apps/*/install.sh` from `~/code/alniac` |
 | `voxtype` | Installs checksum-pinned voxtype 1.1.1, its OSD and the base.en model |
 | `airpods` | Runs `~/code/alniac/airpods/setup` (builds airpodsd) |
+| `agent-skills` | Links ALNIAC's agent skills (`alniac`, `diagnose-crash`) into every agent |
 
 Sign in to the apps, Pi, Codex and Claude Code yourself. Pair Syncthing
 devices, authenticate Tailscale and open the Obsidian vault yourself.
