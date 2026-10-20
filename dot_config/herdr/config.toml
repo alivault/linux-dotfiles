@@ -1,0 +1,89 @@
+onboarding = false
+# Mirrors the tmux config in config/tmux/tmux.conf
+# tmux session -> herdr workspace, tmux window -> herdr tab, tmux pane -> herdr pane
+
+[theme]
+# Follow the terminal's palette: Kitty's, from the ALNIAC theme.
+name = "terminal"
+
+[theme.custom]
+panel_bg = "reset"
+# Keep semantic agent colors while the terminal follows the selected theme.
+yellow = "#e0af68"
+teal = "#7dcfff"
+green = "#9ece6a"
+
+[terminal]
+# Matches -c "#{pane_current_path}" on every split, window, and session
+new_cwd = "follow"
+
+[keys]
+# Keep these familiar aliases in addition to Herdr's defaults.
+previous_agent = "alt+k"
+next_agent = "alt+j"
+focus_agent = "alt+1..9"
+previous_tab = ["prefix+p", "alt+["]
+next_tab = ["prefix+n", "alt+]"]
+move_tab_previous = "alt+shift+["
+move_tab_next = "alt+shift+]"
+previous_workspace = "alt+h"
+next_workspace = "alt+l"
+cycle_pane_next = ""
+last_pane = "prefix+tab"
+
+[[keys.command]]
+key = "prefix+m"
+type = "shell"
+command = 'bash "$HOME/.config/herdr/move-pane.sh" new'
+description = "move pane to new tab"
+
+[[keys.command]]
+key = "prefix+backspace"
+type = "shell"
+command = 'bash "$HOME/.config/herdr/move-pane.sh" previous'
+description = "move pane into previous tab"
+
+[ui]
+mouse_scroll_lines = 1
+accent = "blue"
+agent_panel_sort = "spaces"
+show_agent_labels_on_pane_borders = true
+
+# tmux drew single-line dividers between adjacent panes and no outer frame
+pane_gaps = true
+pane_outer_borders = true
+
+# tmux had no scrollbar column beside its panes
+pane_scrollbars = false
+
+# kill-window and kill-session never asked
+confirm_close = false
+
+# automatic-rename gave windows a name without prompting
+prompt_new_tab_name = false
+
+# set -g mouse on
+mouse_capture = true
+
+# status-right had the zoom flag followed by #h
+tab_bar_right = [{ type = "zoom" }, { type = "hostname" }]
+
+# set -g set-titles on / set -g set-titles-string '#h:#W', where tmux's #W was
+# the basename of the pane cwd. This is the window title Niri and the bar show,
+# and it resolves on the server so remote sessions name the remote host.
+window_title = "{hostname}: {workspace}"
+
+status_indicators = "symbols"
+[ui.sidebar.agents.rows_by_agent]
+pi = [
+  ["state_icon", "machine", "workspace"],
+  ["$session_name", "agent"],
+]
+
+[experimental]
+# Render Kitty graphics emitted by pane applications in attached local clients.
+kitty_graphics = true
+
+[ui.toast]
+# Desktop notification plugin removed; keep toast delivery disabled.
+delivery = "off"

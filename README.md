@@ -4,7 +4,7 @@ Public, allowlisted chezmoi source for Ali's personal layer on top of
 [ALNIAC](https://github.com/alivault/alniac), the Niri desktop on the Asahi Mac.
 
 ALNIAC owns the desktop: Niri, the shell, themes, the login, the configs it
-ships (Kitty, herdr, Alacritty, Foot, Ghostty, lazygit, Starship, imv, btop),
+ships (Alacritty, Foot, Ghostty, lazygit, Starship, imv, btop),
 Neovim and the apps. This repository keeps only what is personal, and the few
 system settings that ALNIAC does not make.
 
@@ -73,6 +73,9 @@ apply.
   agent skills (herdr, tanstack-cli).
 - **Voxtype** configuration, its launcher (`alniac voxtype config`) and a
   service drop-in that keeps dictated text out of the journal.
+- **Kitty** (no window padding, JetBrainsMono 12, hidden decorations, tab bar;
+  colours from the ALNIAC theme) and **herdr** (keybindings, `move-pane.sh`, the
+  terminal's palette). ALNIAC ships defaults for both; these replace them.
 - **fastfetch** layout for ALNIAC's About window; a Neovim neo-tree override;
   an `obsidian` launcher that finds the package, AppImage or Flatpak.
 
