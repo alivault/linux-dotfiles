@@ -55,13 +55,16 @@ apply.
 
 ## Managed configuration
 
-- **ALNIAC user profile** (`~/.config/alniac`): `config.kdl`, `bindings.kdl`,
-  `shell.json`, `dock.json`, `desktop.json` (icons, title bars), `appearance`,
-  the theme choice (`themes/installed.json`), the launcher menu (`extensions/alniac-menu.jsonc`)
-  the selected theme, and the branding art (`branding/screensaver.txt`, the
-  screensaver's Arch logo, and `branding/about.txt`). Files that ALNIAC generates from the release
-  (`theme.kdl`, `defaults.kdl`, `default-bindings.kdl`, wallpapers, themed
-  templates) are not managed.
+- **ALNIAC user profile** (`~/.config/alniac`): `bindings.kdl`, `dock.json`,
+  the launcher menu (`extensions/alniac-menu.jsonc`) and the branding art
+  (`branding/screensaver.txt`, the screensaver's Arch logo, and
+  `branding/about.txt`) are the same on every machine. `config.kdl` (displays,
+  input, layout and windows), `shell.json` (bar, idle times), `desktop.json`,
+  `appearance` and `theme` are only seeds (chezmoi `create_`): written on a new
+  machine, then left to ALNIAC Settings there, as they differ from machine to
+  machine. Files that ALNIAC generates from the release (`theme.kdl`,
+  `defaults.kdl`, `default-bindings.kdl`, wallpapers, themed templates) are not
+  managed.
 - **ALNIAC session units**: links in `~/.config/systemd/user` to the units of
   the staged release (`alniac.service` and its helpers, plus the voxtype
   drop-in). The login needs them, and no ALNIAC script creates them.
