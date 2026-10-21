@@ -27,3 +27,4 @@ if command -v eza &>/dev/null && command -v bat &>/dev/null; then
   export FZF_ALT_C_OPTS='--preview "eza --tree --level=3 --color=always --icons=always --group-directories-first -- {} | head -250" --preview-window=right,80%,border-left'
 fi
 alias v=nvim lg=lazygit j=zellij
+alias cwd='wl-copy "$PWD"'
