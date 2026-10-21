@@ -28,3 +28,11 @@ if command -v eza &>/dev/null && command -v bat &>/dev/null; then
 fi
 alias v=nvim lg=lazygit j=zellij
 alias cwd='wl-copy "$PWD"'
+
+# pnpm
+export PNPM_HOME='/home/ali/.local/share/pnpm'
+case ":$PATH:" in
+  ":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
