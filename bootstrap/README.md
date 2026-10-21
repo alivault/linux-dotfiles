@@ -48,6 +48,21 @@ On Asahi, provisioning makes the brightness and volume keys work without Fn
 applies the mode at once when the driver is loaded, and rebuilds the initramfs
 so that the setting stays after a reboot. Other machines skip this step.
 
+## Git and GitHub
+
+The `04-git` step installs the GitHub CLI and writes the Git identity to
+`~/.gitconfig`, which chezmoi does not manage (the shared settings are in
+`~/.config/git/config`). When `gh auth login --web` has been run, it also makes
+Git use that login for github.com (`gh auth setup-git`); otherwise it says so,
+and the doctor warns until it is done.
+
+## mise
+
+The `06-mise-tools` step keeps a `mise` that is already installed. Without one,
+it installs the package where the repositories have it, else the pinned mise
+release from GitHub (Arch Linux ARM has no package), checked against its
+SHA-256, into `~/.local/bin`.
+
 ## Session units
 
 The ALNIAC login (`alniac-session`) starts `alniac.service` and expects its

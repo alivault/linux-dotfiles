@@ -7,8 +7,9 @@ case ${1:-} in ''|--plan|--apply) ;; *) echo 'Usage: setup.sh [--plan|--apply]' 
 cat <<'PLAN'
 ALNIAC workstation configuration (install ALNIAC itself first):
   1. Review and apply the chezmoi user configuration from this checkout.
-  2. Explicitly provision session units, Kitty, mise tools, Vite+, keyd, apps,
-     voxtype, AirPods and sync services.
+  2. Explicitly provision session units, the Git identity and GitHub login, Kitty,
+     mise tools, Vite+, keyd, Bitwarden (rbw), apps, voxtype, AirPods and sync
+     services.
   3. Run the bootstrap health check.
 Provisioning may request sudo and start/reload keyd, Syncthing and Tailscale.
 No disk, bootloader, login-manager, desktop-session replacement or reboot actions.

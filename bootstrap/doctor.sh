@@ -117,6 +117,20 @@ else
   fail 'keyd is not active'
 fi
 
+if git config --file "$HOME/.gitconfig" --get user.email >/dev/null 2>&1; then
+  pass 'Git has an identity (~/.gitconfig)'
+else
+  fail 'Git has no identity: bash bootstrap/provision.sh 04-git'
+fi
+
+if gh auth status --hostname github.com >/dev/null 2>&1 &&
+  git config --file "$HOME/.gitconfig" --get-all credential.https://github.com.helper 2>/dev/null |
+  grep -q 'gh auth git-credential'; then
+  pass 'Git uses the GitHub CLI login'
+else
+  warn 'Git has no GitHub login: gh auth login --web, then bash bootstrap/provision.sh 04-git'
+fi
+
 if systemctl --user is-active --quiet syncthing.service; then
   pass 'Syncthing user service is active'
 else
@@ -141,6 +155,12 @@ if pacman -Q bitwarden >/dev/null 2>&1 ||
   pass 'Bitwarden desktop is installed'
 else
   fail 'Bitwarden desktop is not installed'
+fi
+
+if command -v rbw >/dev/null 2>&1; then
+  pass 'rbw is installed (the Secrets app)'
+else
+  warn 'rbw is not installed: bash bootstrap/provision.sh 15-bitwarden'
 fi
 
 if pacman -Q obsidian >/dev/null 2>&1 ||
