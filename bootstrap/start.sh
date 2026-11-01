@@ -11,13 +11,13 @@ for command_name in bash git curl install sha256sum mktemp pacman; do
   command -v "$command_name" >/dev/null 2>&1 || die "Install prerequisite: $command_name."
 done
 . /etc/os-release
-case ${ID:-} in arch|archarm) ;; *) die 'This profile requires an existing ALNIAC installation on Arch Linux.' ;; esac
+case ${ID:-} in arch|archarm) ;; *) die 'This profile requires an existing Oasis installation on Arch Linux.' ;; esac
 case $(uname -m) in aarch64|x86_64) ;; *) die 'Supported architectures: aarch64, x86_64.' ;; esac
-[ -x "$HOME/.local/share/alniac/current/bin/alniac-version" ] && [ -d "$HOME/code/alniac/.git" ] ||
-  die 'This repository requires ALNIAC (a staged release and ~/code/alniac); install it first.'
+[ -x "$HOME/.local/share/oasis/current/bin/oasis-version" ] && [ -d "$HOME/code/oasis/.git" ] ||
+  die 'This repository requires Oasis (a staged release and ~/code/oasis); install it first.'
 
 if [ "${1:-}" = --plan ]; then
-  printf '%s\n' "ALNIAC configuration bootstrap: $DOTFILES_REF" \
+  printf '%s\n' "Oasis configuration bootstrap: $DOTFILES_REF" \
     'Install pinned chezmoi, review/apply user configuration, provision tools/services,' \
     'then run health checks. No disk, bootloader or login-manager setup.' \
     'Plan only: no checkout, installation or configuration changes.'
@@ -45,7 +45,7 @@ fi
 git -C "$source_dir" fetch --depth 1 origin "$DOTFILES_REF"
 git -C "$source_dir" checkout --detach "$DOTFILES_REF"
 [ -f "$source_dir/bootstrap/provision.d/00-preflight.sh" ] &&
-  [ -f "$source_dir/dot_config/alniac/config.kdl" ] || die 'Selected release is not the ALNIAC profile; stopping.'
+  [ -f "$source_dir/dot_config/oasis/config.kdl" ] || die 'Selected release is not the Oasis profile; stopping.'
 
 version=2.72.1
 installer_sha256=75de125a45a82b53c16546db7057052e98c11866ded27c4b6f95a51f59432e7b

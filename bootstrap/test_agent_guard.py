@@ -17,7 +17,7 @@ class GuardTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.home = Path(self.tmp.name) / 'home'
-        for d in ('code/alniac/.git', 'code/scratch/build', 'code/scratch/repo/.git', '.config/alniac', '.local/share/x', '.pico/worktrees/w'):
+        for d in ('code/oasis/.git', 'code/scratch/build', 'code/scratch/repo/.git', '.config/oasis', '.local/share/x', '.pico/worktrees/w'):
             (self.home / d).mkdir(parents=True)
         self.log = Path(self.tmp.name) / 'ran'
         stub = Path(self.tmp.name) / 'rm-stub'
@@ -51,7 +51,7 @@ class GuardTests(unittest.TestCase):
         self.assert_refused('-rf', str(h / 'code'))
         self.assert_refused('-r', str(h / '.config'))
         self.assert_refused('-f', str(h / '.bashrc'))
-        self.assert_refused('-rf', str(h / 'code' / 'scratch'), str(h / '.config' / 'alniac'))
+        self.assert_refused('-rf', str(h / 'code' / 'scratch'), str(h / '.config' / 'oasis'))
         self.assert_refused('-rf', str(h / '.local' / 'share' / 'x'))
         self.assert_refused('-rf', 'code/../code')          # relative, normalized
 

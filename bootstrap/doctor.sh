@@ -31,51 +31,51 @@ has_command() {
   fi
 }
 
-printf '%s\n' 'ALNIAC bootstrap doctor' '======================='
+printf '%s\n' 'Oasis bootstrap doctor' '======================='
 
 for command_name in chezmoi git jq; do
   has_command "$command_name"
 done
 
-release="$HOME/.local/share/alniac/current"
-if [[ -x $release/bin/alniac-version ]]; then
-  pass "ALNIAC release is staged: $("$release/bin/alniac-version")"
+release="$HOME/.local/share/oasis/current"
+if [[ -x $release/bin/oasis-version ]]; then
+  pass "Oasis release is staged: $("$release/bin/oasis-version")"
 else
-  fail "no staged ALNIAC release: $release"
+  fail "no staged Oasis release: $release"
 fi
 
-if [[ -d $HOME/code/alniac/.git ]]; then
-  pass 'ALNIAC checkout exists: ~/code/alniac'
+if [[ -d $HOME/code/oasis/.git ]]; then
+  pass 'Oasis checkout exists: ~/code/oasis'
 else
-  fail 'ALNIAC checkout is missing: ~/code/alniac'
+  fail 'Oasis checkout is missing: ~/code/oasis'
 fi
 
 # The same preflight the login runs: release hashes, tuned Niri, config validation.
 if [[ -r $release/session/check.py ]] &&
-  env -u ALNIAC_PATH /usr/bin/python3 "$release/session/check.py" >/dev/null 2>&1; then
-  pass 'ALNIAC login preflight passes'
+  env -u OASIS_PATH /usr/bin/python3 "$release/session/check.py" >/dev/null 2>&1; then
+  pass 'Oasis login preflight passes'
 else
-  fail 'ALNIAC login preflight fails; run: python3 ~/.local/share/alniac/current/session/check.py'
+  fail 'Oasis login preflight fails; run: python3 ~/.local/share/oasis/current/session/check.py'
 fi
 
-if [[ -r $HOME/.config/alniac/shell.json ]] && jq empty "$HOME/.config/alniac/shell.json" >/dev/null 2>&1; then
-  pass 'ALNIAC shell configuration is valid JSON'
+if [[ -r $HOME/.config/oasis/shell.json ]] && jq empty "$HOME/.config/oasis/shell.json" >/dev/null 2>&1; then
+  pass 'Oasis shell configuration is valid JSON'
 else
-  fail 'invalid or missing ALNIAC shell configuration: ~/.config/alniac/shell.json'
+  fail 'invalid or missing Oasis shell configuration: ~/.config/oasis/shell.json'
 fi
 
-for unit in alniac alniac-audio alniac-bt-agent alniac-crash-watch alniac-fcitx5 alniac-tailscale-receive; do
+for unit in oasis oasis-audio oasis-bt-agent oasis-crash-watch oasis-fcitx5 oasis-tailscale-receive; do
   if [[ -f $HOME/.config/systemd/user/$unit.service ]]; then
-    pass "ALNIAC unit is linked: $unit.service"
+    pass "Oasis unit is linked: $unit.service"
   else
-    fail "ALNIAC unit link is missing or broken: $unit.service"
+    fail "Oasis unit link is missing or broken: $unit.service"
   fi
 done
 
 if [[ -f $HOME/.config/autostart/org.fcitx.Fcitx5.desktop ]]; then
-  pass 'The system Fcitx5 autostart is hidden (ALNIAC runs its own)'
+  pass 'The system Fcitx5 autostart is hidden (Oasis runs its own)'
 else
-  fail 'The system Fcitx5 autostart is not hidden; run: bootstrap/provision.sh alniac-configs'
+  fail 'The system Fcitx5 autostart is not hidden; run: bootstrap/provision.sh oasis-configs'
 fi
 
 fcitx_count=$(pgrep -u "$USER" -x fcitx5 | wc -l)
@@ -85,10 +85,10 @@ else
   fail "$fcitx_count Fcitx5 processes are running; stop: systemctl --user stop app-org.fcitx.Fcitx5@autostart.service"
 fi
 
-if systemctl --user is-active --quiet alniac.service; then
-  pass 'ALNIAC session is running'
+if systemctl --user is-active --quiet oasis.service; then
+  pass 'Oasis session is running'
 else
-  warn 'ALNIAC session is not running (not logged in graphically?)'
+  warn 'Oasis session is not running (not logged in graphically?)'
 fi
 
 if command -v chezmoi >/dev/null 2>&1; then
@@ -191,15 +191,15 @@ else
 fi
 
 missing_apps=()
-for installer in "$HOME"/code/alniac/apps/*/install.sh; do
+for installer in "$HOME"/code/oasis/apps/*/install.sh; do
   [[ -f $installer ]] || continue
   app=$(basename "$(dirname "$installer")")
   [[ -e $HOME/.local/bin/$app ]] || missing_apps+=("$app")
 done
 if ((${#missing_apps[@]} == 0)); then
-  pass 'ALNIAC apps are installed'
+  pass 'Oasis apps are installed'
 else
-  fail "ALNIAC apps are not installed: ${missing_apps[*]}"
+  fail "Oasis apps are not installed: ${missing_apps[*]}"
 fi
 
 # Work that exists only on this disk is lost with it (2026-10-19): every

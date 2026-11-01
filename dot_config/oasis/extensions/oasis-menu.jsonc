@@ -1,5 +1,5 @@
 {
-  // Extend the Quickshell ALNIAC menu with JSONC.
+  // Extend the Quickshell Oasis menu with JSONC.
   //
   // IDs are object keys. The parent is inferred from the dotted id, so
   // "personal.notes" appears under "personal", and "personal" appears on the
@@ -12,14 +12,14 @@
   //   action      Shell command to run. If omitted, the row is a submenu.
   //   target      Existing submenu id to open. Use for links/aliases.
   //   provider    Runtime provider function/command returning JSON rows.
-  //   aliases     alternate `alniac menu summon <name>` routes; also searchable.
+  //   aliases     alternate `oasis menu summon <name>` routes; also searchable.
   //   description Optional subtitle and extra search text.
   //   when        Shell condition; hide row when it fails.
   //   checked     Shell condition; append ✓ when it succeeds.
   //
   // Examples:
   // "personal": {"icon":"heart","label":"Personal"},
-  // "personal.notes": {"icon":"sticky-note","label":"Notes","action":"alniac-launch-editor ~/notes"},
+  // "personal.notes": {"icon":"sticky-note","label":"Notes","action":"oasis-launch-editor ~/notes"},
   // "personal.files": {"icon":"folder-open","label":"Files","action":"files ~/Documents"},
   //
   // Only use provider when a provider_name function or command named "name"
@@ -27,16 +27,16 @@
   //
   // Example: replace the default About action by reusing the same id. Existing
   // fields are kept unless overridden.
-  // "about": {"icon":"info","label":"About","action":"alniac-launch-or-focus-tui \"zsh -c 'fastfetch; read -k 1'\""},
+  // "about": {"icon":"info","label":"About","action":"oasis-launch-or-focus-tui \"zsh -c 'fastfetch; read -k 1'\""},
 
   // Preserve clipboard MIME types and surface LocalSend launch errors.
-  "trigger.share.clipboard": {"icon":"clipboard","label":"Send Clipboard","aliases":["share-clipboard"],"action":"$HOME/.local/share/alniac/current/shell/plugins/menu/share.sh clipboard"},
+  "trigger.share.clipboard": {"icon":"clipboard","label":"Send Clipboard","aliases":["share-clipboard"],"action":"$HOME/.local/share/oasis/current/shell/plugins/menu/share.sh clipboard"},
   "trigger.capture.screenshot": {"label":"Screenshot selection","description":"Niri native screenshot UI","action":"niri msg action screenshot --show-pointer false"},
   "trigger.capture.screenshot-display": {"icon":"camera","label":"Screenshot display","action":"niri msg action screenshot-screen --show-pointer false"},
   "trigger.capture.screenshot-window": {"icon":"camera","label":"Screenshot focused window","description":"Niri native window capture","action":"niri msg action screenshot-window --show-pointer false"},
   "trigger.capture.text": {"when":"false"},
   // Shared Niri screen recording routes.
-  "trigger.capture.screenrecord.stop": {"icon":"video","label":"Stop Screenrecording","action":"alniac-capture-screenrecording --stop-recording","aliases":["screenrecord-stop"]},
-  "trigger.capture.screenrecord.fullscreen": {"icon":"video","label":"Full display (no audio)","action":"alniac-capture-screenrecording --fullscreen"},
+  "trigger.capture.screenrecord.stop": {"icon":"video","label":"Stop Screenrecording","action":"oasis-capture-screenrecording --stop-recording","aliases":["screenrecord-stop"]},
+  "trigger.capture.screenrecord.fullscreen": {"icon":"video","label":"Full display (no audio)","action":"oasis-capture-screenrecording --fullscreen"},
   "trigger.capture.screenrecord.webcam": {"when":"false"},
 }

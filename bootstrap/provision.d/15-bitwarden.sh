@@ -6,12 +6,12 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 # shellcheck source=../lib.sh
 source "$script_dir/lib.sh"
 
-# rbw: the Bitwarden client the Secrets app (ALNIAC apps/secrets) uses;
+# rbw: the Bitwarden client the Secrets app (Oasis apps/secrets) uses;
 # a small Rust binary without Node.
 package_available rbw && ensure_package rbw
 
 # bitwarden-cli depends on nodejs-lts-jod, which conflicts with the nodejs
-# package (ALNIAC's base packages: its release tests run node). Keep nodejs and
+# package (Oasis's base packages: its release tests run node). Keep nodejs and
 # skip the CLI then; rbw does the CLI's work.
 nodejs_package_installed() {
   [[ $(pacman -Qq nodejs 2>/dev/null) == nodejs ]]

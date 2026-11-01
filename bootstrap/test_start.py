@@ -24,12 +24,12 @@ class StartTests(unittest.TestCase):
                         FAKE_BRANCH='main')
         self.stub('id', 'echo 1000')
         self.stub('pacman', 'echo unexpected >> "$CALL_LOG"; exit 90')
-        # An installed ALNIAC: a staged release and the ~/code/alniac checkout.
-        self.alniac_version = self.home / '.local/share/alniac/current/bin/alniac-version'
-        self.alniac_version.parent.mkdir(parents=True)
-        self.alniac_version.write_text('#!/bin/sh\necho 20261019-alniac-01\n')
-        self.alniac_version.chmod(0o755)
-        (self.home / 'code/alniac/.git').mkdir(parents=True)
+        # An installed Oasis: a staged release and the ~/code/oasis checkout.
+        self.oasis_version = self.home / '.local/share/oasis/current/bin/oasis-version'
+        self.oasis_version.parent.mkdir(parents=True)
+        self.oasis_version.write_text('#!/bin/sh\necho 20261019-oasis-01\n')
+        self.oasis_version.chmod(0o755)
+        (self.home / 'code/oasis/.git').mkdir(parents=True)
         self.stub('git', '''case "$*" in
           *'status --porcelain'*) printf '%s' "${FAKE_STATUS:-}" ;;
           *'config --get remote.origin.url'*) printf '%s' "$FAKE_ORIGIN" ;;
@@ -71,9 +71,9 @@ class StartTests(unittest.TestCase):
         self.stub('id', 'echo 0')
         self.assert_refused('not root')
 
-    def test_alniac_required_before_checkout(self):
-        self.alniac_version.unlink()
-        self.assert_refused('requires ALNIAC')
+    def test_oasis_required_before_checkout(self):
+        self.oasis_version.unlink()
+        self.assert_refused('requires Oasis')
 
     def test_existing_non_repository(self):
         (self.source / '.git').rmdir()
@@ -83,7 +83,7 @@ class StartTests(unittest.TestCase):
         for shell, script in [('sh', self.script), ('/usr/bin/bash', ROOT / 'setup.sh')]:
             result = subprocess.run([shell, str(script), '--plan'], env=self.env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn('ALNIAC', result.stdout)
+            self.assertIn('Oasis', result.stdout)
             self.assertFalse(self.log.exists())
             self.assertFalse((self.home / '.cache').exists())
 
@@ -100,13 +100,13 @@ class StartTests(unittest.TestCase):
         self.assertIn('unknown provisioning step', result.stderr)
         self.assertFalse(self.log.exists())
 
-    def test_setup_rejects_missing_alniac_before_apply(self):
+    def test_setup_rejects_missing_oasis_before_apply(self):
         self.stub('chezmoi', 'echo unexpected >> "$CALL_LOG"; exit 90')
-        self.alniac_version.unlink()
+        self.oasis_version.unlink()
         result = subprocess.run(['/usr/bin/bash', str(ROOT / 'setup.sh'), '--apply'],
                                 env=self.env, capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('requires ALNIAC', result.stderr)
+        self.assertIn('requires Oasis', result.stderr)
         self.assertFalse(self.log.exists())
 
     def test_setup_pipeline_with_stubbed_actions(self):

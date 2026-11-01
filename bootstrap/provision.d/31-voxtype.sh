@@ -6,7 +6,7 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 # shellcheck source=../lib.sh
 source "$script_dir/lib.sh"
 
-# ALNIAC's dictation (profile/dictation.py) runs ~/.local/bin/voxtype; the
+# Oasis's dictation (profile/dictation.py) runs ~/.local/bin/voxtype; the
 # voxtype.service drop-in that hands it the daemon is linked by chezmoi.
 version=1.1.1
 case $(uname -m) in
@@ -18,7 +18,7 @@ aarch64)
   )
   ;;
 *)
-  bootstrap_log "Skipping voxtype: ALNIAC dictation is pinned for aarch64"
+  bootstrap_log "Skipping voxtype: Oasis dictation is pinned for aarch64"
   exit 0
   ;;
 esac
@@ -53,4 +53,4 @@ if ((changed)); then
 else
   systemctl --user enable --now voxtype.service
 fi
-bootstrap_log "voxtype $version is installed for ALNIAC dictation"
+bootstrap_log "voxtype $version is installed for Oasis dictation"

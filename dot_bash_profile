@@ -1,2 +1,2 @@
-# Login shells load the ALNIAC environment and personal settings from ~/.bashrc.
+# Login shells load the Oasis environment and personal settings from ~/.bashrc.
 [[ -f ~/.bashrc ]] && . ~/.bashrc

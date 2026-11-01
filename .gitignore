@@ -24,19 +24,19 @@ dot_config/google-chrome/
 dot_config/BraveSoftware/
 dot_config/chromium-flags.conf
 
-# ALNIAC writes these from the running release; only the user profile is managed
-dot_config/alniac/theme.kdl
-dot_config/alniac/defaults.kdl
-dot_config/alniac/default-bindings.kdl
-dot_config/alniac/defaults/
-dot_config/alniac/fish/
-dot_config/alniac/hooks/
-dot_config/alniac/scripts/
-dot_config/alniac/themed/
+# Oasis writes these from the running release; only the user profile is managed
+dot_config/oasis/theme.kdl
+dot_config/oasis/defaults.kdl
+dot_config/oasis/default-bindings.kdl
+dot_config/oasis/defaults/
+dot_config/oasis/fish/
+dot_config/oasis/hooks/
+dot_config/oasis/scripts/
+dot_config/oasis/themed/
 # Your own theme files; the installed/uninstalled choice is tracked.
-dot_config/alniac/themes/*
-!dot_config/alniac/themes/installed.json
-dot_config/alniac/wallpapers/
+dot_config/oasis/themes/*
+!dot_config/oasis/themes/installed.json
+dot_config/oasis/wallpapers/
 
 # Historical backups
 **/*.bak.*

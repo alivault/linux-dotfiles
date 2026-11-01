@@ -1,5 +1,5 @@
-# ALNIAC environment (ALNIAC_PATH + PATH), needed even for non-interactive shells
-[[ -r $HOME/.local/share/alniac/current/default/bash/env-bootstrap ]] && source $HOME/.local/share/alniac/current/default/bash/env-bootstrap
+# Oasis environment (OASIS_PATH + PATH), needed even for non-interactive shells
+[[ -r $HOME/.local/share/oasis/current/default/bash/env-bootstrap ]] && source $HOME/.local/share/oasis/current/default/bash/env-bootstrap
 
 # Tools on PATH for every bash, interactive or not (scripts, agents, builds)
 [[ -r $HOME/.cargo/env ]] && . "$HOME/.cargo/env"
@@ -8,9 +8,9 @@
 # If not running interactively, don't do anything else (leave this above the rc source)
 [[ $- != *i* ]] && return
 
-# All the default ALNIAC aliases and functions
+# All the default Oasis aliases and functions
 # (don't mess with these directly, just overwrite them here!)
-source "$ALNIAC_PATH/default/bash/rc"
+source "$OASIS_PATH/default/bash/rc"
 
 # Add your own exports, aliases, and functions here.
 #

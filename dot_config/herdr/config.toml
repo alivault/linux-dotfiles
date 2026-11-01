@@ -3,7 +3,7 @@ onboarding = false
 # tmux session -> herdr workspace, tmux window -> herdr tab, tmux pane -> herdr pane
 
 [theme]
-# Follow the terminal's palette: Kitty's, from the ALNIAC theme.
+# Follow the terminal's palette: Kitty's, from the Oasis theme.
 name = "terminal"
 
 [theme.custom]

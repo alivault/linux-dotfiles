@@ -1,11 +1,11 @@
 #!/bin/bash
-# Explicit ALNIAC personal-configuration pipeline; never a chezmoi apply hook.
+# Explicit Oasis personal-configuration pipeline; never a chezmoi apply hook.
 set -euo pipefail
 root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 (( $# <= 1 )) || { echo 'Usage: setup.sh [--plan|--apply]' >&2; exit 2; }
 case ${1:-} in ''|--plan|--apply) ;; *) echo 'Usage: setup.sh [--plan|--apply]' >&2; exit 2 ;; esac
 cat <<'PLAN'
-ALNIAC workstation configuration (install ALNIAC itself first):
+Oasis workstation configuration (install Oasis itself first):
   1. Review and apply the chezmoi user configuration from this checkout.
   2. Explicitly provision session units, the Git identity and GitHub login, Kitty,
      mise tools, Vite+, keyd, Bitwarden (rbw), apps, voxtype, AirPods and sync
@@ -17,8 +17,8 @@ PLAN
 [[ ${1:-} != --plan ]] || exit 0
 [[ $EUID != 0 ]] || { echo 'Run as your desktop user, not root.' >&2; exit 1; }
 command -v chezmoi >/dev/null || { echo 'Install chezmoi first.' >&2; exit 1; }
-[[ -x $HOME/.local/share/alniac/current/bin/alniac-version && -d $HOME/code/alniac/.git ]] ||
-  { echo 'This repository requires ALNIAC: a staged release and ~/code/alniac.' >&2; exit 1; }
+[[ -x $HOME/.local/share/oasis/current/bin/oasis-version && -d $HOME/code/oasis/.git ]] ||
+  { echo 'This repository requires Oasis: a staged release and ~/code/oasis.' >&2; exit 1; }
 
 confirm() {
   local answer

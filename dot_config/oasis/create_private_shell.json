@@ -1,97 +1,97 @@
 {
   "bar": {
-    "id": "alniac.bar",
+    "id": "oasis.bar",
     "layout": {
       "left": [
         {
-          "id": "alniac.menu"
+          "id": "oasis.menu"
         },
         {
-          "id": "alniac.workspaces"
+          "id": "oasis.workspaces"
         }
       ],
       "right": [
         {
-          "id": "alniac.keyboard-layout"
+          "id": "oasis.keyboard-layout"
         },
         {
-          "id": "alniac.tray"
+          "id": "oasis.tray"
         },
         {
-          "id": "alniac.divider"
+          "id": "oasis.divider"
         },
         {
-          "id": "alniac.control",
+          "id": "oasis.control",
           "item": "dictation",
           "showWhen": "active"
         },
         {
-          "id": "alniac.control",
+          "id": "oasis.control",
           "item": "screen-recording",
           "showWhen": "active"
         },
         {
-          "id": "alniac.control",
+          "id": "oasis.control",
           "item": "night-light",
           "showWhen": "active"
         },
         {
-          "id": "alniac.control",
+          "id": "oasis.control",
           "item": "focus",
           "showWhen": "active"
         },
         {
-          "id": "alniac.control",
+          "id": "oasis.control",
           "item": "stay-awake",
           "showWhen": "active"
         },
         {
-          "id": "alniac.system-update"
+          "id": "oasis.system-update"
         },
         {
-          "id": "alniac.traffic"
+          "id": "oasis.traffic"
         },
         {
-          "id": "alniac.cpu"
+          "id": "oasis.cpu"
         },
         {
-          "id": "alniac.memory"
+          "id": "oasis.memory"
         },
         {
-          "id": "alniac.disk"
+          "id": "oasis.disk"
         },
         {
           "display": "stacked",
-          "id": "alniac.sensors"
+          "id": "oasis.sensors"
         },
         {
-          "id": "alniac.agents"
+          "id": "oasis.agents"
         },
         {
-          "id": "alniac.bluetooth"
+          "id": "oasis.bluetooth"
         },
         {
-          "id": "alniac.network"
+          "id": "oasis.network"
         },
         {
-          "id": "alniac.audio"
+          "id": "oasis.audio"
         },
         {
           "display": "icon",
-          "id": "alniac.power"
+          "id": "oasis.power"
         },
         {
-          "id": "alniac.weather",
+          "id": "oasis.weather",
           "unit": "imperial"
         },
         {
           "format": "h:mm AP",
           "formatAlt": "h:mm AP",
-          "id": "alniac.time",
+          "id": "oasis.time",
           "verticalFormat": "h\n—\nmm\nAP"
         },
         {
-          "id": "alniac.control-center"
+          "id": "oasis.control-center"
         }
       ]
     },
@@ -99,11 +99,11 @@
     "transparent": false
   },
   "cloneSourceRestores": [
-    "alniac.menu"
+    "oasis.menu"
   ],
   "disabledPlugins": [
-    "alniac.idle",
-    "alniac.nightlight"
+    "oasis.idle",
+    "oasis.nightlight"
   ],
   "idle": {
     "lock": 300,

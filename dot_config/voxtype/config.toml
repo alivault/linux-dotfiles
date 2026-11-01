@@ -11,7 +11,7 @@
 state_file = "auto"
 
 [hotkey]
-# ALNIAC owns the dictation key (profile/dictation.py runs voxtype --no-hotkey).
+# Oasis owns the dictation key (profile/dictation.py runs voxtype --no-hotkey).
 enabled = false
 
 [audio]

@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-# ALNIAC's commands live in the staged release; scripts may run outside its PATH (SSH, cron).
-ALNIAC_RELEASE_BIN="$HOME/.local/share/alniac/current/bin"
-case ":$PATH:" in *":$ALNIAC_RELEASE_BIN:"*) ;; *) PATH="$ALNIAC_RELEASE_BIN:$PATH" ;; esac
+# Oasis's commands live in the staged release; scripts may run outside its PATH (SSH, cron).
+OASIS_RELEASE_BIN="$HOME/.local/share/oasis/current/bin"
+case ":$PATH:" in *":$OASIS_RELEASE_BIN:"*) ;; *) PATH="$OASIS_RELEASE_BIN:$PATH" ;; esac
 export PATH
 
 bootstrap_log() {
@@ -33,11 +33,11 @@ package_available() {
 }
 
 ensure_package() {
-  alniac-pkg-add "$@"
+  oasis-pkg-add "$@"
 }
 
-alniac_installed() {
-  [[ -x $ALNIAC_RELEASE_BIN/alniac-version && -d $HOME/code/alniac/.git ]]
+oasis_installed() {
+  [[ -x $OASIS_RELEASE_BIN/oasis-version && -d $HOME/code/oasis/.git ]]
 }
 
 flatpak_has() {

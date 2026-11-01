@@ -1,19 +1,19 @@
 # linux-dotfiles
 
 Public, allowlisted chezmoi source for Ali's personal layer on top of
-[ALNIAC](https://github.com/alivault/alniac), the Niri desktop on the Asahi Mac.
+[Oasis](https://github.com/alivault/alniac), the Niri desktop on the Asahi Mac.
 
-ALNIAC owns the desktop: Niri, the shell, themes, the login, the configs it
+Oasis owns the desktop: Niri, the shell, themes, the login, the configs it
 ships (Alacritty, Foot, Ghostty, lazygit, Starship, imv, btop),
 Neovim and the apps. This repository keeps only what is personal, and the few
-system settings that ALNIAC does not make.
+system settings that Oasis does not make.
 
 The Omarchy 4 profile that came before is at the tag `omarchy-final`.
 
 ## Bootstrap
 
-Install **ALNIAC first**: a staged release in `~/.local/share/alniac/current`
-and its checkout in `~/code/alniac`. This repository is a configuration layer,
+Install **Oasis first**: a staged release in `~/.local/share/oasis/current`
+and its checkout in `~/code/oasis`. This repository is a configuration layer,
 not an OS installer.
 
 ```bash
@@ -24,7 +24,7 @@ sh /tmp/dotfiles-bootstrap.sh --plan
 sh /tmp/dotfiles-bootstrap.sh
 ```
 
-The hosted script must identify itself as the **ALNIAC** profile. The Worker
+The hosted script must identify itself as the **Oasis** profile. The Worker
 serves `bootstrap/start.sh` from the head of `main`, so **every push to `main`
 is live for new machines within minutes**; see
 [`bootstrap/RELEASE.md`](bootstrap/RELEASE.md). The script installs pinned
@@ -41,8 +41,8 @@ chezmoi status                 # local files that differ from the source
 chezmoi diff && chezmoi apply  # review and apply repository changes
 chezmoi update                 # pull from GitHub and apply
 
-# ALNIAC's Settings app writes ~/.config/alniac; save your changes with:
-chezmoi re-add ~/.config/alniac
+# Oasis's Settings app writes ~/.config/oasis; save your changes with:
+chezmoi re-add ~/.config/oasis
 
 ~/.local/share/chezmoi/bootstrap/provision.sh          # all provisioning steps
 ~/.local/share/chezmoi/bootstrap/provision.sh voxtype  # one step
@@ -55,32 +55,32 @@ apply.
 
 ## Managed configuration
 
-- **ALNIAC user profile** (`~/.config/alniac`): `bindings.kdl`, `dock.json`,
-  the launcher menu (`extensions/alniac-menu.jsonc`) and the branding art
+- **Oasis user profile** (`~/.config/oasis`): `bindings.kdl`, `dock.json`,
+  the launcher menu (`extensions/oasis-menu.jsonc`) and the branding art
   (`branding/screensaver.txt`, the screensaver's Arch logo, and
   `branding/about.txt`) are the same on every machine. `config.kdl` (displays,
   input, layout and windows), `shell.json` (bar, idle times), `desktop.json`,
   `appearance` and `theme` are only seeds (chezmoi `create_`): written on a new
-  machine, then left to ALNIAC Settings there, as they differ from machine to
-  machine. Files that ALNIAC generates from the release (`theme.kdl`,
+  machine, then left to Oasis Settings there, as they differ from machine to
+  machine. Files that Oasis generates from the release (`theme.kdl`,
   `defaults.kdl`, `default-bindings.kdl`, wallpapers, themed templates) are not
   managed.
-- **ALNIAC session units**: links in `~/.config/systemd/user` to the units of
-  the staged release (`alniac.service` and its helpers, plus the voxtype
-  drop-in). The login needs them, and no ALNIAC script creates them.
-- **Bash**: ALNIAC's default `~/.bashrc` with personal settings (editor, vi
+- **Oasis session units**: links in `~/.config/systemd/user` to the units of
+  the staged release (`oasis.service` and its helpers, plus the voxtype
+  drop-in). The login needs them, and no Oasis script creates them.
+- **Bash**: Oasis's default `~/.bashrc` with personal settings (editor, vi
   mode, fzf previews, the `v`, `lg` and `j` aliases) and Vite+ on `PATH`.
 - **Git** settings, and **mise** tools: node and python pinned; chezmoi,
   codex and pi on `latest`.
 - **Pi** settings, keybindings, extensions and packages as on the Mac (packages not
   pinned: `pi update` keeps them current); **Claude Code** settings; shared
   agent skills (herdr, tanstack-cli).
-- **Voxtype** configuration, its launcher (`alniac voxtype config`) and a
+- **Voxtype** configuration, its launcher (`oasis voxtype config`) and a
   service drop-in that keeps dictated text out of the journal.
 - **Kitty** (no window padding, JetBrainsMono 12, hidden decorations, tab bar;
-  colours from the ALNIAC theme) and **herdr** (keybindings, `move-pane.sh`, the
-  terminal's palette). ALNIAC ships defaults for both; these replace them.
-- **fastfetch** layout for ALNIAC's About window; a Neovim neo-tree override;
+  colours from the Oasis theme) and **herdr** (keybindings, `move-pane.sh`, the
+  terminal's palette). Oasis ships defaults for both; these replace them.
+- **fastfetch** layout for Oasis's About window; a Neovim neo-tree override;
   an `obsidian` launcher that finds the package, AppImage or Flatpak.
 
 ## Agent safety
@@ -107,22 +107,22 @@ and deleted the home directory. These guard every coding agent:
 
 | Step | Does |
 | --- | --- |
-| `preflight` | Requires ALNIAC; installs `jq` |
+| `preflight` | Requires Oasis; installs `jq` |
 | `session-units` | Checks the unit links; reloads the user manager |
-| `alniac-configs` | Installs ALNIAC's missing default configs (terminals, Chromium flags, autostart overrides); keeps existing files |
-| `kitty` | `alniac-install-terminal kitty` |
+| `oasis-configs` | Installs Oasis's missing default configs (terminals, Chromium flags, autostart overrides); keeps existing files |
+| `kitty` | `oasis-install-terminal kitty` |
 | `mise-tools` | `mise install` from the managed config |
 | `vite-plus` | Installs Vite+ 0.3.0 from a checksum-pinned installer (`vp upgrade` updates it) |
 | `keyd` | Caps Lock: tap for Escape, hold for Control (150 ms) |
 | `apple-media-keys` | Asahi: media keys without Fn; rebuilds the initramfs |
 | `bitwarden`, `obsidian` | Installs the apps (package, else Flatpak) |
 | `syncthing`, `tailscale` | Installs and starts the services |
-| `chromium-google-account` | `alniac-install-chromium-google-account` |
+| `chromium-google-account` | `oasis-install-chromium-google-account` |
 | `journal-retention` | Limits the journal to 256 MiB and seven days |
-| `alniac-apps` | Runs `ui/install.sh` and every `apps/*/install.sh` from `~/code/alniac` |
+| `oasis-apps` | Runs `ui/install.sh` and every `apps/*/install.sh` from `~/code/oasis` |
 | `voxtype` | Installs checksum-pinned voxtype 1.1.1, its OSD and the base.en model |
-| `airpods` | Runs `~/code/alniac/airpods/setup` (builds airpodsd) |
-| `agent-skills` | Links ALNIAC's agent skills (`alniac`, `diagnose-crash`) into every agent |
+| `airpods` | Runs `~/code/oasis/airpods/setup` (builds airpodsd) |
+| `agent-skills` | Links Oasis's agent skills (`oasis`, `diagnose-crash`) into every agent |
 
 Sign in to the apps, Pi, Codex and Claude Code yourself. Pair Syncthing
 devices, authenticate Tailscale and open the Obsidian vault yourself.

@@ -2,9 +2,9 @@
 
 ## Omarchy
 
-The Bash startup file (`dot_bashrc`, from ALNIAC's default) and the fastfetch
+The Bash startup file (`dot_bashrc`, from Oasis's default) and the fastfetch
 layout in this repository derive from [Omarchy](https://github.com/basecamp/omarchy),
-through ALNIAC, which keeps the same notice.
+through Oasis, which keeps the same notice.
 
 Copyright (c) David Heinemeier Hansson
 

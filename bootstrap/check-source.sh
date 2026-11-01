@@ -53,21 +53,21 @@ XDG_CACHE_HOME="$temp_root/cache" \
   --cache "$temp_root/cache/chezmoi" \
   apply --force --exclude scripts
 
-# ALNIAC's user profile renders and parses.
-profile="$temp_root/home/.config/alniac"
+# Oasis's user profile renders and parses.
+profile="$temp_root/home/.config/oasis"
 jq empty "$profile/shell.json" "$profile/dock.json"
 [[ -s $profile/config.kdl && -s $profile/bindings.kdl ]]
 
 # Session unit links point into the staged release, as the login expects.
 units="$temp_root/home/.config/systemd/user"
-release="$temp_root/home/.local/share/alniac/current/session/systemd"
-for unit in alniac alniac-audio alniac-bt-agent alniac-crash-watch alniac-fcitx5 alniac-tailscale-receive; do
+release="$temp_root/home/.local/share/oasis/current/session/systemd"
+for unit in oasis oasis-audio oasis-bt-agent oasis-crash-watch oasis-fcitx5 oasis-tailscale-receive; do
   [[ $(readlink "$units/$unit.service") == "$release/$unit.service" ]] || {
-    printf 'unexpected ALNIAC unit link: %s\n' "$unit.service" >&2
+    printf 'unexpected Oasis unit link: %s\n' "$unit.service" >&2
     exit 1
   }
 done
-for unit in alniac-bt-agent alniac-crash-watch alniac-fcitx5 alniac-tailscale-receive; do
+for unit in oasis-bt-agent oasis-crash-watch oasis-fcitx5 oasis-tailscale-receive; do
   [[ $(readlink "$units/graphical-session.target.wants/$unit.service") == "$units/$unit.service" ]] || {
     printf 'unexpected graphical-session want: %s\n' "$unit.service" >&2
     exit 1

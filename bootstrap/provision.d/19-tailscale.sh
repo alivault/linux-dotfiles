@@ -9,7 +9,7 @@ source "$script_dir/lib.sh"
 ensure_package tailscale
 sudo systemctl enable --now tailscaled.service
 
-# Taildrop receiving is the ALNIAC session unit alniac-tailscale-receive.service.
+# Taildrop receiving is the Oasis session unit oasis-tailscale-receive.service.
 
 if tailscale status >/dev/null 2>&1; then
   sudo tailscale set --operator="$USER"

@@ -8,10 +8,10 @@ source "$script_dir/lib.sh"
 
 require_command curl git pacman sha256sum sudo systemctl
 
-alniac_installed ||
-  bootstrap_die "this repository requires ALNIAC: a staged release and ~/code/alniac"
+oasis_installed ||
+  bootstrap_die "this repository requires Oasis: a staged release and ~/code/oasis"
 
 ensure_package jq
 require_command jq
 
-bootstrap_log "ALNIAC $(alniac-version) on $(uname -m)"
+bootstrap_log "Oasis $(oasis-version) on $(uname -m)"
