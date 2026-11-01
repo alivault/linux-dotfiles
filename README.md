@@ -1,7 +1,7 @@
 # linux-dotfiles
 
 Public, allowlisted chezmoi source for Ali's personal layer on top of
-[Oasis](https://github.com/alivault/alniac), the Niri desktop on the Asahi Mac.
+[Oasis](https://github.com/alivault/oasis), the Niri desktop on the Asahi Mac.
 
 Oasis owns the desktop: Niri, the shell, themes, the login, the configs it
 ships (Alacritty, Foot, Ghostty, lazygit, Starship, imv, btop),
