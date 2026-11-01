@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "oasis": {
+      "command": "~/.local/share/oasis/current/bin/oasis-mcp",
+      "description": "The Oasis desktop as data (read-only): windows, focus, workspaces, outputs, notifications, settings with their schema, oasis commands, Quickshell IPC targets, and desktop events (get_events waits for the next)."
+    }
+  }
+}
