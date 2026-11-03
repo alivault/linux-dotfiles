@@ -106,4 +106,9 @@ for target in ${targets[@]+"${targets[@]}"}; do
 done
 
 # Tests replace the real rm with a stub (bootstrap/test_agent_guard.py).
-exec "${AGENT_GUARD_REAL_RM:-/bin/rm}" "$@"
+# NixOS: /bin is envfs, which finds /bin/rm through the caller's PATH, where
+# this guard comes first, so `exec /bin/rm` ran the guard again and again and
+# every rm hung (2026-11-02). Use the system's own rm there.
+real_rm=/bin/rm
+[[ -x /run/current-system/sw/bin/rm ]] && real_rm=/run/current-system/sw/bin/rm
+exec "${AGENT_GUARD_REAL_RM:-$real_rm}" "$@"
