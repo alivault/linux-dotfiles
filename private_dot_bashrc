@@ -3,7 +3,11 @@
 
 # Tools on PATH for every bash, interactive or not (scripts, agents, builds)
 [[ -r $HOME/.cargo/env ]] && . "$HOME/.cargo/env"
-[[ -r $HOME/.vite-plus/env ]] && . "$HOME/.vite-plus/env"
+# Not on NixOS: Vite+, pnpm and mise in this shared home are generic Linux
+# builds it cannot run; there nixpkgs gives node and pnpm.
+[[ ! -e /etc/NIXOS && -r $HOME/.vite-plus/env ]] && . "$HOME/.vite-plus/env"
+# NixOS: use nixpkgs' pnpm, not the generic build a "packageManager" pin downloads.
+[[ -e /etc/NIXOS ]] && export pnpm_config_manage_package_manager_versions=false
 
 # If not running interactively, don't do anything else (leave this above the rc source)
 [[ $- != *i* ]] && return
@@ -31,7 +35,7 @@ alias cwd='wl-copy "$PWD"'
 
 # pnpm
 export PNPM_HOME='/home/ali/.local/share/pnpm'
-case ":$PATH:" in
+[[ -e /etc/NIXOS ]] || case ":$PATH:" in
   ":$PNPM_HOME/bin:"*) ;;
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
 esac
