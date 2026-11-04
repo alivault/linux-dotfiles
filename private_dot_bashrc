@@ -5,7 +5,7 @@
 [[ -r $HOME/.cargo/env ]] && . "$HOME/.cargo/env"
 # Not on NixOS: Vite+, pnpm and mise in this shared home are generic Linux
 # builds it cannot run; there nixpkgs gives node and pnpm.
-[[ ! -e /etc/NIXOS && -r $HOME/.vite-plus/env ]] && . "$HOME/.vite-plus/env"
+[[ -r $HOME/.vite-plus/env ]] && . "$HOME/.vite-plus/env"
 # NixOS: use nixpkgs' pnpm, not the generic build a "packageManager" pin downloads.
 [[ -e /etc/NIXOS ]] && export pnpm_config_manage_package_manager_versions=false
 

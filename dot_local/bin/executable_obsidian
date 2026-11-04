@@ -2,10 +2,8 @@
 
 set -eu
 
-if [ -x /usr/bin/obsidian ]; then
-  exec /usr/bin/obsidian "$@"
-fi
-
+# NixOS: no /usr/bin/obsidian (envfs maps /usr/bin to PATH, so testing it
+# found this script and it ran itself in a loop). The Flatpak is the app.
 if [ -x "$HOME/.local/opt/obsidian/Obsidian.AppImage" ]; then
   exec "$HOME/.local/opt/obsidian/Obsidian.AppImage" --no-sandbox "$@"
 fi
