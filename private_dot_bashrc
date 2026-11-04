@@ -3,8 +3,7 @@
 
 # Tools on PATH for every bash, interactive or not (scripts, agents, builds)
 [[ -r $HOME/.cargo/env ]] && . "$HOME/.cargo/env"
-# Not on NixOS: Vite+, pnpm and mise in this shared home are generic Linux
-# builds it cannot run; there nixpkgs gives node and pnpm.
+# Vite+ is a generic Linux build; on NixOS it runs through nix-ld.
 [[ -r $HOME/.vite-plus/env ]] && . "$HOME/.vite-plus/env"
 # NixOS: use nixpkgs' pnpm, not the generic build a "packageManager" pin downloads.
 [[ -e /etc/NIXOS ]] && export pnpm_config_manage_package_manager_versions=false
