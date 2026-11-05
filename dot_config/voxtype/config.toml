@@ -10,6 +10,12 @@
 # Required for `voxtype record toggle` and `voxtype status` commands.
 state_file = "auto"
 
+# Live typing: Parakeet's streaming model types each word at the cursor while
+# you speak (CPU, English, ~2.6 GB of RAM while loaded). Its model:
+#   voxtype setup --download --model parakeet-unified-en-0.6b
+# Back to Whisper (text only after you stop): engine = "whisper".
+engine = "parakeet"
+
 [hotkey]
 # Oasis owns the dictation key (profile/dictation.py runs voxtype --no-hotkey).
 enabled = false
@@ -56,6 +62,15 @@ translate = false
 
 # Number of CPU threads for inference (omit for auto-detection)
 # threads = 4
+
+[parakeet]
+model = "parakeet-unified-en-0.6b"
+streaming = true
+# Each value must be a whole number of 80 ms steps: Voxtype 1.1.1's default
+# left context (1.5 s) fails parakeet-rs's check, and the daemon does not start.
+streaming_chunk_secs = 0.48
+streaming_left_context_secs = 1.6
+streaming_right_context_secs = 0.48
 
 [output]
 # Primary output mode: "type" or "clipboard"
