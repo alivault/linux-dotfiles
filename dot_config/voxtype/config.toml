@@ -10,9 +10,12 @@
 # Required for `voxtype record toggle` and `voxtype status` commands.
 state_file = "auto"
 
-# Live typing: Parakeet's streaming model types each word at the cursor while
-# you speak (CPU, English, ~2.6 GB of RAM while loaded). Its model:
+# Live preview: Parakeet's streaming model shows the words in a line over the
+# waveform while you speak; nothing is typed yet. When you stop, a second, more
+# accurate model (Parakeet TDT v3) reads the whole recording again, and its
+# text is typed once. Both models stay loaded (CPU, ~3.4 GB of RAM). Get them:
 #   voxtype setup --download --model parakeet-unified-en-0.6b
+#   voxtype setup --download --model parakeet-tdt-0.6b-v3-int8
 # Back to Whisper (text only after you stop): engine = "whisper".
 engine = "parakeet"
 
@@ -71,6 +74,13 @@ streaming = true
 streaming_chunk_secs = 0.48
 streaming_left_context_secs = 1.6
 streaming_right_context_secs = 0.48
+# Oasis's Voxtype patch (pkgs/voxtype/README.md):
+# Show the words in the shell's preview line, and type nothing until you stop.
+# true: type each word at the cursor while you speak (no second pass).
+streaming_type_partials = false
+# The second pass: this model reads the whole recording when you stop. If it
+# fails, the streaming text is typed. Remove the line to type the streaming text.
+streaming_final_model = "parakeet-tdt-0.6b-v3-int8"
 
 [output]
 # Primary output mode: "type" or "clipboard"
