@@ -4,18 +4,19 @@ import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
+# config.toml is created once (create_); later changes are Oasis Settings' own.
 
 
 class VoxtypeTests(unittest.TestCase):
     def test_recording_notifications_disabled(self):
-        with (ROOT / 'dot_config/voxtype/config.toml').open('rb') as file:
+        with (ROOT / 'dot_config/voxtype/create_config.toml').open('rb') as file:
             config = tomllib.load(file)
         self.assertEqual(config['state_file'], 'auto')
         self.assertFalse(config['output']['notification']['on_recording_start'])
         self.assertFalse(config['output']['notification']['on_recording_stop'])
 
     def test_oasis_owns_the_hotkey(self):
-        with (ROOT / 'dot_config/voxtype/config.toml').open('rb') as file:
+        with (ROOT / 'dot_config/voxtype/create_config.toml').open('rb') as file:
             config = tomllib.load(file)
         self.assertFalse(config['hotkey']['enabled'])
 
