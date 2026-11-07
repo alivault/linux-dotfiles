@@ -2,7 +2,7 @@
 
 ## Omarchy
 
-The Bash startup file (`dot_bashrc`, from Oasis's default) and the fastfetch
+The Bash startup file (`home/.bashrc`, from Oasis's default) and the fastfetch
 layout in this repository derive from [Omarchy](https://github.com/basecamp/omarchy),
 through Oasis, which keeps the same notice.
 

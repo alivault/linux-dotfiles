@@ -1,0 +1,38 @@
+{
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-5-5",
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": false,
+  "quietStartup": false,
+  "treeFilterMode": "no-tools",
+  "doubleEscapeAction": "tree",
+  "collapseChangelog": false,
+  "editorPaddingX": 0,
+  "showHardwareCursor": false,
+  "theme": "dark",
+  "terminal": {
+    "showTerminalProgress": false
+  },
+  "outputPad": 1,
+  "showCacheMissNotices": true,
+  "tuiMode": "fullscreen",
+  "markdown": {
+    "mermaid": "streaming"
+  },
+  "enableInstallTelemetry": false,
+  "enableAnalytics": false,
+  "npmCommand": [
+    "mise",
+    "exec",
+    "node@26.8.1",
+    "--",
+    "npm"
+  ],
+  "shellCommandPrefix": "set -u\nexport PATH=\"$HOME/.local/share/agent-guard/bin:$PATH\"",
+  "packages": [
+    "git:https://github.com/alivault/pi-queue-steer",
+    "npm:@ogulcancelik/pi-herdr",
+    "npm:pi-web-access",
+    "npm:@gotgenes/pi-anthropic-auth"
+  ]
+}

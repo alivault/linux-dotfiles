@@ -1,7 +1,7 @@
-README.md
-.gitignore
-LICENSE
-THIRD_PARTY_NOTICES.md
-bootstrap/**
-.github/**
-**/__pycache__/**
+# This repository is no longer a chezmoi source: home-manager links home/
+# (README.md, "Moving off chezmoi"). Every path is ignored, so chezmoi run
+# from the old ~/.local/share/chezmoi checkout writes nothing.
+*
+**/*
+.*
+**/.*

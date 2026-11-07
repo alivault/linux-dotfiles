@@ -1,0 +1,36 @@
+from pathlib import Path
+import configparser
+import tomllib
+import unittest
+
+ROOT = Path(__file__).resolve().parent.parent
+# config.toml is a seed (bin/dotfiles-seed); later changes are Oasis Settings' own.
+
+
+class VoxtypeTests(unittest.TestCase):
+    def test_recording_notifications_disabled(self):
+        with (ROOT / 'seed/.config/voxtype/config.toml').open('rb') as file:
+            config = tomllib.load(file)
+        self.assertEqual(config['state_file'], 'auto')
+        self.assertFalse(config['output']['notification']['on_recording_start'])
+        self.assertFalse(config['output']['notification']['on_recording_stop'])
+
+    def test_oasis_owns_the_hotkey(self):
+        with (ROOT / 'seed/.config/voxtype/config.toml').open('rb') as file:
+            config = tomllib.load(file)
+        self.assertFalse(config['hotkey']['enabled'])
+
+    def test_service_privacy(self):
+        config = configparser.ConfigParser()
+        config.read(ROOT / 'home/.config/systemd/user/voxtype.service.d/privacy.conf')
+        self.assertEqual(config['Service']['Environment'], 'RUST_LOG=warn')
+
+    def test_launcher_uses_oasis(self):
+        config = configparser.ConfigParser()
+        config.read(ROOT / 'home/.local/share/applications/voxtype.desktop')
+        self.assertEqual(config['Desktop Entry']['Exec'], 'oasis voxtype config')
+        self.assertEqual(config['Desktop Entry']['Terminal'], 'false')
+
+
+if __name__ == '__main__':
+    unittest.main()

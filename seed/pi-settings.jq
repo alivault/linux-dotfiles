@@ -1,0 +1,59 @@
+# Pi's settings as on the Mac: `dotfiles-seed --pi-settings` merges this into
+# ~/.pi/agent/settings.json (pi writes that file itself, so it is not linked).
+# Local values and packages are kept; the values below are set.
+def identity:
+  (if type == "object" then .source else . end)
+  | sub("@[^/@]+$"; "")
+  | sub("^git:git@github.com:"; "git:https://github.com/");
+# Packages as on the Mac (~/dotfiles/pi). Not pinned: pi update keeps them current.
+[
+  "git:https://github.com/alivault/pi-queue-steer",
+  "npm:@ogulcancelik/pi-herdr",
+  "npm:pi-web-access",
+  "npm:@gotgenes/pi-anthropic-auth"
+] as $required_packages
+# Packages this machine had before; removed so it matches the Mac.
+| [
+  "npm:@ff-labs/pi-fff",
+  "npm:pi-mcp-adapter",
+  "npm:@howaboua/pi-codex-conversion",
+  "npm:@injaneity/pi-computer-use"
+] as $retired_packages
+| ((if (.packages | type) == "array" then .packages else [] end)
+  | map(select(identity as $id | ($retired_packages | index($id)) == null))) as $existing_packages
+# Settings as on the Mac.
+| .defaultProvider = "anthropic"
+| .defaultModel = "claude-opus-5-5"
+| .defaultThinkingLevel = "medium"
+| .hideThinkingBlock = false
+| .quietStartup = false
+| .treeFilterMode = "no-tools"
+| .doubleEscapeAction = "tree"
+| .collapseChangelog = false
+| .editorPaddingX = 0
+| .showHardwareCursor = false
+| .theme = "dark"
+| .terminal = ((.terminal // {}) + {"showTerminalProgress": false})
+| .outputPad = 1
+| .showCacheMissNotices = true
+| .tuiMode = "fullscreen"
+| .markdown = ((.markdown // {}) + {"mermaid": "streaming"})
+| .enableInstallTelemetry = false
+# This machine only: no analytics, npm from the pinned node.
+| .enableAnalytics = false
+| .npmCommand = ["mise", "exec", "node@26.8.1", "--", "npm"]
+# Before every agent bash command (pi, and the agents of Pico): an unset variable is
+# an error, and the rm guard (~/.local/share/agent-guard/bin) comes first.
+| .shellCommandPrefix = "set -u\nexport PATH=\"$HOME/.local/share/agent-guard/bin:$PATH\""
+| .packages = (
+    [
+      $required_packages[] as $pin
+      | ([$existing_packages[] | select(identity == ($pin | identity))][0] // $pin)
+      | if type == "object" then .source = $pin else $pin end
+    ]
+    + [
+        $existing_packages[]
+        | identity as $id
+        | select(($required_packages | map(identity) | index($id)) == null)
+      ]
+  )

@@ -1,0 +1,67 @@
+#!/bin/bash
+# Copy the seeds (seed/) into the home, only where a file is missing.
+#
+# Apps write these files themselves (Oasis Settings, pi, Claude Code,
+# voxtype), so home-manager does not link them: each Mac keeps its own copy.
+# This script never replaces a file that is there.
+#
+#   bin/dotfiles-seed               copy the missing seeds
+#   bin/dotfiles-seed --dry-run     show what it would copy
+#   bin/dotfiles-seed --pi-settings also merge seed/pi-settings.jq into
+#                                   ~/.pi/agent/settings.json (a backup is kept)
+set -euo pipefail
+
+repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+seed="$repo/seed"
+dry=0
+pi=0
+for arg in "$@"; do
+  case $arg in
+  --dry-run) dry=1 ;;
+  --pi-settings) pi=1 ;;
+  -h | --help)
+    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
+    exit 0
+    ;;
+  *)
+    printf 'unknown option: %s\n' "$arg" >&2
+    exit 2
+    ;;
+  esac
+done
+
+copied=0
+kept=0
+while IFS= read -r -d '' file; do
+  rel=${file#"$seed"/}
+  [[ $rel == pi-settings.jq ]] && continue
+  target="$HOME/$rel"
+  if [[ -e $target || -L $target ]]; then
+    kept=$((kept + 1))
+    continue
+  fi
+  printf 'seed: ~/%s\n' "$rel"
+  copied=$((copied + 1))
+  ((dry)) && continue
+  mkdir -p "$(dirname "$target")"
+  cp --no-preserve=mode,ownership "$file" "$target"
+done < <(find "$seed" -type f -print0 | sort -z)
+printf '%s %d file(s); kept %d that are there\n' "$( ((dry)) && echo 'would copy' || echo copied)" "$copied" "$kept"
+
+if ((pi)); then
+  settings="$HOME/.pi/agent/settings.json"
+  current='{}'
+  [[ -s $settings ]] && current=$(cat "$settings")
+  merged=$(printf '%s\n' "$current" | jq -f "$seed/pi-settings.jq")
+  if [[ $merged == "$(printf '%s\n' "$current" | jq .)" ]]; then
+    printf 'pi settings: no change\n'
+  elif ((dry)); then
+    printf 'pi settings: would change %s\n' "$settings"
+  else
+    mkdir -p "$(dirname "$settings")"
+    [[ -e $settings ]] && cp -p "$settings" "$settings.before-seed"
+    printf '%s\n' "$merged" >"$settings.tmp"
+    mv "$settings.tmp" "$settings"
+    printf 'pi settings: merged (the old file: %s.before-seed)\n' "$settings"
+  fi
+fi
