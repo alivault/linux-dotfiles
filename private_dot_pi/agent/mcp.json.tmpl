@@ -3,6 +3,17 @@
     "oasis": {
       "command": "{{ .chezmoi.homeDir }}/.local/share/oasis/current/bin/oasis-mcp",
       "description": "The Oasis desktop as data (read-only): windows, focus, workspaces, outputs, notifications, settings with their schema, oasis commands, Quickshell IPC targets, and desktop events (get_events waits for the next)."
+    },
+    "chrome": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--autoConnect",
+        "--userDataDir={{ .chezmoi.homeDir }}/.config/chromium",
+        "--no-usage-statistics"
+      ],
+      "description": "Ali's real Chromium session (logins, cookies, tabs) over Chrome DevTools. Needs remote debugging on in chrome://inspect/#remote-debugging."
     }
   }
 }
