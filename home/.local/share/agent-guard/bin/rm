@@ -6,7 +6,8 @@
 #
 # Refused: /, any top-level directory, $HOME, anything directly in $HOME, the
 # directories directly in ~/.config, ~/.local/share, ~/.local/state and
-# ~/code, and (recursive only) any directory that is a git repository.
+# ~/code, and (recursive only) any directory that is a git repository,
+# except under ~/.cache: clones and worktrees made there are scratch.
 # Use the trash for those (`gio trash` on Linux, `trash` on macOS).
 #
 # Portable: Linux and macOS, bash 3.2 and later, no GNU realpath.
@@ -95,7 +96,7 @@ check() {
       fi
     done
   fi
-  if ((recursive)) && [[ -d $path/.git || -f $path/.git ]]; then
+  if ((recursive)) && [[ $path != "$home"/.cache/* ]] && [[ -d $path/.git || -f $path/.git ]]; then
     refuse "$path" "it is a git repository"
   fi
 }

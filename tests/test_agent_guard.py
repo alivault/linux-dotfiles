@@ -17,7 +17,7 @@ class GuardTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.home = Path(self.tmp.name) / 'home'
-        for d in ('code/oasis/.git', 'code/scratch/build', 'code/scratch/repo/.git', '.config/oasis', '.local/share/x', '.pico/worktrees/w'):
+        for d in ('code/oasis/.git', 'code/scratch/build', 'code/scratch/repo/.git', '.config/oasis', '.local/share/x', '.pico/worktrees/w', '.cache/research/clone/.git'):
             (self.home / d).mkdir(parents=True)
         self.log = Path(self.tmp.name) / 'ran'
         stub = Path(self.tmp.name) / 'rm-stub'
@@ -61,6 +61,12 @@ class GuardTests(unittest.TestCase):
         self.assert_refused('--recursive', str(repo))
         result, ran = self.rm('-f', str(repo / 'file'))
         self.assertEqual((result.returncode, ran), (0, ['-f', str(repo / 'file')]), 'a file in it is fine')
+
+    def test_a_clone_in_the_cache_is_scratch(self):
+        clone = self.home / '.cache' / 'research' / 'clone'
+        result, ran = self.rm('-rf', str(clone))
+        self.assertEqual((result.returncode, ran), (0, ['-rf', str(clone)]), result.stderr)
+        self.assert_refused('-rf', str(self.home / '.cache'))     # the cache itself is still refused
 
     def test_ordinary_paths_reach_the_real_rm(self):
         h = self.home
