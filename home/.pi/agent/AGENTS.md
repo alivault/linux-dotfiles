@@ -8,7 +8,7 @@
 - Never use `rm` to delete files. Use `gio trash` instead, so deleted files can be recovered from the Trash.
 - Exception: scratch files and folders that you or another agent made in `~/.cache` (test releases, nested homes, build output, logs) may always be deleted with `rm -rf`, without asking. This includes large trees there. It does not cover what apps keep in `~/.cache` (their caches), and nothing outside `~/.cache`.
 - Never put a build tree in the Trash (makepkg `src/` and `pkg/`, cargo `target/`, a kernel or other build directory): when the Trash is emptied, tens of thousands of files keep `gvfsd-metadata` busy for an hour, and every app that reads file metadata waits 25 s per call (2026-10-29). Let the build tool remove it (`makepkg --clean`, `cargo clean`, `make clean`), or ask the user.
-- `rm` is guarded for agents (`~/.local/share/agent-guard/bin/rm`). It refuses `/`, top-level directories, your home directory and what is directly in it, the directories directly in `~/.config`, `~/.local/share`, `~/.local/state` and `~/code`, and git repositories. Do not get around it with `/usr/bin/rm`; ask the user.
+- `rm` is guarded for agents (`~/.local/share/agent-guard/bin/rm`). It refuses `/`, top-level directories, your home directory and what is directly in it, the directories directly in `~/.config`, `~/.local/share`, `~/.local/state` and `~/code`, and git repositories outside `~/.cache` (a clone or worktree in `~/.cache` is scratch: `rm -rf` it). Do not get around it with `/usr/bin/rm`; ask the user.
 
 ## Shell
 
