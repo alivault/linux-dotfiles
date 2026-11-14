@@ -1,0 +1,16 @@
+[Unit]
+Description=whatsapp-mcp daemon (HTTP MCP for WhatsApp, Sealjay/mcp-whatsapp v0.7.2)
+After=network-online.target
+
+[Service]
+Type=exec
+ExecStart=%h/.local/bin/whatsapp-mcp -store %h/.local/share/whatsapp-mcp serve
+Environment=WHATSAPP_MCP_ADDR=127.0.0.1:8777
+Environment=WHATSAPP_MCP_MEDIA_ROOT=%h/.local/share/whatsapp-mcp/uploads
+Environment=WHATSAPP_MCP_FULL_HISTORY=1
+Environment=PATH=/run/current-system/sw/bin:/usr/bin:/bin
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=default.target

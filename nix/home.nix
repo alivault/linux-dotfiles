@@ -45,6 +45,12 @@ let
         ];
         description = "Ali's real Chromium session (logins, cookies, tabs) over Chrome DevTools. Needs remote debugging on in chrome://inspect/#remote-debugging.";
       };
+      # Sealjay/mcp-whatsapp: ~/.local/bin/whatsapp-mcp, run by the user unit
+      # whatsapp-mcp.service (home/.config/systemd/user). Pair at /pair.
+      whatsapp = {
+        url = "http://127.0.0.1:8777/mcp";
+        description = "Ali's personal WhatsApp as a linked device (full access): read and search chats, contacts and media; send, reply, react, groups. Before any send or change, show Ali the recipient and the exact text and get his yes in the chat. If it is not paired, Ali opens http://127.0.0.1:8777/pair.";
+      };
     };
   };
 in
